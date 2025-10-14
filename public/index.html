@@ -5267,6 +5267,40 @@
 
 /* --- END: NEW AVAILABILITY CALENDAR STYLES --- */
 /* --- END: RESPONSIVENESS STYLES --- */
+
+/* --- START: ADD FOR SUPER ADMIN CONTROLS --- */
+.user-control-header,
+.user-control-row {
+    display: grid;
+    grid-template-columns: 2fr 2fr 1fr 1fr;
+    align-items: center;
+    padding: 15px 20px;
+    border-bottom: 1px solid var(--border-color);
+    gap: 15px;
+}
+
+.user-control-header {
+    font-weight: 600;
+    color: var(--gray-color);
+    background-color: var(--light-gray-color);
+}
+
+.user-control-row:last-child {
+    border-bottom: none;
+}
+
+.status-indicator {
+    font-weight: 600;
+}
+
+.status-indicator.active {
+    color: #4CAF50; /* Green */
+}
+
+.status-indicator.disabled {
+    color: #E53935; /* Red */
+}
+/* --- END: ADD FOR SUPER ADMIN CONTROLS --- */
     </style>
 </head>
 
@@ -5434,7 +5468,8 @@
             </div>
             <nav class="sidebar-nav">
                 <ul>
-                    <li class="active"><a href="#">Pending Verifications</a></li>
+                    <li class="active"><a href="#" data-view="super-admin-verifications">Pending Verifications</a></li>
+                    <li><a href="#" data-view="super-admin-controls">Controls</a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer">
@@ -5448,6 +5483,27 @@
             <div id="pending-instructors-list" class="card" style="padding: 0;">
                 </div>
         </main>
+         <main id="super-admin-controls-view" class="main-content" style="display: none;">
+            <header class="dashboard-header">
+                <h3>User Controls</h3>
+            </header>
+
+            <div class="tabs">
+                <button class="tab-link active" data-target="instructor-controls-content">Instructors</button>
+                <button class="tab-link" data-target="learner-controls-content">Learners</button>
+            </div>
+
+            <div id="instructor-controls-content" class="tab-pane active" style="margin-top: 20px;">
+                <div class="card" style="padding: 0;">
+                    </div>
+            </div>
+
+            <div id="learner-controls-content" class="tab-pane" style="margin-top: 20px; display: none;">
+                 <div class="card" style="padding: 0;">
+                    </div>
+            </div>
+        </main>
+        
     </div>
 </div>
 
@@ -9578,14 +9634,49 @@ auth.onAuthStateChanged(user => {
         // *** NEW: SUPER ADMIN CHECK ***
         if (user.email === 'aditya@gmail.com') {
             showPage('super-admin-page');
-            renderSuperAdminDashboard(); // Function to load pending instructors
+            renderSuperAdminDashboard();
+             // Function to load pending instructors
+             // --- START: ADD FOR SUPER ADMIN NAVIGATION ---
+            const adminSidebar = document.querySelector('#super-admin-page .sidebar-nav');
+            const verificationView = document.getElementById('pending-instructors-list').closest('.main-content');
+            const controlsView = document.getElementById('super-admin-controls-view');
+
+            adminSidebar.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (!link) return;
+                e.preventDefault();
+
+                adminSidebar.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                link.parentElement.classList.add('active');
+
+                const targetView = link.dataset.view;
+                if (targetView === 'super-admin-controls') {
+                    verificationView.style.display = 'none';
+                    controlsView.style.display = 'block';
+                    renderControlsView(); // This new function will load the user lists
+                } else {
+                    verificationView.style.display = 'block';
+                    controlsView.style.display = 'none';
+                    renderSuperAdminDashboard();
+                }
+            });
+            // --- END: ADD FOR SUPER ADMIN NAVIGATION ---
             return; // Stop further execution for the admin
         }
 
         // --- Existing logic for instructors and learners ---
+        // --- Existing logic for instructors and learners ---
         db.collection('users').doc(user.uid).get().then(doc => {
             if (doc.exists) {
                 const userData = doc.data();
+
+                // --- ADD THIS CHECK TO BLOCK DISABLED USERS ---
+                if (userData.accountStatus === 'disabled') {
+                    alert("Your account has been disabled by an administrator.");
+                    auth.signOut(); // Immediately log them out
+                    return;         // Stop the rest of the function
+                }
+                // --- END OF CHECK ---
                 const displayName = userData.firstName || user.email.split('@')[0];
 
                 if (userData.role === 'instructor') {
@@ -13779,6 +13870,140 @@ document.getElementById('verification-details-modal')?.addEventListener('click',
     }
 });
 // --- END: ADD FOR SUPER ADMIN FUNCTIONALITY ---
+
+// --- START: ADD FOR SUPER ADMIN CONTROLS ---
+
+/**
+ * Main function to render the Controls view and handle its internal tabs.
+ */
+ function renderControlsView() {
+    renderInstructorsControlList(); // Load instructors by default
+
+    const controlsView = document.getElementById('super-admin-controls-view');
+    const tabs = controlsView.querySelector('.tabs');
+
+    // Use a flag to prevent adding the listener multiple times
+    if (!tabs.dataset.listenerAttached) {
+        tabs.addEventListener('click', (e) => {
+            const clickedTab = e.target.closest('.tab-link');
+            if (!clickedTab) return;
+
+            tabs.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+            clickedTab.classList.add('active');
+
+            controlsView.querySelectorAll('.tab-pane').forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('active');
+            });
+            const targetPane = document.getElementById(clickedTab.dataset.target);
+            targetPane.style.display = 'block';
+            targetPane.classList.add('active');
+
+            if (clickedTab.dataset.target === 'instructor-controls-content') {
+                renderInstructorsControlList();
+            } else {
+                renderLearnersControlList();
+            }
+        });
+        tabs.dataset.listenerAttached = 'true';
+    }
+}
+
+/**
+ * Generic function to render a list of users (instructors or learners).
+ */
+async function renderUserControlList(role, containerSelector) {
+    const container = document.querySelector(containerSelector);
+    container.innerHTML = `<p style="padding: 20px;">Loading ${role}s...</p>`;
+
+    try {
+        const snapshot = await db.collection('users').where('role', '==', role).get();
+        if (snapshot.empty) {
+            container.innerHTML = `<p style="padding: 20px;">No ${role}s found.</p>`;
+            return;
+        }
+
+        let listHtml = `
+            <div class="user-control-header">
+                <div>Name</div>
+                <div>Email</div>
+                <div>Status</div>
+                <div>Action</div>
+            </div>`;
+
+        snapshot.forEach(doc => {
+            const user = doc.data();
+            const uid = doc.id;
+            const status = user.accountStatus || 'active'; // Default to 'active'
+            const isChecked = status === 'active';
+
+            listHtml += `
+                <div class="user-control-row">
+                    <div>${user.firstName || 'N/A'} ${user.surname || ''}</div>
+                    <div>${user.email}</div>
+                    <div><span class="status-indicator ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></div>
+                    <div>
+                        <label class="switch">
+                            <input type="checkbox" class="account-status-toggle" data-uid="${uid}" ${isChecked ? 'checked' : ''}>
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                </div>`;
+        });
+        container.innerHTML = listHtml;
+
+    } catch (error) {
+        console.error(`Error fetching ${role}s for controls:`, error);
+        container.innerHTML = `<p style="padding: 20px; color: red;">Could not load ${role}s.</p>`;
+    }
+}
+
+function renderInstructorsControlList() {
+    renderUserControlList('instructor', '#instructor-controls-content .card');
+}
+
+function renderLearnersControlList() {
+    renderUserControlList('learner', '#learner-controls-content .card');
+}
+
+/**
+ * Updates a user's account status in Firestore when a toggle is switched.
+ */
+async function updateUserAccountStatus(uid, newStatus) {
+    try {
+        await db.collection('users').doc(uid).update({ accountStatus: newStatus });
+        return true;
+    } catch (error) {
+        console.error("Error updating user status:", error);
+        return false;
+    }
+}
+
+// Delegated event listener for all toggle switches within the controls view
+document.getElementById('super-admin-controls-view')?.addEventListener('change', async (e) => {
+    if (e.target.classList.contains('account-status-toggle')) {
+        const toggle = e.target;
+        const uid = toggle.dataset.uid;
+        const newStatus = toggle.checked ? 'active' : 'disabled';
+        const statusIndicator = toggle.closest('.user-control-row').querySelector('.status-indicator');
+
+        toggle.disabled = true; // Prevent rapid clicking
+
+        const success = await updateUserAccountStatus(uid, newStatus);
+
+        if (success) {
+            statusIndicator.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+            statusIndicator.className = `status-indicator ${newStatus}`;
+        } else {
+            toggle.checked = !toggle.checked; // Revert switch on failure
+            alert('Failed to update user status. Please try again.');
+        }
+
+        toggle.disabled = false; // Re-enable toggle
+    }
+});
+
+// --- END: ADD FOR SUPER ADMIN CONTROLS ---
 </script>
 </body>
 
