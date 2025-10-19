@@ -5828,6 +5828,7 @@
                                     Banking</a>
                                 <a href="#" class="instructor-logout-btn"><i class="fas fa-sign-out-alt"></i> Log
                                     Out</a>
+                                    <a href="#" data-view="instructor-reviews-view"><i class="fas fa-star"></i> My Reviews</a>
                             </div>
                         </div>
                     </div>
@@ -5897,6 +5898,29 @@
                         <button id="start-verification-btn" class="btn btn-primary" style="padding: 12px 40px;">Verify
                             Now</button>
                     </div>
+                </section>
+                <section id="instructor-reviews-view" class="instructor-view">
+                    <div class="page-view-header">
+                        <div>
+                            <p class="breadcrumbs" style="margin:0;"><a href="#"
+                                    data-view="instructor-dashboard-view">Dashboard</a> > My Reviews</p>
+                            <h2>My Reviews</h2>
+                        </div>
+                        </div>
+
+                    <div id="instructor-reviews-list" class="card" style="padding: 0;">
+                        <p style="padding: 20px; text-align: center;">Loading reviews...</p>
+                    </div>
+                     <footer class="main-content-footer" style="margin-top: 40px;">
+                        © Safe Learners Pty Ltd
+                        <div>
+                             <a href="#">Contact</a>
+                            <a href="#">Support</a>
+                            <a href="#">Code of Conduct</a>
+                            <a href="#">Terms & Conditions</a>
+                            <a href="#">Privacy Policy</a>
+                        </div>
+                    </footer>
                 </section>
 
                 <section id="instructor-learners-view" class="instructor-view">
@@ -9685,6 +9709,8 @@
         let lastDashboardView = 'dashboard-main-content';
         const allSidebars = document.querySelectorAll('.sidebar-nav');
         let currentInstructorId = null; // Store the ID of the selected instructor
+        let instructorIdToReview = null;
+        let instructorNameToReview = null;
         // Add this with your other global variables like 'currentInstructorId'
         let currentInstructorAvailability = {};
         // --- START: ADD THESE GLOBAL VARIABLES ---
@@ -9818,7 +9844,26 @@
 
 
             if (target.matches('#history-content .booking-id-link')) { e.preventDefault(); showPage('booking-details-page'); return; }
-            if (target.matches('#leave-rating-link')) { e.preventDefault(); showPage('rating-page'); return; }
+            if (target.matches('#leave-rating-link')) {
+                e.preventDefault();
+                // Get data stored on the link by renderLearnerDashboard
+                instructorIdToReview = target.dataset.instructorId;
+                instructorNameToReview = target.dataset.instructorName;
+                if (instructorIdToReview) {
+                    showPage('rating-page');
+                    // Update the rating page question dynamically
+                    const ratingQuestion = document.querySelector('#rating-page .rating-question');
+                    if (ratingQuestion) {
+                        ratingQuestion.textContent = `How was your learning experience with ${instructorNameToReview || 'your instructor'}?`;
+                    }
+                    // Optional: Hide the notification popup after clicking
+                     const notificationPopup = document.querySelector('.notification-popup');
+                     if (notificationPopup) notificationPopup.style.display = 'none';
+                } else {
+                    alert('Could not determine which instructor to review.');
+                }
+                return; // Added return
+            }
 
             // 3) NEW: Feedback routes (all places it appears)
             if (target.matches(
@@ -10110,21 +10155,69 @@
         if (availabilityModal) availabilityModal.addEventListener('click', (e) => { if (e.target === availabilityModal) closeModal(); });
 
         // --- RATING FORM LOGIC ---
-        const ratingForm = document.getElementById('rating-form');
+       const ratingForm = document.getElementById('rating-form');
         if (ratingForm) {
-            ratingForm.addEventListener('submit', (e) => {
+            ratingForm.addEventListener('submit', async (e) => { // Make the handler async
                 e.preventDefault();
                 const formData = new FormData(ratingForm);
-                const rating = formData.get('rating');
-                const feedback = formData.get('feedback');
-                if (!rating) { alert('Please select a rating from 1 to 5.'); return; }
-                console.log('Rating:', rating, 'Feedback:', feedback);
-                alert('Thank you for your feedback!');
-                ratingForm.reset();
-                goToDashboard();
+                const rating = parseInt(formData.get('rating')); // Ensure it's a number
+                const feedbackText = formData.get('feedback').trim(); // Trim whitespace
+
+                if (!rating || rating < 1 || rating > 5) {
+                    alert('Please select a rating from 1 to 5.');
+                    return;
+                }
+                if (!instructorIdToReview) {
+                    alert('Error: Could not determine which instructor to review. Please go back to the dashboard.');
+                    return;
+                }
+                const learner = auth.currentUser;
+                if (!learner) {
+                    alert('Error: You must be logged in to submit a review.');
+                    return;
+                }
+
+                // Show loading state (optional)
+                const submitButton = ratingForm.querySelector('button[type="submit"]');
+                submitButton.textContent = 'Submitting...';
+                submitButton.disabled = true;
+
+                try {
+                    // Fetch learner's name
+                    const learnerDoc = await db.collection('users').doc(learner.uid).get();
+                    const learnerName = learnerDoc.exists ? learnerDoc.data().firstName : 'Learner';
+
+                    // Prepare review data
+                    const reviewData = {
+                        learnerId: learner.uid,
+                        learnerName: learnerName,
+                        instructorId: instructorIdToReview,
+                        instructorName: instructorNameToReview || 'Instructor', // Use name stored earlier
+                        rating: rating,
+                        feedbackText: feedbackText, // Store even if empty, can filter later
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        // bookingId: null // You could add logic to link this to a specific booking if needed
+                    };
+
+                    // Save to Firestore
+                    await db.collection('reviews').add(reviewData);
+
+                    alert('Thank you for your feedback!');
+                    ratingForm.reset();
+                    instructorIdToReview = null; // Clear the state
+                    instructorNameToReview = null;
+                    goToDashboard(); // Navigate back
+
+                } catch (error) {
+                    console.error("Error submitting review:", error);
+                    alert('Sorry, there was an error submitting your review. Please try again.');
+                } finally {
+                     // Restore button state
+                     submitButton.textContent = 'Submit';
+                     submitButton.disabled = false;
+                }
             });
         }
-
         // --- INVITE PAGE "COPY LINK" BUTTON ---
         const copyLinkBtn = document.getElementById('copy-link-btn');
         if (copyLinkBtn) {
@@ -12785,11 +12878,18 @@ document.addEventListener('DOMContentLoaded', () => {
          * Fetches data and dynamically renders the learner's main dashboard.
          * @param {string} uid - The UID of the logged-in learner.
          */
+       // --- START: REPLACE existing renderLearnerDashboard function ---
+        /**
+         * Fetches data and dynamically renders the learner's main dashboard,
+         * including updating the review notification.
+         * @param {string} uid - The UID of the logged-in learner.
+         */
         async function renderLearnerDashboard(uid) {
             const instructorCard = document.getElementById('my-instructor-card');
             const detailsContent = document.getElementById('instructor-details-content');
             const noInstructorContent = document.getElementById('no-instructor-content');
             const dynamicBookingBtns = document.querySelectorAll('.dynamic-booking-btn');
+            const notificationPopup = document.querySelector('.notification-popup'); // Get the notification popup
 
             if (!instructorCard) return;
 
@@ -12800,20 +12900,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 const learnerData = learnerDoc.data();
                 const instructorId = learnerData.instructorId;
 
+                // --- Notification Update Logic ---
+                const reviewLink = notificationPopup ? notificationPopup.querySelector('#leave-rating-link') : null;
+                const reviewText = notificationPopup ? notificationPopup.querySelector('.popup-text p') : null;
+                // --- End Notification Update Logic ---
+
+
                 if (instructorId) {
-                    // --- STATE 1: INSTRUCTOR IS ASSIGNED ---
                     const instructorDoc = await db.collection('users').doc(instructorId).get();
                     if (instructorDoc.exists) {
                         const instructor = instructorDoc.data();
                         const instructorName = instructor.firstName || 'Your Instructor';
 
-                        // **THE FIX IS HERE**: Update all booking buttons with the instructor's name and ID
                         dynamicBookingBtns.forEach(btn => {
                             btn.textContent = `Book with ${instructorName}`;
-                            btn.dataset.id = instructorId; // This makes the button work for this instructor
+                            btn.dataset.id = instructorId;
                         });
 
-                        // Populate the "My Instructor" card (existing logic)
                         document.getElementById('my-instructor-photo').src = instructor.instructorPhotoUrl || 'https://placehold.co/100x100?text=I';
                         document.getElementById('my-instructor-name').textContent = instructorName;
                         document.getElementById('my-instructor-price').textContent = `$${(instructor.pricing?.lesson || 70).toFixed(2)}/Hr`;
@@ -12822,29 +12925,44 @@ document.addEventListener('DOMContentLoaded', () => {
 
                         detailsContent.style.display = 'block';
                         noInstructorContent.style.display = 'none';
+
+                        // --- Notification Update Logic ---
+                        if (reviewLink && reviewText) {
+                            reviewText.textContent = `How was your learning experience with ${instructorName}?`;
+                            reviewLink.dataset.instructorId = instructorId; // Store ID on the link
+                            reviewLink.dataset.instructorName = instructorName; // Store Name for rating page
+                            notificationPopup.style.display = 'flex'; // Make sure it's visible if hidden
+                        }
+                        // --- End Notification Update Logic ---
+
+                    } else {
+                         // Instructor ID exists but document not found (edge case)
+                         detailsContent.style.display = 'none';
+                         noInstructorContent.style.display = 'block';
+                         if (notificationPopup) notificationPopup.style.display = 'none'; // Hide notification
                     }
                 } else {
-                    // --- STATE 2: NO INSTRUCTOR ASSIGNED ---
-
-                    // **THE FIX IS HERE**: Change buttons to prompt user to find an instructor
                     dynamicBookingBtns.forEach(btn => {
                         btn.textContent = 'Find an Instructor to Book';
-                        // Remove the data-id so it doesn't trigger a booking
                         btn.removeAttribute('data-id');
-                        // We'll make these buttons link to the search page
                         btn.onclick = () => showView('switch-instructor-content');
                     });
 
-                    // Show the "You haven't booked..." message (existing logic)
                     detailsContent.style.display = 'none';
                     noInstructorContent.style.display = 'block';
+
+                    // --- Notification Update Logic ---
+                    // Hide the notification if no instructor is assigned
+                    if (notificationPopup) notificationPopup.style.display = 'none';
+                    // --- End Notification Update Logic ---
                 }
 
             } catch (error) {
                 console.error("Error rendering learner dashboard:", error);
+                 if (notificationPopup) notificationPopup.style.display = 'none'; // Hide on error
             }
         }
-
+        // --- END: REPLACEMENT for renderLearnerDashboard function ---
 
         /**
          * Fetches and renders the current learner's upcoming bookings.
@@ -14363,60 +14481,100 @@ document.addEventListener('DOMContentLoaded', () => {
  * Fetches user data from Firestore and displays it in the details modal.
  * @param {string} uid - The User ID of the user to display.
  */
- async function showUserDetailsModal(uid) {
-    const modal = document.getElementById('user-details-modal');
-    const modalBody = document.getElementById('user-details-modal-body');
-    const modalTitle = document.getElementById('user-details-modal-title');
-    if (!modal || !modalBody || !modalTitle) return;
+ // --- START: REPLACE existing showUserDetailsModal function ---
+        /**
+         * Fetches user data from Firestore and displays it in the details modal, including reviews.
+         * @param {string} uid - The User ID of the user to display.
+         */
+        async function showUserDetailsModal(uid) {
+            const modal = document.getElementById('user-details-modal');
+            const modalBody = document.getElementById('user-details-modal-body');
+            const modalTitle = document.getElementById('user-details-modal-title');
+            if (!modal || !modalBody || !modalTitle) return;
 
-    modalBody.innerHTML = '<p>Loading details...</p>'; // Show loading state
-    modalTitle.textContent = 'User Details';
-    modal.classList.add('active'); // Show the modal
+            modalBody.innerHTML = '<p>Loading details...</p>';
+            modalTitle.textContent = 'User Details';
+            modal.classList.add('active');
 
-    try {
-        const doc = await db.collection('users').doc(uid).get();
-        if (!doc.exists) {
-            modalBody.innerHTML = '<p style="color: red;">User not found.</p>';
-            return;
-        }
-        const user = doc.data();
-        modalTitle.textContent = `Details for ${user.firstName || ''} ${user.surname || ''}`;
+            try {
+                const userDoc = await db.collection('users').doc(uid).get();
+                if (!userDoc.exists) {
+                    modalBody.innerHTML = '<p style="color: red;">User not found.</p>';
+                    return;
+                }
+                const user = userDoc.data();
+                modalTitle.textContent = `Details for ${user.firstName || ''} ${user.surname || ''}`;
 
-        // Build the HTML to display the details
-        let detailsHtml = `
-            <div class="detail-item"><strong>Role:</strong> ${user.role}</div>
-            <div class="detail-item"><strong>Email:</strong> ${user.email}</div>
-            <div class="detail-item"><strong>Mobile:</strong> ${user.mobile || 'N/A'}</div>
-            <div class="detail-item"><strong>Gender:</strong> ${user.gender || 'N/A'}</div>
-            <div class="detail-item"><strong>DOB:</strong> ${user.dob || 'N/A'}</div>
-            <div class="detail-item"><strong>Account Status:</strong> <span class="status-indicator ${user.accountStatus || 'active'}">${user.accountStatus || 'Active'}</span></div>
-        `;
+                // --- Basic User Details ---
+                let detailsHtml = `
+                    <div class="detail-item"><strong>Role:</strong> ${user.role}</div>
+                    <div class="detail-item"><strong>Email:</strong> ${user.email}</div>
+                    <div class="detail-item"><strong>Mobile:</strong> ${user.mobile || 'N/A'}</div>
+                    <div class="detail-item"><strong>Gender:</strong> ${user.gender || 'N/A'}</div>
+                    <div class="detail-item"><strong>DOB:</strong> ${user.dob || 'N/A'}</div>
+                    <div class="detail-item"><strong>Account Status:</strong> <span class="status-indicator ${user.accountStatus || 'active'}">${user.accountStatus || 'Active'}</span></div>
+                `;
 
-        // Add instructor-specific details if available
-        if (user.role === 'instructor') {
-            detailsHtml += '<hr style="margin: 15px 0;"><h4>Instructor Info</h4>';
-            detailsHtml += `<div class="detail-item"><strong>Bio:</strong> ${user.bio || 'N/A'}</div>`;
-            detailsHtml += `<div class="detail-item"><strong>Languages:</strong> ${user.languages || 'N/A'}</div>`;
-            detailsHtml += `<div class="detail-item"><strong>Started Instructing:</strong> ${user.startYear || 'N/A'}</div>`;
-            detailsHtml += `<div class="detail-item"><strong>Transmission:</strong> ${user.transmission || 'N/A'}</div>`;
-            detailsHtml += `<div class="detail-item"><strong>Vehicle:</strong> ${user.vehicleMake || ''} ${user.vehicleModel || ''}</div>`;
-            detailsHtml += `<div class="detail-item"><strong>Verification Status:</strong> ${user.verificationStatus || 'N/A'}</div>`;
-            if(user.instructorPhotoUrl) {
-                detailsHtml += `<div class="detail-item"><strong>Photo:</strong><br><img src="${user.instructorPhotoUrl}" class="user-photo-modal" alt="Instructor Photo"></div>`;
+                // --- Instructor Specific Details ---
+                if (user.role === 'instructor') {
+                    detailsHtml += '<hr style="margin: 15px 0;"><h4>Instructor Info</h4>';
+                    detailsHtml += `<div class="detail-item"><strong>Bio:</strong> ${user.bio || 'N/A'}</div>`;
+                    detailsHtml += `<div class="detail-item"><strong>Languages:</strong> ${user.languages || 'N/A'}</div>`;
+                    detailsHtml += `<div class="detail-item"><strong>Started Instructing:</strong> ${user.startYear || 'N/A'}</div>`;
+                    detailsHtml += `<div class="detail-item"><strong>Transmission:</strong> ${user.transmission || 'N/A'}</div>`;
+                    detailsHtml += `<div class="detail-item"><strong>Vehicle:</strong> ${user.vehicleMake || ''} ${user.vehicleModel || ''}</div>`;
+                    detailsHtml += `<div class="detail-item"><strong>Verification Status:</strong> ${user.verificationStatus || 'N/A'}</div>`;
+                    if (user.instructorPhotoUrl) { detailsHtml += `<div class="detail-item"><strong>Photo:</strong><br><img src="${user.instructorPhotoUrl}" class="user-photo-modal" alt="Instructor Photo"></div>`; }
+                    if (user.vehiclePhotoUrl) { detailsHtml += `<div class="detail-item"><strong>Vehicle Photo:</strong><br><img src="${user.vehiclePhotoUrl}" class="user-photo-modal" alt="Vehicle Photo"></div>`; }
+                }
+
+                // --- Reviews Section (Common for both roles, but query differs) ---
+                detailsHtml += '<hr style="margin: 15px 0;"><h4>Reviews</h4>';
+                let reviewQuery;
+                if (user.role === 'learner') {
+                    // Find reviews WRITTEN BY this learner
+                    reviewQuery = db.collection('reviews').where('learnerId', '==', uid).orderBy('createdAt', 'desc').limit(10);
+                } else if (user.role === 'instructor') {
+                    // Find reviews WRITTEN ABOUT this instructor
+                    reviewQuery = db.collection('reviews').where('instructorId', '==', uid).orderBy('createdAt', 'desc').limit(10);
+                }
+
+                let reviewsHtml = '';
+                if (reviewQuery) {
+                    const reviewSnapshot = await reviewQuery.get();
+                    if (reviewSnapshot.empty) {
+                        reviewsHtml = `<p>No reviews found.</p>`;
+                    } else {
+                        reviewSnapshot.forEach(doc => {
+                            const review = doc.data();
+                            const reviewDate = review.createdAt ? moment(review.createdAt.toDate()).format('D MMM YYYY') : '';
+                            let starsHtml = '';
+                            for(let i = 1; i <= 5; i++) { starsHtml += i <= review.rating ? '★' : '☆'; }
+
+                            reviewsHtml += `
+                                <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 13px; color: #757575;">
+                                        <span>${user.role === 'learner' ? `To: ${review.instructorName}` : `From: ${review.learnerName}`}</span>
+                                        <span>${reviewDate}</span>
+                                    </div>
+                                    <div style="color: var(--primary-color); margin: 3px 0;">${starsHtml} (${review.rating}/5)</div>
+                                    ${review.feedbackText ? `<p style="font-size: 14px; margin: 5px 0 0 0;">${review.feedbackText}</p>` : ''}
+                                </div>
+                            `;
+                        });
+                    }
+                } else {
+                    reviewsHtml = '<p>Could not load reviews for this user role.</p>';
+                }
+
+                modalBody.innerHTML = detailsHtml + reviewsHtml; // Combine basic details + reviews
+
+            } catch (error) {
+                console.error("Error fetching user details/reviews for modal:", error);
+                modalBody.innerHTML = '<p style="color: red;">Could not load user details or reviews.</p>';
             }
-             if(user.vehiclePhotoUrl) {
-                detailsHtml += `<div class="detail-item"><strong>Vehicle Photo:</strong><br><img src="${user.vehiclePhotoUrl}" class="user-photo-modal" alt="Vehicle Photo"></div>`;
-            }
         }
-
-        modalBody.innerHTML = detailsHtml;
-
-    } catch (error) {
-        console.error("Error fetching user details for modal:", error);
-        modalBody.innerHTML = '<p style="color: red;">Could not load user details.</p>';
-    }
-}
-
+        // --- END: REPLACEMENT for showUserDetailsModal function ---
 // Event listener for closing the user details modal
 document.getElementById('user-details-modal')?.addEventListener('click', (e) => {
     if (e.target.classList.contains('modal-close-btn') || e.target.classList.contains('modal-overlay')) {
@@ -14619,7 +14777,55 @@ if (instructorNavLink) {
 // Make sure to add the check for 'instructor-account-settings-view' as shown above.
 
 // --- END: ADD THIS NEW ACCOUNT SETTINGS SCRIPT ---
+async function renderInstructorReviews(instructorId) {
+            const reviewsListContainer = document.getElementById('instructor-reviews-list');
+            if (!reviewsListContainer) return;
 
+            reviewsListContainer.innerHTML = '<p style="padding: 20px; text-align: center;">Loading reviews...</p>';
+
+            try {
+                const snapshot = await db.collection('reviews')
+                    .where('instructorId', '==', instructorId)
+                    .orderBy('createdAt', 'desc') // Show newest first
+                    .get();
+
+                if (snapshot.empty) {
+                    reviewsListContainer.innerHTML = '<p style="padding: 20px; text-align: center;">You have not received any reviews yet.</p>';
+                    return;
+                }
+
+                let reviewsHtml = '';
+                snapshot.forEach(doc => {
+                    const review = doc.data();
+                    const reviewDate = review.createdAt ? moment(review.createdAt.toDate()).format('D MMM YYYY') : 'Date unknown';
+
+                    // Simple star rating display
+                    let starsHtml = '';
+                    for(let i = 1; i <= 5; i++) {
+                        starsHtml += i <= review.rating ? '★' : '☆';
+                    }
+
+                    reviewsHtml += `
+                        <div class="review-item" style="padding: 15px 20px;">
+                            <div class="review-meta">
+                                <strong>${review.learnerName || 'Learner'}</strong>
+                                <span>${reviewDate}</span>
+                            </div>
+                            <div class="review-stars" style="color: var(--primary-color); margin-bottom: 8px;">
+                                ${starsHtml} (${review.rating}/5)
+                            </div>
+                            ${review.feedbackText ? `<p class="review-text" style="color: var(--dark-color);">${review.feedbackText}</p>` : '<p class="review-text" style="color: var(--gray-color);"><em>No feedback comment provided.</em></p>'}
+                        </div>
+                    `;
+                });
+
+                reviewsListContainer.innerHTML = reviewsHtml;
+
+            } catch (error) {
+                console.error("Error fetching instructor reviews:", error);
+                reviewsListContainer.innerHTML = '<p style="padding: 20px; text-align: center; color: red;">Could not load reviews.</p>';
+            }
+        }
     </script>
 </body>
 
