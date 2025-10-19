@@ -9778,21 +9778,38 @@
             if (target.matches('#add-credit-btn, #add-credit-from-wallet-btn')) { e.preventDefault(); goToWallet(); return; }
 
             // Updated logic for opening booking page from anywhere
-            if (target.matches('.open-booking-btn')) {
-                e.preventDefault();
-                const card = target.closest('.instructor-card-new');
-                if (card && card.dataset.id) {
-                    currentInstructorId = card.dataset.id;
-                } else {
-                    // Handle the case where the button is on the main dashboard and not a specific instructor card
-                    // We assume there's a primary instructor set for the learner
-                    currentInstructorId = document.getElementById('dashboard-main-content').querySelector('.open-booking-btn').dataset.instructorId;
+          // Corrected logic for opening booking page from ANYWHERE
+          if (target.matches('.open-booking-btn')) {
+            e.preventDefault();
+            let instructorIdToBook = null; // Use a local variable to avoid potential conflicts
+
+            // Prioritize getting the ID from the card the button is ON (for switch instructor page)
+            const cardNew = target.closest('.instructor-card-new');
+            if (cardNew && cardNew.dataset.id) {
+                instructorIdToBook = cardNew.dataset.id;
+                console.log("Booking button clicked on switch instructor card. ID:", instructorIdToBook); // Debug log
+            } else {
+                // If not found on a 'cardNew', try getting it from the main dashboard context
+                // (Ensure your main dashboard button has data-instructor-id)
+                const mainDashboardButton = document.querySelector('#dashboard-main-content #instructor-card-book-btn'); // More specific selector
+                if (mainDashboardButton && mainDashboardButton.dataset.id) { // Check data-id on this button too
+                     instructorIdToBook = mainDashboardButton.dataset.id;
+                     console.log("Booking button clicked on main dashboard. ID:", instructorIdToBook); // Debug log
                 }
-                showPage('booking-page');
-                // Now render the instructor's data on the booking page
-                renderBookingPageInstructor(currentInstructorId);
-                return;
             }
+
+            // --- CRITICAL CHECK ---
+            // Only proceed if we successfully identified an instructor ID
+            if (instructorIdToBook) {
+                showPage('booking-page');
+                renderBookingPageInstructor(instructorIdToBook); // Pass the correctly identified ID
+            } else {
+                // If no ID could be found from either context, show an error
+                console.error("Could not find instructor ID associated with the clicked booking button.");
+                alert("Sorry, couldn't identify the instructor for booking. Please try refreshing the page.");
+            }
+            return; // Stop further execution in the main click listener
+        }
 
             // Handles the 'View Profile' button on the instructor list
             if (target.matches('.view-profile-btn')) {
