@@ -5815,8 +5815,7 @@
                             <img src="https://placehold.co/100x100?text=M" alt="User Avatar">
                             <span id="instructor-user-name">Mandeep</span> ▾
                             <div class="profile-dropdown">
-                                <a href="#" data-view="instructor-personal-details-view"><i
-                                        class="fas fa-user-circle"></i> Personal Details</a>
+                                <a href="#" data-view="instructor-account-settings-view"><i class="fas fa-user-cog"></i> Account Settings</a>
                                 <a href="#" data-view="instructor-profile-edit-view"><i class="fas fa-id-card"></i> My
                                     Profile & Vehicle</a>
                                 <a href="#" data-view="instructor-service-area-view"><i
@@ -7258,95 +7257,79 @@
                     </div>
                 </section>
                 </section>
-                <section id="instructor-personal-details-view" class="instructor-view">
-                    <div class="page-view-header">
-                        <div>
-                            <p class="breadcrumbs" style="margin:0;"><a href="#"
-                                    data-view="instructor-dashboard-view">Dashboard</a> > Personal Details</p>
-                            <h2>Personal Details</h2>
-                        </div>
-                    </div>
-                    <div class="card" style="padding: 20px;">
-                        <form id="personal-details-form">
-                            <h4>Personal Details</h4>
-                            <div class="form-row" style="margin-top: 20px;">
-                                <div class="input-group">
-                                    <label for="pd-first-name"><i class="fas fa-user"
-                                            style="margin-right: 5px; color: var(--gray-color);"></i> First Name</label>
-                                    <input type="text" id="pd-first-name" placeholder="Enter First Name">
-                                </div>
-                                <div class="input-group">
-                                    <label for="pd-surname"><i class="fas fa-user"
-                                            style="margin-right: 5px; color: var(--gray-color);"></i> Surname</label>
-                                    <input type="text" id="pd-surname" placeholder="Enter Surname">
-                                </div>
-                            </div>
-                            <div class="input-group">
-                                <label for="pd-email"><i class="fas fa-envelope"
-                                        style="margin-right: 5px; color: var(--gray-color);"></i> Email Address</label>
-                                <input type="email" id="pd-email" placeholder="Enter Email Address" disabled
-                                    style="background-color: #f1f1f1; cursor: not-allowed;">
-                            </div>
-                            <div class="form-row">
-                                <div class="input-group">
-                                    <label for="pd-mobile"><i class="fas fa-mobile-alt"
-                                            style="margin-right: 5px; color: var(--gray-color);"></i> Mobile
-                                        Number</label>
-                                    <input type="tel" id="pd-mobile" placeholder="Enter Mobile Number">
-                                </div>
-                                <div class="input-group">
-                                    <label for="pd-dob"><i class="fas fa-calendar-alt"
-                                            style="margin-right: 5px; color: var(--gray-color);"></i> Date of
-                                        Birth</label>
-                                    <input type="text" id="pd-dob" placeholder="DD-MM-YYYY">
-                                </div>
-                            </div>
-                            <div class="form-row">
-                                <div class="input-group">
-                                    <label for="pd-gender"><i class="fas fa-venus-mars"
-                                            style="margin-right: 5px; color: var(--gray-color);"></i> Gender</label>
-                                    <select id="pd-gender">
-                                        <option value="" disabled selected>Select</option>
-                                        <option value="Male">Male</option>
-                                        <option value="Female">Female</option>
-                                        <option value="Other">Other</option>
-                                    </select>
-                                </div>
-                                <div class="input-group">
-                                    <label for="pd-pincode"><i class="fas fa-map-marker-alt"
-                                            style="margin-right: 5px; color: var(--gray-color);"></i> Pin Code</label>
-                                    <input type="number" id="pd-pincode" placeholder="Enter Pin Code">
-                                </div>
-                            </div>
+               <section id="instructor-account-settings-view" class="instructor-view">
+    <div class="page-view-header">
+        <div>
+            <p class="breadcrumbs" style="margin:0;"><a href="#"
+                    data-view="instructor-dashboard-view">Dashboard</a> > Account Settings</p>
+            <h2>Account Settings</h2>
+        </div>
+    </div>
+    <div class="card" style="padding: 20px;">
+        <form id="account-settings-form">
+            <h4>Personal Details</h4>
+            <div class="form-row" style="margin-top: 20px;">
+                <div class="input-group">
+                    <label for="as-first-name"><i class="fas fa-user"></i> First Name</label>
+                    <input type="text" id="as-first-name" placeholder="Enter First Name">
+                </div>
+                <div class="input-group">
+                    <label for="as-surname"><i class="fas fa-user"></i> Surname</label>
+                    <input type="text" id="as-surname" placeholder="Enter Surname">
+                </div>
+            </div>
+            <div class="input-group">
+                <label for="as-email"><i class="fas fa-envelope"></i> Email Address</label>
+                <input type="email" id="as-email" placeholder="Enter Email Address" disabled
+                    style="background-color: #f1f1f1; cursor: not-allowed;">
+            </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="as-mobile"><i class="fas fa-mobile-alt"></i> Mobile Number</label>
+                    <input type="tel" id="as-mobile" placeholder="Enter Mobile Number">
+                </div>
+                <div class="input-group">
+                    <label for="as-dob"><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                    <input type="date" id="as-dob" placeholder="YYYY-MM-DD"> </div>
+            </div>
+            <div class="form-row">
+                <div class="input-group">
+                    <label for="as-gender"><i class="fas fa-venus-mars"></i> Gender</label>
+                    <select id="as-gender">
+                        <option value="" disabled selected>Select</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="as-pincode"><i class="fas fa-map-marker-alt"></i> Pin Code</label>
+                    <input type="number" id="as-pincode" placeholder="Enter Pin Code">
+                </div>
+            </div>
 
-                            <hr style="margin: 30px 0; border-color: var(--border-color);">
+            <hr style="margin: 30px 0; border-color: var(--border-color);">
 
-                            <h4>Change Password</h4>
-                            <p class="form-note" style="margin: 10px 0 20px;">Leave this blank if you do not wish to
-                                change your password.</p>
-                            <div class="input-group">
-                                <label for="pd-new-password"><i class="fas fa-lock"
-                                        style="margin-right: 5px; color: var(--gray-color);"></i> New Password</label>
-                                <input type="password" id="pd-new-password" placeholder="Enter Password">
-                            </div>
-                            <div class="input-group">
-                                <label for="pd-confirm-password"><i class="fas fa-lock"
-                                        style="margin-right: 5px; color: var(--gray-color);"></i> Confirm New
-                                    Password</label>
-                                <input type="password" id="pd-confirm-password" placeholder="Enter Password">
-                            </div>
-                            <div class="input-group">
-                                <label for="pd-current-password"><i class="fas fa-lock"
-                                        style="margin-right: 5px; color: var(--gray-color);"></i> Your Current Password
-                                    To Confirm To Change</label>
-                                <input type="password" id="pd-current-password" placeholder="Enter Password">
-                            </div>
-                            <div class="form-actions" style="text-align: right; margin-top: 30px;">
-                                <button type="submit" class="btn btn-primary">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                </section>
+            <h4>Change Password</h4>
+            <p class="form-note" style="margin: 10px 0 20px;">Leave blank if you do not wish to change password.</p>
+            <div class="input-group">
+                <label for="as-new-password"><i class="fas fa-lock"></i> New Password</label>
+                <input type="password" id="as-new-password" placeholder="Enter New Password">
+            </div>
+            <div class="input-group">
+                <label for="as-confirm-password"><i class="fas fa-lock"></i> Confirm New Password</label>
+                <input type="password" id="as-confirm-password" placeholder="Confirm New Password">
+            </div>
+            <div class="input-group">
+                <label for="as-current-password"><i class="fas fa-key"></i> Current Password (Required to change)</label>
+                <input type="password" id="as-current-password" placeholder="Enter Current Password">
+            </div>
+            <div class="form-actions" style="text-align: right; margin-top: 30px;">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</section>
 
                 <section id="instructor-profile-edit-view" class="instructor-view">
                     <h2>My Profile and Vehicle Details</h2>
@@ -12181,35 +12164,126 @@
         // --- START: REPLACE THE OLD savePersonalDetails FUNCTION WITH THIS ---
 
         // Function to save instructor personal details AND handle password changes
-        async function savePersonalDetails(e) {
-            e.preventDefault(); // This is crucial to prevent page reload
-            const user = auth.currentUser;
-            if (!user) {
-                alert("You are not logged in. Please refresh and try again.");
-                return;
-            }
+        // --- START: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER ---
 
-            const form = document.getElementById('personal-details-form');
-            const updatedData = {
-                firstName: form.querySelector('#pd-first-name').value,
-                surname: form.querySelector('#pd-surname').value,
-                mobile: form.querySelector('#pd-mobile').value,
-                dob: form.querySelector('#pd-dob').value,
-                gender: form.querySelector('#pd-gender').value
-            };
+/**
+ * Saves instructor personal details AND handles password changes.
+ * @param {Event} e - The form submission event.
+ */
+// --- START: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER (v2) ---
 
-            try {
-                await db.collection('users').doc(user.uid).update(updatedData);
-                alert("✅ Profile details updated successfully!");
 
-                // Also update the display name in the header in real-time
-                document.getElementById('instructor-user-name').textContent = updatedData.firstName;
+/**
+ * Saves instructor personal details AND handles password changes.
+ * @param {Event} e - The form submission event.
+ */
+async function savePersonalDetails(e) {
+    console.log("--- savePersonalDetails started ---");
+    try {
+        e.preventDefault();
+        console.log("event.preventDefault() called successfully.");
+    } catch (preventError) {
+        console.error("CRITICAL: Failed to call preventDefault!", preventError);
+        alert("CRITICAL ERROR: Could not prevent form submission. Check console!");
+        return;
+    }
 
-            } catch (error) {
-                console.error("Error updating details:", error);
-                alert("❌ Could not update your profile details.");
-            }
+    const user = auth.currentUser;
+    // ... (user check) ...
+    const form = document.getElementById('personal-details-form');
+    // ... (form check) ...
+
+    // --- Part 1: Update Profile Details (Firestore) ---
+    const updatedProfileData = {
+        firstName: form.querySelector('#pd-first-name').value.trim(),
+        surname: form.querySelector('#pd-surname').value.trim(),
+        mobile: form.querySelector('#pd-mobile').value.trim(),
+        dob: form.querySelector('#pd-dob').value.trim(),
+        gender: form.querySelector('#pd-gender').value
+    };
+    console.log("Profile data to save:", updatedProfileData);
+
+    let profileUpdateSuccess = false;
+    try {
+        console.log("Attempting Firestore update...");
+        await db.collection('users').doc(user.uid).update(updatedProfileData);
+        console.log("Firestore profile update successful.");
+        profileUpdateSuccess = true;
+        const userNameElement = document.getElementById('instructor-user-name');
+        if (userNameElement) {
+             userNameElement.textContent = updatedProfileData.firstName;
+             console.log("Updated header display name.");
+        } else {
+             console.warn("Could not find element to update header display name.");
         }
+    } catch (error) {
+        console.error("Firestore update FAILED:", error);
+        alert("❌ Could not update your profile details. Please check the console (F12) for Firestore errors (permissions?).");
+        // return; // Keep this commented for now
+    }
+
+    /* --- START: TEMPORARILY COMMENT OUT PASSWORD CHANGE ---
+    // --- Part 2: Handle Password Change (Firebase Auth) ---
+    const newPassword = form.querySelector('#pd-new-password').value;
+    const confirmPassword = form.querySelector('#pd-confirm-password').value;
+    const currentPassword = form.querySelector('#pd-current-password').value;
+    // ... (rest of Part 2 code down to the next comment) ...
+    console.log("No new password entered, skipping password change.");
+    --- END: TEMPORARILY COMMENT OUT PASSWORD CHANGE --- */
+
+    const newPassword = ''; // Force password change to be skipped
+
+    // --- Part 3: Final Success Message ---
+    if (profileUpdateSuccess && !newPassword) { // This condition will now always be true if profile update succeeds
+        alert("✅ Profile details updated successfully!");
+    }
+    /* // This part is unreachable now
+    else if (profileUpdateSuccess && newPassword) {
+        console.log("Profile and password updated successfully.");
+    }
+    */
+    console.log("--- savePersonalDetails finished (Password Change Skipped) ---");
+
+} // End of savePersonalDetails function
+
+// --- The listener attachment code remains the same ---
+let isPersonalDetailsListenerAttached = false;
+document.addEventListener('DOMContentLoaded', () => {
+    if (isPersonalDetailsListenerAttached) {
+        console.warn("Personal details listener already attached. Skipping.");
+        return;
+    }
+    const personalDetailsForm = document.getElementById('personal-details-form');
+    if (personalDetailsForm) {
+        console.log("Attaching submit listener to personal details form FOR THE FIRST TIME.");
+        personalDetailsForm.addEventListener('submit', savePersonalDetails);
+        isPersonalDetailsListenerAttached = true;
+    } else {
+        console.error("Could not find personal details form ON DOMContentLoaded.");
+    }
+}); // End of savePersonalDetails function
+
+// --- Attach the event listener ONCE ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Check the flag BEFORE doing anything
+    if (isPersonalDetailsListenerAttached) {
+        console.warn("Personal details listener already attached. Skipping.");
+        return;
+    }
+
+    const personalDetailsForm = document.getElementById('personal-details-form');
+    if (personalDetailsForm) {
+        console.log("Attaching submit listener to personal details form FOR THE FIRST TIME.");
+        personalDetailsForm.addEventListener('submit', savePersonalDetails);
+        isPersonalDetailsListenerAttached = true; // Set the flag
+    } else {
+        console.error("Could not find personal details form ON DOMContentLoaded.");
+    }
+});
+
+// --- END: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER (v2) ---
+
+// --- END: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER ---
 
         // --- END: REPLACEMENT FUNCTION ---
 
@@ -14361,7 +14435,191 @@ document.getElementById('super-admin-controls-view')?.addEventListener('click', 
     }
 });
 
-// --- END: ADD FOR USER DETAILS MODAL ---
+// --- START: ADD THIS NEW ACCOUNT SETTINGS SCRIPT ---
+
+/**
+ * Loads current instructor account settings into the new form.
+ */
+async function loadAccountSettings() {
+    console.log("loadAccountSettings called");
+    if (!auth.currentUser) return;
+    const uid = auth.currentUser.uid;
+    const form = document.getElementById('account-settings-form');
+    if (!form) {
+        console.error("Account settings form not found!");
+        return;
+    }
+
+    try {
+        const doc = await db.collection('users').doc(uid).get();
+        if (doc.exists) {
+            const data = doc.data();
+            console.log("Loading data:", data);
+            form.querySelector('#as-first-name').value = data.firstName || '';
+            form.querySelector('#as-surname').value = data.surname || '';
+            form.querySelector('#as-email').value = data.email || ''; // Should already be there
+            form.querySelector('#as-mobile').value = data.mobile || '';
+            form.querySelector('#as-dob').value = data.dob || ''; // Assumes YYYY-MM-DD
+            form.querySelector('#as-gender').value = data.gender || '';
+            form.querySelector('#as-pincode').value = data.pincode || ''; // Add pincode if you use it
+
+            // Clear password fields when loading
+            form.querySelector('#as-new-password').value = '';
+            form.querySelector('#as-confirm-password').value = '';
+            form.querySelector('#as-current-password').value = '';
+        }
+    } catch (error) {
+        console.error("Error loading account settings: ", error);
+        alert("Could not load your account settings.");
+    }
+}
+
+/**
+ * Handles saving updated profile details and optional password change from the new form.
+ * @param {Event} e - The form submission event.
+ */
+async function updateAccountSettings(e) {
+    e.preventDefault(); // Prevent default form submission
+    console.log("--- updateAccountSettings started ---");
+
+    const user = auth.currentUser;
+    if (!user) {
+        alert("Authentication error. Please log in again.");
+        return;
+    }
+    console.log("Authenticated user:", user.uid);
+
+    const form = document.getElementById('account-settings-form');
+    if (!form) {
+        console.error("Account settings form not found!");
+        return;
+    }
+
+    // --- Part 1: Update Profile Details (Firestore) ---
+    const updatedProfileData = {
+        firstName: form.querySelector('#as-first-name').value.trim(),
+        surname: form.querySelector('#as-surname').value.trim(),
+        mobile: form.querySelector('#as-mobile').value.trim(),
+        dob: form.querySelector('#as-dob').value.trim(), // Storing as YYYY-MM-DD
+        gender: form.querySelector('#as-gender').value,
+        pincode: form.querySelector('#as-pincode').value.trim() // Add pincode if needed
+    };
+    console.log("Profile data to save:", updatedProfileData);
+
+    let profileUpdateSuccess = false;
+    try {
+        console.log("Attempting Firestore update...");
+        await db.collection('users').doc(user.uid).update(updatedProfileData);
+        console.log("Firestore profile update successful.");
+        profileUpdateSuccess = true;
+        // Update display name in header immediately
+        const userNameElement = document.getElementById('instructor-user-name');
+        if (userNameElement) userNameElement.textContent = updatedProfileData.firstName;
+
+    } catch (error) {
+        console.error("Firestore update FAILED:", error);
+        alert("❌ Could not update your profile details. Check console.");
+        // Optional: return;
+    }
+
+    // --- Part 2: Handle Password Change (Firebase Auth) ---
+    const newPassword = form.querySelector('#as-new-password').value;
+    const confirmPassword = form.querySelector('#as-confirm-password').value;
+    const currentPassword = form.querySelector('#as-current-password').value;
+    console.log(`Password fields - New: ${newPassword ? 'Filled' : 'Empty'}, Confirm: ${confirmPassword ? 'Filled' : 'Empty'}, Current: ${currentPassword ? 'Filled' : 'Empty'}`);
+
+    if (newPassword) {
+        console.log("Attempting password change...");
+        if (newPassword !== confirmPassword) {
+            alert("❌ New passwords do not match."); return;
+        }
+        if (newPassword.length < 6) {
+             alert("❌ New password must be at least 6 characters."); return;
+        }
+        if (!currentPassword) {
+            alert("❌ Please enter your current password to change it."); return;
+        }
+
+        try {
+            const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+            console.log("Attempting re-authentication...");
+            await user.reauthenticateWithCredential(credential);
+            console.log("Re-authentication successful.");
+
+            console.log("Attempting password update...");
+            await user.updatePassword(newPassword);
+            console.log("Firebase Auth password update successful.");
+            alert("✅ Password updated successfully!");
+
+            form.querySelector('#as-new-password').value = '';
+            form.querySelector('#as-confirm-password').value = '';
+            form.querySelector('#as-current-password').value = '';
+
+        } catch (error) {
+            console.error("Password change FAILED:", error);
+            let errorMsg = "❌ Could not change password. ";
+            if (error.code === 'auth/wrong-password') errorMsg += "Incorrect current password.";
+            else if (error.code === 'auth/weak-password') errorMsg += "New password is too weak.";
+            else if (error.code === 'auth/requires-recent-login') errorMsg += "Security check failed. Please log out and log back in.";
+            else errorMsg += "Check console.";
+            alert(errorMsg);
+            return;
+        }
+    } else {
+        console.log("No new password entered, skipping password change.");
+    }
+
+    // --- Part 3: Final Success Message ---
+    if (profileUpdateSuccess && !newPassword) {
+        alert("✅ Account settings updated successfully!");
+    } else if (profileUpdateSuccess && newPassword) {
+        // Password success alert was already shown
+        console.log("Profile and password updated successfully.");
+    }
+    console.log("--- updateAccountSettings finished ---");
+}
+
+// --- Direct Listener Attachment for the NEW form ---
+document.addEventListener('DOMContentLoaded', () => {
+    const accountSettingsForm = document.getElementById('account-settings-form');
+    if (accountSettingsForm) {
+        console.log("Attaching listener to NEW account settings form.");
+        accountSettingsForm.addEventListener('submit', updateAccountSettings);
+    } else {
+        // This might appear initially if the dashboard isn't the first page shown
+        console.log("New account settings form not found yet (might be on inactive page).");
+    }
+
+    // Also, ensure data is loaded when the NEW view becomes active
+    // We need to slightly modify the main click listener for the instructor dashboard
+    // Find the existing listener for `#instructor-dashboard-page a[data-view]`
+    // Add this line inside it:
+    // if (targetViewId === 'instructor-account-settings-view') {
+    //     loadAccountSettings();
+    // }
+});
+
+
+// --- IMPORTANT: Modify the Instructor Dashboard Click Listener ---
+// Find this block in your existing code:
+/*
+const instructorNavLink = e.target.closest('#instructor-dashboard-page a[data-view]');
+if (instructorNavLink) {
+    // ... (existing code for sidebar active state and showing view) ...
+
+    // --- ADD THIS 'if' BLOCK ---
+    if (targetViewId === 'instructor-account-settings-view') {
+        loadAccountSettings(); // Load data when this specific view is shown
+    }
+    // --- END ADD ---
+
+    // ... (rest of the existing code for calendar, learners, etc.) ...
+}
+*/
+// Make sure to add the check for 'instructor-account-settings-view' as shown above.
+
+// --- END: ADD THIS NEW ACCOUNT SETTINGS SCRIPT ---
+
     </script>
 </body>
 
