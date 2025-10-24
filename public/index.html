@@ -5687,7 +5687,7 @@
                         <li class="active"><a href="#" data-view="super-admin-verifications">Pending Verifications</a>
                         </li>
                         <li><a href="#" data-view="super-admin-controls">Controls</a></li>
-                        <li><a href="#" data-view="super-admin-past-bookings">Past Bookings</a></li>
+                        <li><a href="#" data-view="super-admin-past-bookings"> Bookings</a></li>
                     </ul>
                 </nav>
                 <div class="sidebar-footer">
@@ -5724,10 +5724,24 @@
 
             <main id="super-admin-past-bookings-view" class="main-content" style="display: none;">
                 <header class="dashboard-header">
-                    <h3>All Past Learner Bookings</h3>
+                    <h3>Learner & Instructor Bookings</h3>
                 </header>
-                <div id="past-bookings-list" class="card" style="padding: 0;">
-                    <p style="padding: 20px; text-align: center;">Loading past bookings...</p>
+                
+                <div class="tabs">
+                    <button class="tab-link active" data-target="admin-learners-booking-tab">Learners</button>
+                    <button class="tab-link" data-target="admin-instructors-booking-tab">Instructors</button>
+                </div>
+
+                <div id="admin-learners-booking-tab" class="tab-pane active" style="margin-top: 20px;">
+                    <div class="card" style="padding: 0;">
+                        <p style="padding: 20px; text-align: center;">Loading learners...</p>
+                    </div>
+                </div>
+                
+                <div id="admin-instructors-booking-tab" class="tab-pane" style="margin-top: 20px; display: none;">
+                    <div class="card" style="padding: 0;">
+                        <p style="padding: 20px; text-align: center;">Loading instructors...</p>
+                    </div>
                 </div>
             </main>
 
@@ -5763,6 +5777,21 @@
                 </div>
             </div>
             
+            <div id="instructor-bookings-modal" class="modal-overlay">
+                <div class="modal-content" style="max-width: 800px;">
+                    <button class="modal-close-btn">&times;</button>
+                    <h3 id="instructor-bookings-modal-title" style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                        Bookings for [Instructor Name]
+                    </h3>
+                    <div id="instructor-bookings-modal-body" style="max-height: 65vh; overflow-y: auto;">
+                        <p>Loading bookings...</p>
+                    </div>
+                    <div class="form-actions" style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 20px;">
+                        <button class="btn btn-secondary modal-close-btn">Close</button>
+                    </div>
+                </div>
+            </div>
+            ```
 
     <div id="verification-details-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 700px;">
@@ -10035,7 +10064,7 @@
                                 renderControlsView();
                             } else if (targetView === 'super-admin-past-bookings') { // Handle new view
                                 pastBookingsView.style.display = 'block';
-                                renderAdminLearnerList(); // <<< CHANGE THIS FUNCTION CALL
+                                renderAdminBookingsView(); // <<< CHANGE THIS FUNCTION CALL
                             } else { // Default to verifications
                                 verificationView.style.display = 'block';
                                 renderSuperAdminDashboard();
@@ -14602,15 +14631,99 @@ async function renderAdminLearnerList() {
         modalBody.innerHTML = '<p style="color: red;">Could not load bookings.</p>';
     }
 }
+
+/**
+ * Fetches and displays all bookings (past and upcoming) for a specific instructor in a modal.
+ * @param {string} instructorId - The UID of the instructor whose bookings to show.
+ * @param {string} instructorName - The name of the instructor for the modal title.
+ */
+ async function showInstructorBookingsModal(instructorId, instructorName) {
+    const modal = document.getElementById('instructor-bookings-modal');
+    const modalBody = document.getElementById('instructor-bookings-modal-body');
+    const modalTitle = document.getElementById('instructor-bookings-modal-title');
+    if (!modal || !modalBody || !modalTitle) {
+        console.error("Instructor bookings modal elements not found!");
+        return;
+    }
+
+    modalTitle.textContent = `Bookings for ${instructorName}`;
+    modalBody.innerHTML = '<p>Loading bookings...</p>';
+    modal.classList.add('active'); // Show the modal
+
+    try {
+        // Query for all bookings associated with this instructor
+        const snapshot = await db.collection('bookings')
+            .where('instructorId', '==', instructorId)
+            .orderBy('createdAt', 'desc') // Show newest first
+            .get();
+
+        if (snapshot.empty) {
+            modalBody.innerHTML = '<p>No bookings found for this instructor.</p>';
+            return;
+        }
+
+        let bookingsHtml = `
+             <div class="history-table-header" style="grid-template-columns: 1.5fr 1.5fr 1.2fr 1.2fr 1fr;">
+                 <div>Learner</div>
+                 <div>Date</div>
+                 <div>Time</div>
+                 <div>Lesson Type</div>
+                 <div>Status</div>
+             </div>`;
+
+        const today = moment().startOf('day');
+
+        snapshot.forEach(doc => {
+            const booking = doc.data();
+            const displayDate = booking.createdAt?.toDate ? moment(booking.createdAt.toDate()).format('ddd, D MMM YYYY') : (booking.date || 'N/A');
+
+            let statusClass = 'status-pending'; // Default
+            if (booking.status === 'COMPLETED') statusClass = 'status-completed';
+            else if (booking.status === 'CONFIRMED') statusClass = 'status-confirmed';
+            else if (booking.status === 'CANCELLED') statusClass = 'status-cancelled';
+
+            let isUpcoming = false;
+            if (booking.date && typeof booking.date === 'string') {
+                const bookingMoment = moment(booking.date, 'ddd, D MMM YYYY');
+                isUpcoming = booking.status === 'CONFIRMED' && bookingMoment.isValid() && bookingMoment.isSameOrAfter(today);
+            } else if (booking.date && typeof booking.date.toDate === 'function') {
+                const bookingMoment = moment(booking.date.toDate());
+                isUpcoming = booking.status === 'CONFIRMED' && bookingMoment.isSameOrAfter(today);
+            }
+
+            bookingsHtml += `
+                 <div class="history-table-row" style="grid-template-columns: 1.5fr 1.5fr 1.2fr 1.2fr 1fr; ${isUpcoming ? 'background-color: #e8f5e9;' : ''}">
+                     <div data-label="Learner">${booking.learnerName || 'N/A'}</div>
+                     <div data-label="Date">${displayDate}</div>
+                     <div data-label="Time">${booking.startTime || 'N/A'}</div>
+                     <div data-label="Lesson Type">${booking.lessonType || 'N/A'}</div>
+                     <div data-label="Status"><span class="status-badge ${statusClass}">${booking.status || 'PENDING'}</span></div>
+                 </div>`;
+        });
+
+        modalBody.innerHTML = bookingsHtml;
+
+    } catch (error) {
+        console.error(`Error fetching bookings for instructor ${instructorId}:`, error);
+        modalBody.innerHTML = '<p style="color: red;">Could not load bookings.</p>';
+    }
+}
+
         /**
          * Generic function to render a list of users (instructors or learners).
          */
-        async function renderUserControlList(role, containerSelector) {
+        /**
+         * Generic function to render a list of users (instructors or learners).
+         * @param {string} role - 'learner' or 'instructor'
+         * @param {string} containerSelector - The CSS selector for the container to fill
+         * @param {string} [actionType='toggle'] - 'toggle' (default) or 'viewBookings'
+         */
+         async function renderUserControlList(role, containerSelector, actionType = 'toggle') {
             const container = document.querySelector(containerSelector);
             container.innerHTML = `<p style="padding: 20px;">Loading ${role}s...</p>`;
 
             try {
-                const snapshot = await db.collection('users').where('role', '==', role).get();
+                const snapshot = await db.collection('users').where('role', '==', role).orderBy('firstName').get();
                 if (snapshot.empty) {
                     container.innerHTML = `<p style="padding: 20px;">No ${role}s found.</p>`;
                     return;
@@ -14630,16 +14743,32 @@ async function renderAdminLearnerList() {
                     const status = user.accountStatus || 'active'; // Default to 'active'
                     const isChecked = status === 'active';
 
+                    // --- THIS IS THE CONDITIONAL CHANGE ---
+                    let actionCellHtml = '';
+                    if (actionType === 'toggle') {
+                        // Show the toggle switch for the "Controls" page
+                        actionCellHtml = `
+                            <label class="switch">
+                                <input type="checkbox" class="account-status-toggle" data-uid="${uid}" ${isChecked ? 'checked' : ''}>
+                                <span class="slider round"></span>
+                            </label>`;
+                    } else if (actionType === 'viewBookings') {
+                        // Show the "View Bookings" button for the "Past Bookings" page
+                        if (role === 'learner') {
+                            actionCellHtml = `<button class="btn btn-secondary btn-small view-learner-bookings-btn" data-learner-id="${uid}" data-learner-name="${user.firstName || 'Learner'}">View Bookings</button>`;
+                        } else if (role === 'instructor') {
+                            actionCellHtml = `<button class="btn btn-secondary btn-small view-instructor-bookings-btn" data-instructor-id="${uid}" data-instructor-name="${user.firstName || 'Instructor'}">View Bookings</button>`;
+                        }
+                    }
+                    // --- END OF CHANGE ---
+
                     listHtml += `
                 <div class="user-control-row">
                     <div><a href="#" class="user-name-link" data-uid="${uid}">${user.firstName || 'N/A'} ${user.surname || ''}</a></div>
                     <div>${user.email}</div>
                     <div><span class="status-indicator ${status}">${status.charAt(0).toUpperCase() + status.slice(1)}</span></div>
                     <div>
-                        <label class="switch">
-                            <input type="checkbox" class="account-status-toggle" data-uid="${uid}" ${isChecked ? 'checked' : ''}>
-                            <span class="slider round"></span>
-                        </label>
+                        ${actionCellHtml}
                     </div>
                 </div>`;
                 });
@@ -14651,13 +14780,61 @@ async function renderAdminLearnerList() {
             }
         }
 
-        function renderInstructorsControlList() {
-            renderUserControlList('instructor', '#instructor-controls-content .card');
-        }
+     // --- Functions for "Controls" Tab ---
+     function renderInstructorsControlList() {
+        renderUserControlList('instructor', '#instructor-controls-content .card', 'toggle'); // Pass 'toggle'
+    }
+    function renderLearnersControlList() {
+        renderUserControlList('learner', '#learner-controls-content .card', 'toggle'); // Pass 'toggle'
+    }
 
-        function renderLearnersControlList() {
-            renderUserControlList('learner', '#learner-controls-content .card');
+    // --- Functions for "Past Bookings" Tab ---
+    /**
+     * Main function to render the Admin Bookings view and handle its internal tabs.
+     */
+    function renderAdminBookingsView() {
+        // Load learners list by default
+        renderAdminLearnerListForBookings();
+
+        const bookingsView = document.getElementById('super-admin-past-bookings-view');
+        const tabs = bookingsView.querySelector('.tabs');
+
+        // Use a flag to prevent adding the listener multiple times
+        if (!tabs.dataset.listenerAttached) {
+            tabs.addEventListener('click', (e) => {
+                const clickedTab = e.target.closest('.tab-link');
+                if (!clickedTab) return;
+
+                tabs.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+                clickedTab.classList.add('active');
+
+                bookingsView.querySelectorAll('.tab-pane').forEach(p => {
+                    p.style.display = 'none';
+                    p.classList.remove('active');
+                });
+                const targetPane = document.getElementById(clickedTab.dataset.target);
+                targetPane.style.display = 'block';
+                targetPane.classList.add('active');
+
+                if (clickedTab.dataset.target === 'admin-instructors-booking-tab') {
+                    renderAdminInstructorListForBookings();
+                } else {
+                    renderAdminLearnerListForBookings();
+                }
+            });
+            tabs.dataset.listenerAttached = 'true';
         }
+    }
+    
+    // Helper to render learners in the 'Past Bookings' tab
+    function renderAdminLearnerListForBookings() {
+        renderUserControlList('learner', '#admin-learners-booking-tab .card', 'viewBookings');
+    }
+    
+    // Helper to render instructors in the 'Past Bookings' tab
+    function renderAdminInstructorListForBookings() {
+        renderUserControlList('instructor', '#admin-instructors-booking-tab .card', 'viewBookings');
+    }
 
         /**
          * Updates a user's account status in Firestore when a toggle is switched.
@@ -15053,51 +15230,70 @@ async function renderAdminLearnerList() {
     // --- START: DELEGATED LISTENER FOR ADMIN VIEW BOOKINGS & MODAL CLOSE ---
 
     // Listener attached to the body to catch clicks on dynamically added elements
+   // --- START: DELEGATED LISTENER FOR ADMIN VIEW BOOKINGS & MODAL CLOSE ---
+
+    // Listener attached to the body to catch clicks on dynamically added elements
     document.body.addEventListener('click', function(e) {
 
-        // Check if the "View Bookings" button inside the admin learner list was clicked
-        const viewBookingsBtn = e.target.closest('#past-bookings-list .view-learner-bookings-btn');
-        if (viewBookingsBtn) {
+        // Check if "View Bookings" (for LEARNERS) was clicked in the Past Bookings tab
+        const viewLearnerBookingsBtn = e.target.closest('#admin-learners-booking-tab .view-learner-bookings-btn');
+        if (viewLearnerBookingsBtn) {
             e.preventDefault(); // Prevent any default link behavior
-            const learnerId = viewBookingsBtn.dataset.learnerId;
-            const learnerName = viewBookingsBtn.dataset.learnerName;
-            console.log("View Bookings clicked for:", learnerName, learnerId); // Debug log
+            const learnerId = viewLearnerBookingsBtn.dataset.learnerId;
+            const learnerName = viewLearnerBookingsBtn.dataset.learnerName;
+            console.log("View Bookings (Learner) clicked for:", learnerName, learnerId);
             if (learnerId && learnerName) {
                 showLearnerBookingsModal(learnerId, learnerName);
             } else {
-                console.error("Missing learner ID or Name on button:", viewBookingsBtn);
+                console.error("Missing learner ID or Name on button:", viewLearnerBookingsBtn);
             }
-            return; // Stop processing this click further
+            return; // Stop processing
         }
 
-        // Check if a close button OR the overlay background of the learner bookings modal was clicked
+        // Check if "View Bookings" (for INSTRUCTORS) was clicked in the Past Bookings tab
+        const viewInstructorBookingsBtn = e.target.closest('#admin-instructors-booking-tab .view-instructor-bookings-btn');
+        if (viewInstructorBookingsBtn) {
+            e.preventDefault();
+            const instructorId = viewInstructorBookingsBtn.dataset.instructorId;
+            const instructorName = viewInstructorBookingsBtn.dataset.instructorName;
+            console.log("View Bookings (Instructor) clicked for:", instructorName, instructorId);
+            if (instructorId && instructorName) {
+                showInstructorBookingsModal(instructorId, instructorName);
+            } else {
+                 console.error("Missing instructor ID or Name on button:", viewInstructorBookingsBtn);
+            }
+            return; // Stop processing
+        }
+        
+        // --- Modal Closing Logic ---
+
+        // Check if a close button OR the overlay background of the LEARNER bookings modal was clicked
         const learnerBookingsModal = document.getElementById('learner-bookings-modal');
-        if (learnerBookingsModal && learnerBookingsModal.classList.contains('active')) { // Only act if modal is open
-             if (e.target.classList.contains('modal-close-btn') || e.target === learnerBookingsModal ) {
-                 e.preventDefault();
-                 learnerBookingsModal.classList.remove('active');
-                 console.log("Learner Bookings Modal closed."); // Debug log
-                 return; // Stop processing this click further
-             }
+        if (learnerBookingsModal && learnerBookingsModal.classList.contains('active') && (e.target.classList.contains('modal-close-btn') || e.target === learnerBookingsModal)) {
+            e.preventDefault();
+            learnerBookingsModal.classList.remove('active');
+            return; 
         }
 
          // Check if a close button OR the overlay background of the USER DETAILS modal was clicked
          const userDetailsModal = document.getElementById('user-details-modal');
-         if (userDetailsModal && userDetailsModal.classList.contains('active')) { // Only act if modal is open
-              if (e.target.classList.contains('modal-close-btn') || e.target === userDetailsModal ) {
-                  e.preventDefault();
-                  userDetailsModal.classList.remove('active');
-                  console.log("User Details Modal closed."); // Debug log
-                  return; // Stop processing this click further
-              }
+         if (userDetailsModal && userDetailsModal.classList.contains('active') && (e.target.classList.contains('modal-close-btn') || e.target === userDetailsModal)) {
+              e.preventDefault();
+              userDetailsModal.classList.remove('active');
+              return;
          }
 
-         // Add similar checks here for closing OTHER modals if needed
+         // Check if a close button OR the overlay background of the INSTRUCTOR bookings modal was clicked
+         const instructorBookingsModal = document.getElementById('instructor-bookings-modal');
+         if (instructorBookingsModal && instructorBookingsModal.classList.contains('active') && (e.target.classList.contains('modal-close-btn') || e.target === instructorBookingsModal)) {
+              e.preventDefault();
+              instructorBookingsModal.classList.remove('active');
+              return;
+         }
 
     }); // End of body click listener
 
     // --- END: DELEGATED LISTENER ---
-    // --- END OF PASTED CODE ---
     </script>
 </body>
 
