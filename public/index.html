@@ -7878,8 +7878,7 @@
                         <div id="my-instructor-card" class="card instructor-card">
                             <div class="card-header">
                                 <h4>My Instructor</h4>
-                                <button id="instructor-card-book-btn" class="btn btn-primary btn-small">Book
-                                    Now</button>
+                                <button id="instructor-card-book-btn" class="btn btn-primary btn-small open-booking-btn">Book Now</button>
                             </div>
 
                             <div id="instructor-details-content" style="display: none;">
@@ -8573,7 +8572,7 @@
                                 <h4>Test Package (2.5 hrs)</h4>
                                 <span>$225</span>
                             </div>
-                            <button class="btn btn-primary btn-full open-booking-btn">Book Now</button>
+                            <button class="btn btn-primary btn-full open-booking-btn" data-id="">Book Now</button>
                             <button id="check-availability-btn" class="btn btn-secondary btn-full">Check
                                 Availability</button>
                         </div>
@@ -9868,20 +9867,35 @@
             if (target.matches('#add-credit-btn, #add-credit-from-wallet-btn')) { e.preventDefault(); goToWallet(); return; }
 
             // Updated logic for opening booking page from anywhere
+            // Corrected logic for opening booking page from ANYWHERE
             if (target.matches('.open-booking-btn')) {
                 e.preventDefault();
-                const card = target.closest('.instructor-card-new');
-                if (card && card.dataset.id) {
-                    currentInstructorId = card.dataset.id;
+                let instructorIdToBook = null; // Use a local variable
+
+                // Check if the button itself has the data-id (this covers all cases)
+                if (target.dataset.id) {
+                    instructorIdToBook = target.dataset.id;
+                    console.log("Booking via button's data-id:", instructorIdToBook);
                 } else {
-                    // Handle the case where the button is on the main dashboard and not a specific instructor card
-                    // We assume there's a primary instructor set for the learner
-                    currentInstructorId = document.getElementById('dashboard-main-content').querySelector('.open-booking-btn').dataset.instructorId;
+                    // Fallback: check the closest '.instructor-card-new'
+                    const cardNew = target.closest('.instructor-card-new');
+                    if (cardNew && cardNew.dataset.id) {
+                        instructorIdToBook = cardNew.dataset.id;
+                        console.log("Booking via parent card's data-id:", instructorIdToBook);
+                    }
                 }
-                showPage('booking-page');
-                // Now render the instructor's data on the booking page
-                renderBookingPageInstructor(currentInstructorId);
-                return;
+
+                // --- CRITICAL CHECK ---
+                if (instructorIdToBook) {
+                    console.log("Proceeding to book for instructor ID:", instructorIdToBook);
+                    showPage('booking-page');
+                    renderBookingPageInstructor(instructorIdToBook); // Pass the correctly identified ID
+                } else {
+                    // This is the error you were seeing
+                    console.error("Could not find instructor ID associated with the clicked button.", target);
+                    alert("Could not identify the instructor. Please try again.");
+                }
+                return; // Stop further execution
             }
 
             // Handles the 'View Profile' button on the instructor list
@@ -12995,7 +13009,7 @@
             const detailsContent = document.getElementById('instructor-details-content');
             const noInstructorContent = document.getElementById('no-instructor-content');
             const dynamicBookingBtns = document.querySelectorAll('.dynamic-booking-btn');
-            const notificationPopup = document.querySelector('.notification-popup'); // Get the notification popup
+            const notificationPopup = document.querySelector('.notification-popup');
 
             if (!instructorCard) return;
 
@@ -13006,11 +13020,8 @@
                 const learnerData = learnerDoc.data();
                 const instructorId = learnerData.instructorId;
 
-                // --- Notification Update Logic ---
                 const reviewLink = notificationPopup ? notificationPopup.querySelector('#leave-rating-link') : null;
                 const reviewText = notificationPopup ? notificationPopup.querySelector('.popup-text p') : null;
-                // --- End Notification Update Logic ---
-
 
                 if (instructorId) {
                     const instructorDoc = await db.collection('users').doc(instructorId).get();
@@ -13018,10 +13029,19 @@
                         const instructor = instructorDoc.data();
                         const instructorName = instructor.firstName || 'Your Instructor';
 
+                        // --- THIS IS THE FIX ---
+                        // 1. Update all dynamic buttons (in the "Services" tab)
                         dynamicBookingBtns.forEach(btn => {
                             btn.textContent = `Book with ${instructorName}`;
                             btn.dataset.id = instructorId;
                         });
+                        
+                        // 2. ALSO update the main button on the instructor card
+                        const mainBookBtn = document.getElementById('instructor-card-book-btn');
+                        if (mainBookBtn) {
+                            mainBookBtn.dataset.id = instructorId;
+                        }
+                        // --- END OF FIX ---
 
                         document.getElementById('my-instructor-photo').src = instructor.instructorPhotoUrl || 'https://placehold.co/100x100?text=I';
                         document.getElementById('my-instructor-name').textContent = instructorName;
@@ -13032,40 +13052,41 @@
                         detailsContent.style.display = 'block';
                         noInstructorContent.style.display = 'none';
 
-                        // --- Notification Update Logic ---
                         if (reviewLink && reviewText) {
                             reviewText.textContent = `How was your learning experience with ${instructorName}?`;
-                            reviewLink.dataset.instructorId = instructorId; // Store ID on the link
-                            reviewLink.dataset.instructorName = instructorName; // Store Name for rating page
-                            notificationPopup.style.display = 'flex'; // Make sure it's visible if hidden
+                            reviewLink.dataset.instructorId = instructorId;
+                            reviewLink.dataset.instructorName = instructorName;
+                            notificationPopup.style.display = 'flex';
                         }
-                        // --- End Notification Update Logic ---
-
                     } else {
-                        // Instructor ID exists but document not found (edge case)
                         detailsContent.style.display = 'none';
                         noInstructorContent.style.display = 'block';
-                        if (notificationPopup) notificationPopup.style.display = 'none'; // Hide notification
+                        if (notificationPopup) notificationPopup.style.display = 'none';
                     }
                 } else {
+                    // No instructor assigned
                     dynamicBookingBtns.forEach(btn => {
                         btn.textContent = 'Find an Instructor to Book';
                         btn.removeAttribute('data-id');
                         btn.onclick = () => showView('switch-instructor-content');
                     });
 
+                    // Also remove ID from the main button
+                    const mainBookBtn = document.getElementById('instructor-card-book-btn');
+                    if (mainBookBtn) {
+                        mainBookBtn.removeAttribute('data-id');
+                        mainBookBtn.onclick = () => showView('switch-instructor-content');
+                    }
+
                     detailsContent.style.display = 'none';
                     noInstructorContent.style.display = 'block';
 
-                    // --- Notification Update Logic ---
-                    // Hide the notification if no instructor is assigned
                     if (notificationPopup) notificationPopup.style.display = 'none';
-                    // --- End Notification Update Logic ---
                 }
 
             } catch (error) {
                 console.error("Error rendering learner dashboard:", error);
-                if (notificationPopup) notificationPopup.style.display = 'none'; // Hide on error
+                if (notificationPopup) notificationPopup.style.display = 'none';
             }
         }
         // --- END: REPLACEMENT for renderLearnerDashboard function ---
