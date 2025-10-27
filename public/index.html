@@ -5660,13 +5660,14 @@
                         <li class="active"><a href="#" data-view="super-admin-verifications">Pending Verifications</a>
                         </li>
                         <li><a href="#" data-view="super-admin-controls">Controls</a></li>
+                        <li><a href="#" data-view="super-admin-bookings">Bookings</a></li>
                     </ul>
                 </nav>
                 <div class="sidebar-footer">
                     <button class="btn btn-secondary instructor-logout-btn">Logout</button>
                 </div>
             </aside>
-            <main class="main-content">
+            <main class="main-content" id="super-admin-verifications-view">
                 <header class="dashboard-header">
                     <h3>Pending Instructor Verifications</h3>
                 </header>
@@ -5693,6 +5694,36 @@
                     </div>
                 </div>
             </main>
+
+            {/* --- NEW BOOKINGS VIEW --- */}
+<main id="super-admin-bookings-view" class="main-content" style="display: none;">
+    <header class="dashboard-header">
+        <h3>User Bookings Lists</h3>
+    </header>
+    <div class="tabs">
+        <button class="tab-link active" data-target="instructor-bookings-list-content">Instructors</button>
+        <button class="tab-link" data-target="learner-bookings-list-content">Learners</button>
+    </div>
+    <div id="instructor-bookings-list-content" class="tab-pane active" style="margin-top: 20px;">
+        <div class="card" style="padding: 0;">{/* Instructor list loaded by JS */}</div>
+    </div>
+    <div id="learner-bookings-list-content" class="tab-pane" style="margin-top: 20px; display: none;">
+        <div class="card" style="padding: 0;">{/* Learner list loaded by JS */}</div>
+    </div>
+</main>
+
+{/* --- NEW USER BOOKINGS DISPLAY VIEW --- */}
+<main id="super-admin-user-bookings-display" class="main-content" style="display: none;">
+    <header class="dashboard-header" style="margin-bottom: 15px;">
+         {/* Use existing back-link style */}
+        <a href="#" id="back-to-bookings-list" class="back-link" style="margin-bottom: 0;"><i class="fas fa-chevron-left"></i> Back to Lists</a>
+    </header>
+    <h2 id="user-bookings-display-title" style="margin-bottom: 20px;">Bookings for [User]</h2>
+     {/* Container for the booking list */}
+    <div class="card" id="user-bookings-list-container" style="padding: 0;">
+        {/* Booking details loaded by JS */}
+    </div>
+</main>
             
             <div id="user-details-modal" class="modal-overlay">
                 <div class="modal-content" style="max-width: 600px;">
@@ -9727,6 +9758,7 @@
         let currentInstructorPricing = { lesson: 70, testPackage: 225 }; // Default fallback values
         let currentUserLocation = "5 Hogan PL, Quakers Hill NSW 2763"; // Placeholder for the current user's location
 
+        let currentBookingListUserRole = 'instructor'; // Track active tab in bookings view
 
         function showPage(pageId) {
             pages.forEach(page => page.classList.toggle('active', page.id === pageId));
@@ -9953,79 +9985,101 @@
         // --- AUTHENTICATION & ROLE-BASED ROUTING ---
         // --- Replacement for the auth.onAuthStateChanged function ---
         // --- REPLACE your existing auth.onAuthStateChanged function with this ---
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                // *** NEW: SUPER ADMIN CHECK ***
-                if (user.email === 'aditya@gmail.com') {
-                    showPage('super-admin-page');
-                    renderSuperAdminDashboard();
-                    // Function to load pending instructors
-                    // --- START: ADD FOR SUPER ADMIN NAVIGATION ---
-                    const adminSidebar = document.querySelector('#super-admin-page .sidebar-nav');
-                    const verificationView = document.getElementById('pending-instructors-list').closest('.main-content');
-                    const controlsView = document.getElementById('super-admin-controls-view');
+        // --- REPLACE your existing auth.onAuthStateChanged function with this ---
+auth.onAuthStateChanged(user => {
+    if (user) {
+        // *** Check if it's the Super Admin based on email ***
+        if (user.email === 'aditya@gmail.com') {
+            showPage('super-admin-page'); // Show the correct admin page
 
-                    adminSidebar.addEventListener('click', (e) => {
-                        const link = e.target.closest('a');
-                        if (!link) return;
-                        e.preventDefault();
+            // Get references to ALL main content views within the admin page
+            const adminSidebar = document.querySelector('#super-admin-page .sidebar-nav');
+            const verificationView = document.getElementById('super-admin-verifications-view'); // Existing view
+            const controlsView = document.getElementById('super-admin-controls-view');      // Existing view
+            const bookingsView = document.getElementById('super-admin-bookings-view');      // NEW view for the lists
+            const userBookingsDisplay = document.getElementById('super-admin-user-bookings-display'); // NEW view for specific user's bookings
 
-                        adminSidebar.querySelectorAll('li').forEach(li => li.classList.remove('active'));
-                        link.parentElement.classList.add('active');
+            // --- Ensure only the default (Verification) view is shown initially ---
+            verificationView.style.display = 'block';
+            controlsView.style.display = 'none';
+            bookingsView.style.display = 'none';       // Hide NEW bookings list view
+            userBookingsDisplay.style.display = 'none';// Hide NEW user bookings display view
+            renderSuperAdminDashboard(); // Load initial verification list
 
-                        const targetView = link.dataset.view;
-                        if (targetView === 'super-admin-controls') {
-                            verificationView.style.display = 'none';
-                            controlsView.style.display = 'block';
-                            renderControlsView(); // This new function will load the user lists
-                        } else {
-                            verificationView.style.display = 'block';
-                            controlsView.style.display = 'none';
-                            renderSuperAdminDashboard();
-                        }
-                    });
-                    // --- END: ADD FOR SUPER ADMIN NAVIGATION ---
-                    return; // Stop further execution for the admin
+            // --- Sidebar Navigation Logic for Admin ---
+            // This listener handles clicks on "Pending Verifications", "Controls", AND "Bookings"
+            // It makes sure only the selected view is displayed.
+            adminSidebar.addEventListener('click', (e) => {
+                const link = e.target.closest('a');
+                if (!link) return;
+                e.preventDefault();
+
+                // Highlight the clicked sidebar item
+                adminSidebar.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                link.parentElement.classList.add('active');
+
+                // --- Hide ALL possible main views first ---
+                verificationView.style.display = 'none';
+                controlsView.style.display = 'none';
+                bookingsView.style.display = 'none';        // Hide NEW bookings list view
+                userBookingsDisplay.style.display = 'none'; // Hide NEW user bookings display view
+
+                // --- Show the correct view based on the link clicked ---
+                const targetView = link.dataset.view;
+                if (targetView === 'super-admin-controls') {
+                    controlsView.style.display = 'block';
+                    renderControlsView(); // Function to load Controls data
+                } else if (targetView === 'super-admin-bookings') { // *** NEW: Handle Bookings link click ***
+                    bookingsView.style.display = 'block';        // Show the main bookings list view
+                    initializeBookingsView(); // Call the function to set up its tabs and load the list
+                } else { // Default back to Verifications
+                    verificationView.style.display = 'block';
+                    renderSuperAdminDashboard(); // Function to load Verifications data
                 }
+            });
+            // --- End Sidebar Navigation Logic ---
 
-                // --- Existing logic for instructors and learners ---
-                // --- Existing logic for instructors and learners ---
-                db.collection('users').doc(user.uid).get().then(doc => {
-                    if (doc.exists) {
-                        const userData = doc.data();
+            return; // Stop further checks for instructor/learner roles if it's the admin
+        }
 
-                        // --- ADD THIS CHECK TO BLOCK DISABLED USERS ---
-                        if (userData.accountStatus === 'disabled') {
-                            alert("Your account has been disabled by an administrator.");
-                            auth.signOut(); // Immediately log them out
-                            return;         // Stop the rest of the function
-                        }
-                        // --- END OF CHECK ---
-                        const displayName = userData.firstName || user.email.split('@')[0];
-
-                        if (userData.role === 'instructor') {
-                            document.getElementById('instructor-user-name').textContent = displayName;
-                            showPage('instructor-dashboard-page');
-                            renderInstructorDashboardView(user.uid); // Use the helper function
-                        } else {
-                            document.querySelectorAll('[id^="user-name"]').forEach(el => el.textContent = displayName);
-                            document.getElementById('welcome-message').textContent = `Welcome back, ${displayName}!`;
-                            renderLearnerDashboard(user.uid);
-                            renderLearnerUpcomingBookings(user.uid);
-                            showPage('dashboard-page');
-                            showView('dashboard-main-content');
-                        }
-                    } else {
-                        showPage('login-page');
-                    }
-                }).catch(error => {
-                    console.error("Error fetching user data:", error);
-                    showPage('login-page');
-                });
+        // --- Existing logic for regular instructors and learners ---
+        // (This part remains the same as your previous code)
+        db.collection('users').doc(user.uid).get().then(doc => {
+            if (doc.exists) {
+                const userData = doc.data();
+                if (userData.accountStatus === 'disabled') {
+                    alert("Your account has been disabled...");
+                    auth.signOut();
+                    return;
+                }
+                const displayName = userData.firstName || user.email.split('@')[0];
+                if (userData.role === 'instructor') {
+                    document.getElementById('instructor-user-name').textContent = displayName;
+                    showPage('instructor-dashboard-page');
+                    renderInstructorDashboardView(user.uid);
+                } else {
+                    document.querySelectorAll('[id^="user-name"]').forEach(el => el.textContent = displayName);
+                    document.getElementById('welcome-message').textContent = `Welcome back, ${displayName}!`;
+                    renderLearnerDashboard(user.uid);
+                    renderLearnerUpcomingBookings(user.uid);
+                    showPage('dashboard-page');
+                    showView('dashboard-main-content');
+                }
             } else {
-                showPage('landing-page');
+                showPage('login-page');
             }
+        }).catch(error => {
+            console.error("Error fetching user data:", error);
+            showPage('login-page');
         });
+        // --- End existing instructor/learner logic ---
+
+    } else {
+        // No user logged in, show landing page (Existing logic)
+        showPage('landing-page');
+    }
+});
+// --- END OF REPLACEMENT auth.onAuthStateChanged FUNCTION ---
 
         // Also, make the new "Find an Instructor" button work
         document.addEventListener('click', (e) => {
@@ -14336,27 +14390,65 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // Event listener for the admin dashboard (delegated)
-        document.getElementById('super-admin-page')?.addEventListener('click', (e) => {
-            // Handle clicking the "View Details" button for an instructor
-            if (e.target.classList.contains('view-verification-details')) {
-                const instructorId = e.target.dataset.id;
-                showVerificationDetailsModal(instructorId);
-            }
-        });
+       // --- START: Combined Super Admin Page Click Listener ---
+document.getElementById('super-admin-page')?.addEventListener('click', (e) => {
 
-        // Event listener for the verification modal
-        document.getElementById('verification-details-modal')?.addEventListener('click', (e) => {
-            // Handle clicking the "Mark as Verified" button
-            if (e.target.id === 'mark-verified-btn') {
-                const instructorId = e.target.dataset.id;
-                verifyInstructor(instructorId);
-            }
-            // Handle closing the modal
-            if (e.target.classList.contains('modal-close-btn') || e.target.classList.contains('modal-overlay')) {
-                e.currentTarget.classList.remove('active');
-            }
-        });
+    // 1. Handle clicking "View Details" in the VERIFICATION list
+    if (e.target.classList.contains('view-verification-details')) {
+        const instructorId = e.target.dataset.id;
+        showVerificationDetailsModal(instructorId); // Show verification modal
+        return; // Stop processing this click event
+    }
+
+    // 2. Handle clicking a user name link in the CONTROLS list
+    if (e.target.classList.contains('user-name-link')) {
+         e.preventDefault(); // Prevent link navigation
+         const uid = e.target.dataset.uid;
+         if (uid) {
+             showUserDetailsModal(uid); // Show general user details modal
+         }
+         return; // Stop processing this click event
+    }
+
+    // 3. Handle clicking a user name link OR "View Bookings" button in the BOOKINGS list
+    const userBookingTarget = e.target.closest('.user-booking-link, .view-user-bookings');
+    if (userBookingTarget) {
+         e.preventDefault(); // Prevent link navigation if it's the link
+         const uid = userBookingTarget.dataset.uid;
+         // Get name - Use data-name from button first, fallback to link text
+         const name = userBookingTarget.dataset.name || userBookingTarget.textContent.trim();
+         if (uid) {
+             renderUserBookings(uid, name); // Show the specific user's bookings view
+         }
+         return; // Stop processing this click event
+    }
+
+    // 4. Handle clicking the "Back to Lists" button (when viewing specific user bookings)
+    if (e.target.closest('#back-to-bookings-list')) {
+        e.preventDefault(); // Prevent link navigation
+        // Hide the specific user's bookings display
+        document.getElementById('super-admin-user-bookings-display').style.display = 'none';
+        // Show the main bookings list view again
+        document.getElementById('super-admin-bookings-view').style.display = 'block';
+        // You could optionally re-render the list here if needed
+        // if (currentBookingListUserRole === 'instructor') renderInstructorsBookingList(); else renderLearnersBookingList();
+        return; // Stop processing this click event (though likely not strictly needed here)
+    }
+
+    // 5. Handle closing modals (Optional - better handled by modal listeners)
+    // This part might be redundant if modals already have close logic, but included as you had it:
+    if (e.target.classList.contains('modal-close-btn') || e.target.classList.contains('modal-overlay')) {
+        // Find the closest parent modal overlay and remove the 'active' class
+        const modal = e.target.closest('.modal-overlay');
+        if (modal) {
+            modal.classList.remove('active');
+        }
+        // No return needed here, as clicking overlay/close shouldn't trigger other actions anyway
+    }
+
+    // Add any other specific click handling for the super-admin-page *inside this listener* if needed in the future.
+
+}); // --- END: Combined Super Admin Page Click Listener ---
         // --- END: ADD FOR SUPER ADMIN FUNCTIONALITY ---
 
         // --- START: ADD FOR SUPER ADMIN CONTROLS ---
@@ -14843,6 +14935,201 @@ async function renderInstructorReviews(instructorId) {
                 reviewsListContainer.innerHTML = '<p style="padding: 20px; text-align: center; color: red;">Could not load reviews.</p>';
             }
         }
+
+        // --- START: NEW SUPER ADMIN BOOKINGS FUNCTIONS ---
+
+/**
+ * Initializes the main Bookings view (tabs and initial list).
+ */
+/**
+ * Initializes the main Bookings view (tabs and initial list).
+ */
+ function initializeBookingsView() {
+    // --- This line loads the initial instructor list ---
+    renderInstructorsBookingList();
+    currentBookingListUserRole = 'instructor'; // Set default role tracking
+
+    const bookingsView = document.getElementById('super-admin-bookings-view');
+    const tabs = bookingsView.querySelector('.tabs');
+
+    // Attach tab listener only once using a data attribute flag
+    if (!tabs.dataset.bookingsListenerAttached) {
+        tabs.addEventListener('click', (e) => {
+            const clickedTab = e.target.closest('.tab-link');
+            if (!clickedTab) return;
+
+            // Tab switching styling
+            tabs.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
+            clickedTab.classList.add('active');
+
+            // Pane switching display
+            bookingsView.querySelectorAll('.tab-pane').forEach(p => {
+                p.style.display = 'none';
+                p.classList.remove('active');
+            });
+            const targetPane = document.getElementById(clickedTab.dataset.target);
+            targetPane.style.display = 'block';
+            targetPane.classList.add('active');
+
+            // Load the correct list and update role tracking
+            if (clickedTab.dataset.target === 'instructor-bookings-list-content') {
+                renderInstructorsBookingList(); // Load instructors when tab clicked
+                currentBookingListUserRole = 'instructor';
+            } else {
+                renderLearnersBookingList(); // Load learners when tab clicked
+                currentBookingListUserRole = 'learner';
+            }
+        });
+        tabs.dataset.bookingsListenerAttached = 'true'; // Mark listener as attached
+    }
+}
+
+/**
+ * Generic function to render a user list within the Bookings view.
+ * Fetches users (instructors or learners) and displays them.
+ * @param {string} role - 'instructor' or 'learner'.
+ * @param {string} containerSelector - CSS selector for the container div where the list should be rendered.
+ */
+ async function renderUserBookingList(role, containerSelector) {
+    const container = document.querySelector(containerSelector);
+    // --- Check if container exists ---
+    if (!container) {
+        console.error("Container not found for selector:", containerSelector);
+        // Display error in a visible place if console not open
+        const bookingsView = document.getElementById('super-admin-bookings-view');
+        if (bookingsView) bookingsView.innerHTML = `<p style='color:red;'>Error: UI container missing (${containerSelector})</p>`;
+        return;
+    }
+    // --- End check ---
+    container.innerHTML = `<p style="padding: 20px;">Loading ${role}s...</p>`; // Loading state
+
+    try {
+        // --- Firestore Query ---
+        const snapshot = await db.collection('users').where('role', '==', role).get();
+        // --- End Query ---
+
+        if (snapshot.empty) {
+            container.innerHTML = `<p style="padding: 20px;">No ${role}s found.</p>`;
+            return;
+        }
+
+        // --- HTML Generation ---
+        let listHtml = `
+        <div class="user-control-header" style="grid-template-columns: 2fr 2fr 1fr;">
+            <div>Name</div>
+            <div>Email</div>
+            <div>Action</div>
+        </div>`;
+
+        snapshot.forEach(doc => {
+            const user = doc.data();
+            const uid = doc.id;
+            const userName = `${user.firstName || 'User'} ${user.surname || ''}`.trim();
+            listHtml += `
+        <div class="user-control-row" style="grid-template-columns: 2fr 2fr 1fr;">
+            <div><a href="#" class="user-booking-link" data-uid="${uid}">${userName || 'N/A'}</a></div>
+            <div>${user.email}</div>
+            <div>
+                <button class="btn btn-secondary btn-small view-user-bookings" data-uid="${uid}" data-name="${userName || 'User'}">View Bookings</button>
+            </div>
+        </div>`;
+        });
+        container.innerHTML = listHtml;
+        // --- End HTML Generation ---
+
+    } catch (error) {
+        console.error(`Error fetching ${role}s for booking list:`, error);
+        container.innerHTML = `<p style="padding: 20px; color: red;">Could not load ${role}s. Firestore error: ${error.message}</p>`; // Show Firestore error
+    }
+}
+
+// --- Make sure these wrappers exist too ---
+function renderInstructorsBookingList() {
+    renderUserBookingList('instructor', '#instructor-bookings-list-content .card');
+}
+function renderLearnersBookingList() {
+    renderUserBookingList('learner', '#learner-bookings-list-content .card');
+}
+
+/**
+ * Fetches and displays all bookings (past and present) associated with a specific user (instructor or learner).
+ * @param {string} uid - The User ID of the instructor or learner.
+ * @param {string} userName - The user's name to display in the title.
+ */
+async function renderUserBookings(uid, userName) {
+    const bookingsListContainer = document.getElementById('user-bookings-list-container');
+    const titleElement = document.getElementById('user-bookings-display-title');
+    const mainBookingsView = document.getElementById('super-admin-bookings-view');
+    const userBookingsDisplay = document.getElementById('super-admin-user-bookings-display');
+
+    if (!bookingsListContainer || !titleElement || !mainBookingsView || !userBookingsDisplay) {
+        console.error("One or more elements required for renderUserBookings not found!");
+        return;
+    }
+
+    // Show loading state and switch views
+    bookingsListContainer.innerHTML = '<p style="padding: 20px;">Loading bookings...</p>';
+    titleElement.textContent = `Bookings for ${userName}`;
+    mainBookingsView.style.display = 'none'; // Hide the list view
+    userBookingsDisplay.style.display = 'block'; // Show the detail view
+
+    try {
+        // Determine query field based on which tab was active in the list view (using the global variable)
+        const queryField = currentBookingListUserRole === 'instructor' ? 'instructorId' : 'learnerId';
+        console.log(`Querying bookings where ${queryField} == ${uid}`); // Debugging log
+
+        const bookingsSnapshot = await db.collection('bookings')
+            .where(queryField, '==', uid)
+            .orderBy('createdAt', 'desc') // Show most recent first
+            .get();
+
+        // Reuse history table styles for the header
+        bookingsListContainer.innerHTML = `
+        <div class="history-table-header" style="grid-template-columns: 1fr 1.5fr 1.5fr 1fr 2fr 1fr;">
+            <div>Booking ID</div>
+            {/* Show the 'other' participant in the booking */}
+            <div>${currentBookingListUserRole === 'instructor' ? 'Learner' : 'Instructor'}</div>
+            <div>Date</div>
+            <div>Time</div>
+            <div>Location</div>
+            <div>Status</div>
+        </div>`;
+
+        if (bookingsSnapshot.empty) {
+            bookingsListContainer.innerHTML += '<div class="history-table-row" style="text-align: center; grid-column: 1 / -1; padding: 20px;">No bookings found for this user.</div>';
+            return;
+        }
+
+        bookingsSnapshot.forEach(doc => {
+            const booking = doc.data();
+            // Determine the name of the *other* person involved in the booking
+            const otherUserName = currentBookingListUserRole === 'instructor' ? booking.learnerName : booking.instructorName;
+            // Generate a CSS class based on the booking status (e.g., status-completed, status-cancelled)
+            const statusClass = `status-${(booking.status || 'unknown').toLowerCase().replace(/\s+/g, '-')}`;
+            const bookingDateDisplay = booking.date ? (typeof booking.date.toDate === 'function' ? moment(booking.date.toDate()).format('ddd, D MMM YYYY') : booking.date) : 'N/A';
+
+
+            // Reuse history table row styles
+            const bookingRowHtml = `
+        <div class="history-table-row" style="grid-template-columns: 1fr 1.5fr 1.5fr 1fr 2fr 1fr;">
+            <div>#${doc.id.substring(0, 7)}</div> {/* Shortened Booking ID */}
+            <div>${otherUserName || 'N/A'}</div>
+            <div>${bookingDateDisplay}</div> {/* Formatted Date */}
+            <div>${booking.startTime || 'N/A'}</div>
+            <div>${booking.pickupLocation || 'N/A'}</div>
+            {/* Display status using the generated class */}
+            <div><span class="status-badge ${statusClass}">${booking.status || 'UNKNOWN'}</span></div>
+        </div>`;
+            bookingsListContainer.insertAdjacentHTML('beforeend', bookingRowHtml);
+        });
+
+    } catch (error) {
+        console.error(`Error fetching bookings for user ${uid}:`, error);
+        bookingsListContainer.innerHTML = '<p style="padding: 20px; color: red;">Could not load bookings.</p>';
+    }
+}
+
+// --- END: NEW SUPER ADMIN BOOKINGS FUNCTIONS ---
     </script>
 </body>
 
