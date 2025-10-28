@@ -5379,117 +5379,144 @@
         }
 
         /* --- END: ADD FOR SUPER ADMIN CONTROLS --- */
-/* --- START: ADD FOR USER DETAILS MODAL --- */
+        /* --- START: ADD FOR USER DETAILS MODAL --- */
 
-/* Clickable user name in the admin list */
-.user-control-row .user-name-link {
-    font-weight: 600;
-    color: var(--dark-color);
-    cursor: pointer;
-    text-decoration: underline;
-    transition: color 0.2s ease; /* Add smooth color transition */
-}
-.user-control-row .user-name-link:hover {
-    color: var(--primary-color);
-}
+        /* Clickable user name in the admin list */
+        .user-control-row .user-name-link {
+            font-weight: 600;
+            color: var(--dark-color);
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+            /* Add smooth color transition */
+        }
 
-/* Modal Body Content Styling */
-/* Modal Body Content Styling */
-#user-details-modal-body {
-    padding-top: 10px;        /* Add some space below the title */
-    max-height: 60vh;         /* Limit height to 60% of viewport height */
-    overflow-y: auto;         /* Add vertical scrollbar ONLY if needed */
-    padding-right: 15px;      /* Add padding to prevent scrollbar overlap */
-}
+        .user-control-row .user-name-link:hover {
+            color: var(--primary-color);
+        }
 
-#user-details-modal-body .detail-item {
-    margin-bottom: 15px; /* Increase spacing between items */
-    font-size: 15px;
-    line-height: 1.5; /* Improve readability for multi-line details */
-}
+        /* Modal Body Content Styling */
+        /* Modal Body Content Styling */
+        #user-details-modal-body {
+            padding-top: 10px;
+            /* Add some space below the title */
+            max-height: 60vh;
+            /* Limit height to 60% of viewport height */
+            overflow-y: auto;
+            /* Add vertical scrollbar ONLY if needed */
+            padding-right: 15px;
+            /* Add padding to prevent scrollbar overlap */
+        }
 
-#user-details-modal-body .detail-item strong {
-    display: inline-block;
-    width: 140px; /* Slightly adjust width if needed */
-    color: var(--gray-color);
-    font-weight: 500;
-    margin-right: 10px; /* Add space between label and value */
-    vertical-align: top; /* Align label top if value wraps */
-}
+        #user-details-modal-body .detail-item {
+            margin-bottom: 15px;
+            /* Increase spacing between items */
+            font-size: 15px;
+            line-height: 1.5;
+            /* Improve readability for multi-line details */
+        }
 
-/* Ensure status indicator within modal looks right */
-#user-details-modal-body .status-indicator {
-    font-weight: 600;
-    padding: 2px 6px; /* Add slight padding */
-    border-radius: 4px; /* Slightly rounded corners */
-    font-size: 13px; /* Smaller font size */
-    display: inline-block; /* Make it behave like a badge */
-}
-#user-details-modal-body .status-indicator.active {
-    background-color: #E6F4EA; /* Light green background */
-    color: #4CAF50;
-}
-#user-details-modal-body .status-indicator.disabled {
-    background-color: #fdecea; /* Light red background */
-    color: #E53935;
-}
+        #user-details-modal-body .detail-item strong {
+            display: inline-block;
+            width: 140px;
+            /* Slightly adjust width if needed */
+            color: var(--gray-color);
+            font-weight: 500;
+            margin-right: 10px;
+            /* Add space between label and value */
+            vertical-align: top;
+            /* Align label top if value wraps */
+        }
 
+        /* Ensure status indicator within modal looks right */
+        #user-details-modal-body .status-indicator {
+            font-weight: 600;
+            padding: 2px 6px;
+            /* Add slight padding */
+            border-radius: 4px;
+            /* Slightly rounded corners */
+            font-size: 13px;
+            /* Smaller font size */
+            display: inline-block;
+            /* Make it behave like a badge */
+        }
 
-#user-details-modal-body img.user-photo-modal {
-    max-width: 120px; /* Slightly larger image */
-    max-height: 120px;
-    border-radius: 8px;
-    margin-top: 8px; /* Consistent margin */
-    border: 1px solid var(--border-color);
-    display: block; /* Ensure it takes its own line */
-}
+        #user-details-modal-body .status-indicator.active {
+            background-color: #E6F4EA;
+            /* Light green background */
+            color: #4CAF50;
+        }
 
-/* --- Improved Close Button ('X' in corner) Styling --- */
-/* This reuses and slightly refines the general modal close button */
-#user-details-modal .modal-close-btn {
-    position: absolute;
-    top: 12px;        /* Consistent positioning */
-    right: 18px;       /* Consistent positioning */
-    background: none;
-    border: none;
-    font-size: 30px;  /* Adjusted size */
-    font-weight: 300;
-    line-height: 1;
-    cursor: pointer;
-    color: var(--gray-color);
-    padding: 5px;
-    transition: color 0.2s ease, transform 0.2s ease;
-    z-index: 10;
-    opacity: 0.7;
-}
-
-#user-details-modal .modal-close-btn:hover {
-    color: var(--dark-color);
-    transform: scale(1.1);
-    opacity: 1;
-}
-
-/* --- Styling for the "Close" Button in the Footer --- */
-/* This reuses the general secondary button style */
-#user-details-modal .form-actions .modal-close-btn {
-     /* Inherits styles from .btn and .btn-secondary */
-     position: static; /* Important: Override absolute positioning */
-     font-size: inherit;
-     font-weight: inherit;
-     padding: 12px 28px;
-     opacity: 1;
-     transform: none;
-     color: var(--dark-color);
-     background-color: var(--white-color);
-     border: 1px solid var(--border-color);
-}
-#user-details-modal .form-actions .modal-close-btn:hover {
-     background-color: var(--light-gray-color);
-     color: var(--dark-color);
-}
+        #user-details-modal-body .status-indicator.disabled {
+            background-color: #fdecea;
+            /* Light red background */
+            color: #E53935;
+        }
 
 
-/* --- END: ADD FOR USER DETAILS MODAL --- */
+        #user-details-modal-body img.user-photo-modal {
+            max-width: 120px;
+            /* Slightly larger image */
+            max-height: 120px;
+            border-radius: 8px;
+            margin-top: 8px;
+            /* Consistent margin */
+            border: 1px solid var(--border-color);
+            display: block;
+            /* Ensure it takes its own line */
+        }
+
+        /* --- Improved Close Button ('X' in corner) Styling --- */
+        /* This reuses and slightly refines the general modal close button */
+        #user-details-modal .modal-close-btn {
+            position: absolute;
+            top: 12px;
+            /* Consistent positioning */
+            right: 18px;
+            /* Consistent positioning */
+            background: none;
+            border: none;
+            font-size: 30px;
+            /* Adjusted size */
+            font-weight: 300;
+            line-height: 1;
+            cursor: pointer;
+            color: var(--gray-color);
+            padding: 5px;
+            transition: color 0.2s ease, transform 0.2s ease;
+            z-index: 10;
+            opacity: 0.7;
+        }
+
+        #user-details-modal .modal-close-btn:hover {
+            color: var(--dark-color);
+            transform: scale(1.1);
+            opacity: 1;
+        }
+
+        /* --- Styling for the "Close" Button in the Footer --- */
+        /* This reuses the general secondary button style */
+        #user-details-modal .form-actions .modal-close-btn {
+            /* Inherits styles from .btn and .btn-secondary */
+            position: static;
+            /* Important: Override absolute positioning */
+            font-size: inherit;
+            font-weight: inherit;
+            padding: 12px 28px;
+            opacity: 1;
+            transform: none;
+            color: var(--dark-color);
+            background-color: var(--white-color);
+            border: 1px solid var(--border-color);
+        }
+
+        #user-details-modal .form-actions .modal-close-btn:hover {
+            background-color: var(--light-gray-color);
+            color: var(--dark-color);
+        }
+
+
+        /* --- END: ADD FOR USER DETAILS MODAL --- */
     </style>
 </head>
 
@@ -5667,7 +5694,7 @@
                     <button class="btn btn-secondary instructor-logout-btn">Logout</button>
                 </div>
             </aside>
-            <main class="main-content" id="super-admin-verifications-view">
+            <main class="main-content">
                 <header class="dashboard-header">
                     <h3>Pending Instructor Verifications</h3>
                 </header>
@@ -5695,44 +5722,75 @@
                 </div>
             </main>
 
-            {/* --- NEW BOOKINGS VIEW --- */}
-<main id="super-admin-bookings-view" class="main-content" style="display: none;">
-    <header class="dashboard-header">
-        <h3>User Bookings Lists</h3>
-    </header>
-    <div class="tabs">
-        <button class="tab-link active" data-target="instructor-bookings-list-content">Instructors</button>
-        <button class="tab-link" data-target="learner-bookings-list-content">Learners</button>
-    </div>
-    <div id="instructor-bookings-list-content" class="tab-pane active" style="margin-top: 20px;">
-        <div class="card" style="padding: 0;">{/* Instructor list loaded by JS */}</div>
-    </div>
-    <div id="learner-bookings-list-content" class="tab-pane" style="margin-top: 20px; display: none;">
-        <div class="card" style="padding: 0;">{/* Learner list loaded by JS */}</div>
-    </div>
-</main>
+            <main id="super-admin-bookings-view" class="main-content" style="display: none;">
 
-{/* --- NEW USER BOOKINGS DISPLAY VIEW --- */}
-<main id="super-admin-user-bookings-display" class="main-content" style="display: none;">
-    <header class="dashboard-header" style="margin-bottom: 15px;">
-         {/* Use existing back-link style */}
-        <a href="#" id="back-to-bookings-list" class="back-link" style="margin-bottom: 0;"><i class="fas fa-chevron-left"></i> Back to Lists</a>
-    </header>
-    <h2 id="user-bookings-display-title" style="margin-bottom: 20px;">Bookings for [User]</h2>
-     {/* Container for the booking list */}
-    <div class="card" id="user-bookings-list-container" style="padding: 0;">
-        {/* Booking details loaded by JS */}
-    </div>
-</main>
-            
+                <div class="tabs">
+                    <button class="tab-link active" data-target="admin-instructor-tab-content">Instructors</button>
+                    <button class="tab-link" data-target="admin-learner-tab-content">Learners</button>
+                </div>
+
+                <div id="admin-instructor-tab-content" class="tab-pane active" style="margin-top: 20px;">
+                    <div id="admin-instructor-list-container">
+                        <header class="dashboard-header">
+                            <h3>Select Instructor to View Bookings</h3>
+                        </header>
+                        <div class="card" id="instructor-bookings-list" style="padding: 0;">
+                            <p style="padding: 20px;">Loading instructors...</p>
+                        </div>
+                    </div>
+                    <div id="admin-instructor-booking-details-container" style="display: none;">
+                        <header class="dashboard-header" style="align-items: center;">
+                            <a href="#" class="admin-back-to-list back-link" data-list="admin-instructor-list-container"
+                                data-details="admin-instructor-booking-details-container"
+                                style="margin-bottom: 0; font-size: 16px;">
+                                <i class="fas fa-chevron-left"></i> Back to Instructors
+                            </a>
+                            <h3 id="admin-booking-details-title">Bookings for [Instructor Name]</h3>
+                        </header>
+                        <div id="admin-booking-display-area">
+                            <p style="padding: 20px;">Loading bookings...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="admin-learner-tab-content" class="tab-pane" style="margin-top: 20px; display: none;">
+                    <div id="admin-learner-list-container">
+                        <header class="dashboard-header">
+                            <h3>Select Learner to View Bookings</h3>
+                        </header>
+                        <div class="card" id="learner-bookings-list" style="padding: 0;">
+                            <p style="padding: 20px;">Loading learners...</p>
+                        </div>
+                    </div>
+                    <div id="admin-learner-booking-details-container" style="display: none;">
+                        <header class="dashboard-header" style="align-items: center;">
+                            <a href="#" class="admin-back-to-list back-link" data-list="admin-learner-list-container"
+                                data-details="admin-learner-booking-details-container"
+                                style="margin-bottom: 0; font-size: 16px;">
+                                <i class="fas fa-chevron-left"></i> Back to Learners
+                            </a>
+                            <h3 id="admin-learner-booking-details-title">Bookings for [Learner Name]</h3>
+                        </header>
+                        <div id="admin-learner-booking-display-area">
+                            <p style="padding: 20px;">Loading bookings...</p>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+
+
             <div id="user-details-modal" class="modal-overlay">
                 <div class="modal-content" style="max-width: 600px;">
                     <button class="modal-close-btn">&times;</button>
-                    <h3 id="user-details-modal-title" style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">User Details</h3>
+                    <h3 id="user-details-modal-title"
+                        style="margin-bottom: 20px; border-bottom: 1px solid var(--border-color); padding-bottom: 15px;">
+                        User Details</h3>
                     <div id="user-details-modal-body">
                         <p>Loading details...</p>
                     </div>
-                    <div class="form-actions" style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 20px;">
+                    <div class="form-actions"
+                        style="border-top: 1px solid var(--border-color); padding-top: 20px; margin-top: 20px;">
                         <button class="btn btn-secondary modal-close-btn">Close</button>
                     </div>
                 </div>
@@ -5846,7 +5904,8 @@
                             <img src="https://placehold.co/100x100?text=M" alt="User Avatar">
                             <span id="instructor-user-name">Mandeep</span> ▾
                             <div class="profile-dropdown">
-                                <a href="#" data-view="instructor-account-settings-view"><i class="fas fa-user-cog"></i> Account Settings</a>
+                                <a href="#" data-view="instructor-account-settings-view"><i class="fas fa-user-cog"></i>
+                                    Account Settings</a>
                                 <a href="#" data-view="instructor-profile-edit-view"><i class="fas fa-id-card"></i> My
                                     Profile & Vehicle</a>
                                 <a href="#" data-view="instructor-service-area-view"><i
@@ -5859,7 +5918,8 @@
                                     Banking</a>
                                 <a href="#" class="instructor-logout-btn"><i class="fas fa-sign-out-alt"></i> Log
                                     Out</a>
-                                    <a href="#" data-view="instructor-reviews-view"><i class="fas fa-star"></i> My Reviews</a>
+                                <a href="#" data-view="instructor-reviews-view"><i class="fas fa-star"></i> My
+                                    Reviews</a>
                             </div>
                         </div>
                     </div>
@@ -5937,15 +5997,15 @@
                                     data-view="instructor-dashboard-view">Dashboard</a> > My Reviews</p>
                             <h2>My Reviews</h2>
                         </div>
-                        </div>
+                    </div>
 
                     <div id="instructor-reviews-list" class="card" style="padding: 0;">
                         <p style="padding: 20px; text-align: center;">Loading reviews...</p>
                     </div>
-                     <footer class="main-content-footer" style="margin-top: 40px;">
+                    <footer class="main-content-footer" style="margin-top: 40px;">
                         © Safe Learners Pty Ltd
                         <div>
-                             <a href="#">Contact</a>
+                            <a href="#">Contact</a>
                             <a href="#">Support</a>
                             <a href="#">Code of Conduct</a>
                             <a href="#">Terms & Conditions</a>
@@ -7312,79 +7372,83 @@
                     </div>
                 </section>
                 </section>
-               <section id="instructor-account-settings-view" class="instructor-view">
-    <div class="page-view-header">
-        <div>
-            <p class="breadcrumbs" style="margin:0;"><a href="#"
-                    data-view="instructor-dashboard-view">Dashboard</a> > Account Settings</p>
-            <h2>Account Settings</h2>
-        </div>
-    </div>
-    <div class="card" style="padding: 20px;">
-        <form id="account-settings-form">
-            <h4>Personal Details</h4>
-            <div class="form-row" style="margin-top: 20px;">
-                <div class="input-group">
-                    <label for="as-first-name"><i class="fas fa-user"></i> First Name</label>
-                    <input type="text" id="as-first-name" placeholder="Enter First Name">
-                </div>
-                <div class="input-group">
-                    <label for="as-surname"><i class="fas fa-user"></i> Surname</label>
-                    <input type="text" id="as-surname" placeholder="Enter Surname">
-                </div>
-            </div>
-            <div class="input-group">
-                <label for="as-email"><i class="fas fa-envelope"></i> Email Address</label>
-                <input type="email" id="as-email" placeholder="Enter Email Address" disabled
-                    style="background-color: #f1f1f1; cursor: not-allowed;">
-            </div>
-            <div class="form-row">
-                <div class="input-group">
-                    <label for="as-mobile"><i class="fas fa-mobile-alt"></i> Mobile Number</label>
-                    <input type="tel" id="as-mobile" placeholder="Enter Mobile Number">
-                </div>
-                <div class="input-group">
-                    <label for="as-dob"><i class="fas fa-calendar-alt"></i> Date of Birth</label>
-                    <input type="date" id="as-dob" placeholder="YYYY-MM-DD"> </div>
-            </div>
-            <div class="form-row">
-                <div class="input-group">
-                    <label for="as-gender"><i class="fas fa-venus-mars"></i> Gender</label>
-                    <select id="as-gender">
-                        <option value="" disabled selected>Select</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                        <option value="Other">Other</option>
-                    </select>
-                </div>
-                <div class="input-group">
-                    <label for="as-pincode"><i class="fas fa-map-marker-alt"></i> Pin Code</label>
-                    <input type="number" id="as-pincode" placeholder="Enter Pin Code">
-                </div>
-            </div>
+                <section id="instructor-account-settings-view" class="instructor-view">
+                    <div class="page-view-header">
+                        <div>
+                            <p class="breadcrumbs" style="margin:0;"><a href="#"
+                                    data-view="instructor-dashboard-view">Dashboard</a> > Account Settings</p>
+                            <h2>Account Settings</h2>
+                        </div>
+                    </div>
+                    <div class="card" style="padding: 20px;">
+                        <form id="account-settings-form">
+                            <h4>Personal Details</h4>
+                            <div class="form-row" style="margin-top: 20px;">
+                                <div class="input-group">
+                                    <label for="as-first-name"><i class="fas fa-user"></i> First Name</label>
+                                    <input type="text" id="as-first-name" placeholder="Enter First Name">
+                                </div>
+                                <div class="input-group">
+                                    <label for="as-surname"><i class="fas fa-user"></i> Surname</label>
+                                    <input type="text" id="as-surname" placeholder="Enter Surname">
+                                </div>
+                            </div>
+                            <div class="input-group">
+                                <label for="as-email"><i class="fas fa-envelope"></i> Email Address</label>
+                                <input type="email" id="as-email" placeholder="Enter Email Address" disabled
+                                    style="background-color: #f1f1f1; cursor: not-allowed;">
+                            </div>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label for="as-mobile"><i class="fas fa-mobile-alt"></i> Mobile Number</label>
+                                    <input type="tel" id="as-mobile" placeholder="Enter Mobile Number">
+                                </div>
+                                <div class="input-group">
+                                    <label for="as-dob"><i class="fas fa-calendar-alt"></i> Date of Birth</label>
+                                    <input type="date" id="as-dob" placeholder="YYYY-MM-DD">
+                                </div>
+                            </div>
+                            <div class="form-row">
+                                <div class="input-group">
+                                    <label for="as-gender"><i class="fas fa-venus-mars"></i> Gender</label>
+                                    <select id="as-gender">
+                                        <option value="" disabled selected>Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="input-group">
+                                    <label for="as-pincode"><i class="fas fa-map-marker-alt"></i> Pin Code</label>
+                                    <input type="number" id="as-pincode" placeholder="Enter Pin Code">
+                                </div>
+                            </div>
 
-            <hr style="margin: 30px 0; border-color: var(--border-color);">
+                            <hr style="margin: 30px 0; border-color: var(--border-color);">
 
-            <h4>Change Password</h4>
-            <p class="form-note" style="margin: 10px 0 20px;">Leave blank if you do not wish to change password.</p>
-            <div class="input-group">
-                <label for="as-new-password"><i class="fas fa-lock"></i> New Password</label>
-                <input type="password" id="as-new-password" placeholder="Enter New Password">
-            </div>
-            <div class="input-group">
-                <label for="as-confirm-password"><i class="fas fa-lock"></i> Confirm New Password</label>
-                <input type="password" id="as-confirm-password" placeholder="Confirm New Password">
-            </div>
-            <div class="input-group">
-                <label for="as-current-password"><i class="fas fa-key"></i> Current Password (Required to change)</label>
-                <input type="password" id="as-current-password" placeholder="Enter Current Password">
-            </div>
-            <div class="form-actions" style="text-align: right; margin-top: 30px;">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </div>
-        </form>
-    </div>
-</section>
+                            <h4>Change Password</h4>
+                            <p class="form-note" style="margin: 10px 0 20px;">Leave blank if you do not wish to change
+                                password.</p>
+                            <div class="input-group">
+                                <label for="as-new-password"><i class="fas fa-lock"></i> New Password</label>
+                                <input type="password" id="as-new-password" placeholder="Enter New Password">
+                            </div>
+                            <div class="input-group">
+                                <label for="as-confirm-password"><i class="fas fa-lock"></i> Confirm New
+                                    Password</label>
+                                <input type="password" id="as-confirm-password" placeholder="Confirm New Password">
+                            </div>
+                            <div class="input-group">
+                                <label for="as-current-password"><i class="fas fa-key"></i> Current Password (Required
+                                    to change)</label>
+                                <input type="password" id="as-current-password" placeholder="Enter Current Password">
+                            </div>
+                            <div class="form-actions" style="text-align: right; margin-top: 30px;">
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
 
                 <section id="instructor-profile-edit-view" class="instructor-view">
                     <h2>My Profile and Vehicle Details</h2>
@@ -9758,7 +9822,6 @@
         let currentInstructorPricing = { lesson: 70, testPackage: 225 }; // Default fallback values
         let currentUserLocation = "5 Hogan PL, Quakers Hill NSW 2763"; // Placeholder for the current user's location
 
-        let currentBookingListUserRole = 'instructor'; // Track active tab in bookings view
 
         function showPage(pageId) {
             pages.forEach(page => page.classList.toggle('active', page.id === pageId));
@@ -9810,38 +9873,38 @@
             if (target.matches('#add-credit-btn, #add-credit-from-wallet-btn')) { e.preventDefault(); goToWallet(); return; }
 
             // Updated logic for opening booking page from anywhere
-          // Corrected logic for opening booking page from ANYWHERE
-          if (target.matches('.open-booking-btn')) {
-            e.preventDefault();
-            let instructorIdToBook = null; // Use a local variable to avoid potential conflicts
+            // Corrected logic for opening booking page from ANYWHERE
+            if (target.matches('.open-booking-btn')) {
+                e.preventDefault();
+                let instructorIdToBook = null; // Use a local variable to avoid potential conflicts
 
-            // Prioritize getting the ID from the card the button is ON (for switch instructor page)
-            const cardNew = target.closest('.instructor-card-new');
-            if (cardNew && cardNew.dataset.id) {
-                instructorIdToBook = cardNew.dataset.id;
-                console.log("Booking button clicked on switch instructor card. ID:", instructorIdToBook); // Debug log
-            } else {
-                // If not found on a 'cardNew', try getting it from the main dashboard context
-                // (Ensure your main dashboard button has data-instructor-id)
-                const mainDashboardButton = document.querySelector('#dashboard-main-content #instructor-card-book-btn'); // More specific selector
-                if (mainDashboardButton && mainDashboardButton.dataset.id) { // Check data-id on this button too
-                     instructorIdToBook = mainDashboardButton.dataset.id;
-                     console.log("Booking button clicked on main dashboard. ID:", instructorIdToBook); // Debug log
+                // Prioritize getting the ID from the card the button is ON (for switch instructor page)
+                const cardNew = target.closest('.instructor-card-new');
+                if (cardNew && cardNew.dataset.id) {
+                    instructorIdToBook = cardNew.dataset.id;
+                    console.log("Booking button clicked on switch instructor card. ID:", instructorIdToBook); // Debug log
+                } else {
+                    // If not found on a 'cardNew', try getting it from the main dashboard context
+                    // (Ensure your main dashboard button has data-instructor-id)
+                    const mainDashboardButton = document.querySelector('#dashboard-main-content #instructor-card-book-btn'); // More specific selector
+                    if (mainDashboardButton && mainDashboardButton.dataset.id) { // Check data-id on this button too
+                        instructorIdToBook = mainDashboardButton.dataset.id;
+                        console.log("Booking button clicked on main dashboard. ID:", instructorIdToBook); // Debug log
+                    }
                 }
-            }
 
-            // --- CRITICAL CHECK ---
-            // Only proceed if we successfully identified an instructor ID
-            if (instructorIdToBook) {
-                showPage('booking-page');
-                renderBookingPageInstructor(instructorIdToBook); // Pass the correctly identified ID
-            } else {
-                // If no ID could be found from either context, show an error
-                console.error("Could not find instructor ID associated with the clicked booking button.");
-                alert("Sorry, couldn't identify the instructor for booking. Please try refreshing the page.");
+                // --- CRITICAL CHECK ---
+                // Only proceed if we successfully identified an instructor ID
+                if (instructorIdToBook) {
+                    showPage('booking-page');
+                    renderBookingPageInstructor(instructorIdToBook); // Pass the correctly identified ID
+                } else {
+                    // If no ID could be found from either context, show an error
+                    console.error("Could not find instructor ID associated with the clicked booking button.");
+                    alert("Sorry, couldn't identify the instructor for booking. Please try refreshing the page.");
+                }
+                return; // Stop further execution in the main click listener
             }
-            return; // Stop further execution in the main click listener
-        }
 
             // Handles the 'View Profile' button on the instructor list
             if (target.matches('.view-profile-btn')) {
@@ -9906,8 +9969,8 @@
                         ratingQuestion.textContent = `How was your learning experience with ${instructorNameToReview || 'your instructor'}?`;
                     }
                     // Optional: Hide the notification popup after clicking
-                     const notificationPopup = document.querySelector('.notification-popup');
-                     if (notificationPopup) notificationPopup.style.display = 'none';
+                    const notificationPopup = document.querySelector('.notification-popup');
+                    if (notificationPopup) notificationPopup.style.display = 'none';
                 } else {
                     alert('Could not determine which instructor to review.');
                 }
@@ -9985,101 +10048,228 @@
         // --- AUTHENTICATION & ROLE-BASED ROUTING ---
         // --- Replacement for the auth.onAuthStateChanged function ---
         // --- REPLACE your existing auth.onAuthStateChanged function with this ---
-        // --- REPLACE your existing auth.onAuthStateChanged function with this ---
-auth.onAuthStateChanged(user => {
-    if (user) {
-        // *** Check if it's the Super Admin based on email ***
-        if (user.email === 'aditya@gmail.com') {
-            showPage('super-admin-page'); // Show the correct admin page
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // *** CHECK IF SUPER ADMIN ***
+                if (user.email === 'aditya@gmail.com') {
+                    // --- Super Admin Logic ---
+                    console.log("Super Admin detected. Showing admin page."); // Log for debugging
+                    showPage('super-admin-page');
+                    renderSuperAdminDashboard(); // Render initial view (pending verifications)
 
-            // Get references to ALL main content views within the admin page
-            const adminSidebar = document.querySelector('#super-admin-page .sidebar-nav');
-            const verificationView = document.getElementById('super-admin-verifications-view'); // Existing view
-            const controlsView = document.getElementById('super-admin-controls-view');      // Existing view
-            const bookingsView = document.getElementById('super-admin-bookings-view');      // NEW view for the lists
-            const userBookingsDisplay = document.getElementById('super-admin-user-bookings-display'); // NEW view for specific user's bookings
+                    // Setup Admin Sidebar Navigation
+                    const adminSidebar = document.querySelector('#super-admin-page .sidebar-nav');
+                    const verificationView = document.getElementById('pending-instructors-list')?.closest('.main-content');
+                    const controlsView = document.getElementById('super-admin-controls-view');
+                    const bookingsView = document.getElementById('super-admin-bookings-view');
 
-            // --- Ensure only the default (Verification) view is shown initially ---
-            verificationView.style.display = 'block';
-            controlsView.style.display = 'none';
-            bookingsView.style.display = 'none';       // Hide NEW bookings list view
-            userBookingsDisplay.style.display = 'none';// Hide NEW user bookings display view
-            renderSuperAdminDashboard(); // Load initial verification list
+                    if (adminSidebar && verificationView && controlsView && bookingsView) {
+                        // Add listener only once using a data attribute flag
+                        if (!adminSidebar.dataset.listenerAttached) {
+                            adminSidebar.addEventListener('click', (e) => {
+                                const link = e.target.closest('a');
+                                if (!link || !link.dataset.view) return; // Check link and data-view exist
+                                e.preventDefault();
 
-            // --- Sidebar Navigation Logic for Admin ---
-            // This listener handles clicks on "Pending Verifications", "Controls", AND "Bookings"
-            // It makes sure only the selected view is displayed.
-            adminSidebar.addEventListener('click', (e) => {
-                const link = e.target.closest('a');
-                if (!link) return;
-                e.preventDefault();
+                                // Update sidebar active link style
+                                adminSidebar.querySelectorAll('li').forEach(li => li.classList.remove('active'));
+                                link.closest('li')?.classList.add('active'); // Safely add active class
 
-                // Highlight the clicked sidebar item
-                adminSidebar.querySelectorAll('li').forEach(li => li.classList.remove('active'));
-                link.parentElement.classList.add('active');
+                                const targetView = link.dataset.view;
 
-                // --- Hide ALL possible main views first ---
-                verificationView.style.display = 'none';
-                controlsView.style.display = 'none';
-                bookingsView.style.display = 'none';        // Hide NEW bookings list view
-                userBookingsDisplay.style.display = 'none'; // Hide NEW user bookings display view
+                                // Hide all admin content views first
+                                verificationView.style.display = 'none';
+                                controlsView.style.display = 'none';
+                                bookingsView.style.display = 'none';
 
-                // --- Show the correct view based on the link clicked ---
-                const targetView = link.dataset.view;
-                if (targetView === 'super-admin-controls') {
-                    controlsView.style.display = 'block';
-                    renderControlsView(); // Function to load Controls data
-                } else if (targetView === 'super-admin-bookings') { // *** NEW: Handle Bookings link click ***
-                    bookingsView.style.display = 'block';        // Show the main bookings list view
-                    initializeBookingsView(); // Call the function to set up its tabs and load the list
-                } else { // Default back to Verifications
-                    verificationView.style.display = 'block';
-                    renderSuperAdminDashboard(); // Function to load Verifications data
+                                // Show the correct view and call its render function
+                                if (targetView === 'super-admin-controls') {
+                                    controlsView.style.display = 'block';
+                                    renderControlsView();
+                                } else if (targetView === 'super-admin-bookings') {
+                                    bookingsView.style.display = 'block';
+                                    // Default to showing instructor list when clicking bookings nav
+                                    const instructorList = document.getElementById('admin-instructor-list-container');
+                                    const instructorDetails = document.getElementById('admin-instructor-booking-details-container');
+                                    const learnerList = document.getElementById('admin-learner-list-container');
+                                    const learnerDetails = document.getElementById('admin-learner-booking-details-container');
+                                    if(instructorList) instructorList.style.display = 'block';
+                                    if(instructorDetails) instructorDetails.style.display = 'none';
+                                     if(learnerList) learnerList.style.display = 'block'; // Make sure learner list is visible initially in its tab
+                                    if(learnerDetails) learnerDetails.style.display = 'none';
+                                    // Activate instructor tab by default
+                                    const instructorTab = bookingsView.querySelector('.tabs .tab-link[data-target="admin-instructor-tab-content"]');
+                                    const learnerTab = bookingsView.querySelector('.tabs .tab-link[data-target="admin-learner-tab-content"]');
+                                    const instructorPane = document.getElementById('admin-instructor-tab-content');
+                                    const learnerPane = document.getElementById('admin-learner-tab-content');
+                                    if (instructorTab) instructorTab.classList.add('active');
+                                    if (learnerTab) learnerTab.classList.remove('active');
+                                    if (instructorPane) { instructorPane.style.display = 'block'; instructorPane.classList.add('active');}
+                                    if (learnerPane) { learnerPane.style.display = 'none'; learnerPane.classList.remove('active');}
+
+                                    renderInstructorListForBookingView(); // Load initial list
+                                } else { // Default to verifications view
+                                    verificationView.style.display = 'block';
+                                    renderSuperAdminDashboard();
+                                }
+                            });
+                            adminSidebar.dataset.listenerAttached = 'true'; // Mark listener as attached
+                        }
+                    } else {
+                        console.error("Super Admin Navigation Error: Could not find one or more required elements (sidebar nav, verification view, controls view, or bookings view).");
+                    }
+                    // --- End Super Admin Logic ---
+
+                } else {
+                    // --- Instructor/Learner Logic (ONLY RUNS IF NOT ADMIN) ---
+                    console.log("Regular user detected. Fetching user data..."); // Log for debugging
+                    db.collection('users').doc(user.uid).get().then(doc => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+
+                            // Check if account is disabled
+                            if (userData.accountStatus === 'disabled') {
+                                alert("Your account has been disabled by an administrator.");
+                                auth.signOut();
+                                return;
+                            }
+
+                            const displayName = userData.firstName || user.email.split('@')[0];
+
+                            // Route based on role
+                            if (userData.role === 'instructor') {
+                                console.log("User is an instructor."); // Log
+                                document.getElementById('instructor-user-name').textContent = displayName;
+                                showPage('instructor-dashboard-page');
+                                renderInstructorDashboardView(user.uid); // Render instructor specific dashboard content
+                            } else { // Assumes Learner if not instructor
+                                console.log("User is a learner."); // Log
+                                // Update UI elements with learner's name
+                                document.querySelectorAll('[id^="user-name"]').forEach(el => el.textContent = displayName);
+                                const welcomeMsg = document.getElementById('welcome-message');
+                                if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${displayName}!`;
+
+                                // Render learner specific dashboard content and bookings
+                                renderLearnerDashboard(user.uid);
+                                renderLearnerUpcomingBookings(user.uid); // Render upcoming bookings on login
+
+                                // Show the correct page and view
+                                showPage('dashboard-page');
+                                showView('dashboard-main-content'); // Ensure the main dashboard view is active
+                            }
+                        } else {
+                            // User exists in Firebase Auth but not in Firestore 'users' collection
+                            console.log("User document does not exist in Firestore. Redirecting to login."); // Log
+                            showPage('login-page');
+                        }
+                    }).catch(error => {
+                        // Handle errors fetching Firestore data
+                        console.error("Error fetching user data:", error);
+                        showPage('login-page');
+                    });
+                    // --- End Instructor/Learner Logic ---
+                }
+
+            } else {
+                // --- No User Logged In ---
+                console.log("No user logged in. Showing landing page."); // Log
+                showPage('landing-page');
+                // --- End No User ---
+            }
+        });
+
+        const adminBookingsView = document.getElementById('super-admin-bookings-view');
+        if (adminBookingsView) {
+            const tabsContainer = adminBookingsView.querySelector('.tabs');
+
+            tabsContainer?.addEventListener('click', (e) => {
+                const clickedTab = e.target.closest('.tab-link');
+                if (!clickedTab) return;
+
+                const targetPaneId = clickedTab.dataset.target;
+
+                // Update tab active states
+                tabsContainer.querySelectorAll('.tab-link').forEach(tab => tab.classList.remove('active'));
+                clickedTab.classList.add('active');
+
+                // Hide all tab panes
+                adminBookingsView.querySelectorAll('.tab-pane').forEach(pane => {
+                    pane.style.display = 'none';
+                    pane.classList.remove('active');
+                });
+
+                // Show the target tab pane
+                const targetPane = document.getElementById(targetPaneId);
+                if (targetPane) {
+                    targetPane.style.display = 'block';
+                    targetPane.classList.add('active');
+
+                    // Ensure list is shown and details are hidden within the selected tab
+                    const listContainer = targetPane.querySelector('#admin-instructor-list-container, #admin-learner-list-container');
+                    const detailsContainer = targetPane.querySelector('#admin-instructor-booking-details-container, #admin-learner-booking-details-container');
+                    if (listContainer) listContainer.style.display = 'block';
+                    if (detailsContainer) detailsContainer.style.display = 'none';
+
+                    // Load the appropriate list
+                    if (targetPaneId === 'admin-instructor-tab-content') {
+                        renderInstructorListForBookingView();
+                    } else if (targetPaneId === 'admin-learner-tab-content') {
+                        renderLearnerListForBookingView();
+                    }
                 }
             });
-            // --- End Sidebar Navigation Logic ---
-
-            return; // Stop further checks for instructor/learner roles if it's the admin
         }
 
-        // --- Existing logic for regular instructors and learners ---
-        // (This part remains the same as your previous code)
-        db.collection('users').doc(user.uid).get().then(doc => {
-            if (doc.exists) {
-                const userData = doc.data();
-                if (userData.accountStatus === 'disabled') {
-                    alert("Your account has been disabled...");
-                    auth.signOut();
-                    return;
-                }
-                const displayName = userData.firstName || user.email.split('@')[0];
-                if (userData.role === 'instructor') {
-                    document.getElementById('instructor-user-name').textContent = displayName;
-                    showPage('instructor-dashboard-page');
-                    renderInstructorDashboardView(user.uid);
-                } else {
-                    document.querySelectorAll('[id^="user-name"]').forEach(el => el.textContent = displayName);
-                    document.getElementById('welcome-message').textContent = `Welcome back, ${displayName}!`;
-                    renderLearnerDashboard(user.uid);
-                    renderLearnerUpcomingBookings(user.uid);
-                    showPage('dashboard-page');
-                    showView('dashboard-main-content');
-                }
-            } else {
-                showPage('login-page');
-            }
-        }).catch(error => {
-            console.error("Error fetching user data:", error);
-            showPage('login-page');
-        });
-        // --- End existing instructor/learner logic ---
+        // --- ADD THIS SINGLE REPLACEMENT LISTENER ---
+// Handles View Instructor Bookings, View Learner Bookings, and Back buttons within the Admin Bookings View
+document.getElementById('super-admin-bookings-view')?.addEventListener('click', (e) => {
+    const viewInstructorBtn = e.target.closest('.view-instructor-bookings-btn');
+    const viewLearnerBtn = e.target.closest('.view-learner-bookings-btn');
+    const backBtn = e.target.closest('.admin-back-to-list'); // Targets BOTH back buttons now
 
-    } else {
-        // No user logged in, show landing page (Existing logic)
-        showPage('landing-page');
+    // Handle "View Instructor Bookings"
+    if (viewInstructorBtn) {
+        e.preventDefault();
+        const instructorId = viewInstructorBtn.dataset.instructorId;
+        const instructorName = viewInstructorBtn.closest('.user-control-row')?.querySelector('div:first-child')?.textContent || 'Instructor';
+
+        if (instructorId) {
+            document.getElementById('admin-instructor-list-container').style.display = 'none';
+            const detailsContainer = document.getElementById('admin-instructor-booking-details-container');
+            detailsContainer.style.display = 'block';
+            detailsContainer.querySelector('#admin-booking-details-title').textContent = `Bookings for ${instructorName}`;
+            renderAdminInstructorBookings(instructorId); // Renders into #admin-booking-display-area
+        }
+    }
+    // Handle "View Learner Bookings"
+    else if (viewLearnerBtn) {
+        e.preventDefault();
+        const learnerId = viewLearnerBtn.dataset.learnerId;
+        const learnerName = viewLearnerBtn.closest('.user-control-row')?.querySelector('div:first-child')?.textContent || 'Learner';
+
+        if (learnerId) {
+            document.getElementById('admin-learner-list-container').style.display = 'none';
+            const detailsContainer = document.getElementById('admin-learner-booking-details-container');
+            detailsContainer.style.display = 'block';
+            detailsContainer.querySelector('#admin-learner-booking-details-title').textContent = `Bookings for ${learnerName}`;
+            renderAdminLearnerBookings(learnerId); // Renders into #admin-learner-booking-display-area
+        }
+    }
+    // Handle "Back" buttons (Handles both instructor and learner back buttons)
+    else if (backBtn) {
+        e.preventDefault();
+        // Get the specific list and details containers from the button's data attributes
+        const listContainerId = backBtn.dataset.list;
+        const detailsContainerId = backBtn.dataset.details;
+        const listContainer = document.getElementById(listContainerId);
+        const detailsContainer = document.getElementById(detailsContainerId);
+
+        // Hide details, show list
+        if (detailsContainer) detailsContainer.style.display = 'none';
+        if (listContainer) listContainer.style.display = 'block';
     }
 });
-// --- END OF REPLACEMENT auth.onAuthStateChanged FUNCTION ---
+// --- END: REPLACEMENT LISTENER ---
 
         // Also, make the new "Find an Instructor" button work
         document.addEventListener('click', (e) => {
@@ -10226,7 +10416,7 @@ auth.onAuthStateChanged(user => {
         if (availabilityModal) availabilityModal.addEventListener('click', (e) => { if (e.target === availabilityModal) closeModal(); });
 
         // --- RATING FORM LOGIC ---
-       const ratingForm = document.getElementById('rating-form');
+        const ratingForm = document.getElementById('rating-form');
         if (ratingForm) {
             ratingForm.addEventListener('submit', async (e) => { // Make the handler async
                 e.preventDefault();
@@ -10283,9 +10473,9 @@ auth.onAuthStateChanged(user => {
                     console.error("Error submitting review:", error);
                     alert('Sorry, there was an error submitting your review. Please try again.');
                 } finally {
-                     // Restore button state
-                     submitButton.textContent = 'Submit';
-                     submitButton.disabled = false;
+                    // Restore button state
+                    submitButton.textContent = 'Submit';
+                    submitButton.disabled = false;
                 }
             });
         }
@@ -12330,124 +12520,124 @@ auth.onAuthStateChanged(user => {
         // Function to save instructor personal details AND handle password changes
         // --- START: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER ---
 
-/**
- * Saves instructor personal details AND handles password changes.
- * @param {Event} e - The form submission event.
- */
-// --- START: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER (v2) ---
+        /**
+         * Saves instructor personal details AND handles password changes.
+         * @param {Event} e - The form submission event.
+         */
+        // --- START: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER (v2) ---
 
 
-/**
- * Saves instructor personal details AND handles password changes.
- * @param {Event} e - The form submission event.
- */
-async function savePersonalDetails(e) {
-    console.log("--- savePersonalDetails started ---");
-    try {
-        e.preventDefault();
-        console.log("event.preventDefault() called successfully.");
-    } catch (preventError) {
-        console.error("CRITICAL: Failed to call preventDefault!", preventError);
-        alert("CRITICAL ERROR: Could not prevent form submission. Check console!");
-        return;
-    }
+        /**
+         * Saves instructor personal details AND handles password changes.
+         * @param {Event} e - The form submission event.
+         */
+        async function savePersonalDetails(e) {
+            console.log("--- savePersonalDetails started ---");
+            try {
+                e.preventDefault();
+                console.log("event.preventDefault() called successfully.");
+            } catch (preventError) {
+                console.error("CRITICAL: Failed to call preventDefault!", preventError);
+                alert("CRITICAL ERROR: Could not prevent form submission. Check console!");
+                return;
+            }
 
-    const user = auth.currentUser;
-    // ... (user check) ...
-    const form = document.getElementById('personal-details-form');
-    // ... (form check) ...
+            const user = auth.currentUser;
+            // ... (user check) ...
+            const form = document.getElementById('personal-details-form');
+            // ... (form check) ...
 
-    // --- Part 1: Update Profile Details (Firestore) ---
-    const updatedProfileData = {
-        firstName: form.querySelector('#pd-first-name').value.trim(),
-        surname: form.querySelector('#pd-surname').value.trim(),
-        mobile: form.querySelector('#pd-mobile').value.trim(),
-        dob: form.querySelector('#pd-dob').value.trim(),
-        gender: form.querySelector('#pd-gender').value
-    };
-    console.log("Profile data to save:", updatedProfileData);
+            // --- Part 1: Update Profile Details (Firestore) ---
+            const updatedProfileData = {
+                firstName: form.querySelector('#pd-first-name').value.trim(),
+                surname: form.querySelector('#pd-surname').value.trim(),
+                mobile: form.querySelector('#pd-mobile').value.trim(),
+                dob: form.querySelector('#pd-dob').value.trim(),
+                gender: form.querySelector('#pd-gender').value
+            };
+            console.log("Profile data to save:", updatedProfileData);
 
-    let profileUpdateSuccess = false;
-    try {
-        console.log("Attempting Firestore update...");
-        await db.collection('users').doc(user.uid).update(updatedProfileData);
-        console.log("Firestore profile update successful.");
-        profileUpdateSuccess = true;
-        const userNameElement = document.getElementById('instructor-user-name');
-        if (userNameElement) {
-             userNameElement.textContent = updatedProfileData.firstName;
-             console.log("Updated header display name.");
-        } else {
-             console.warn("Could not find element to update header display name.");
-        }
-    } catch (error) {
-        console.error("Firestore update FAILED:", error);
-        alert("❌ Could not update your profile details. Please check the console (F12) for Firestore errors (permissions?).");
-        // return; // Keep this commented for now
-    }
+            let profileUpdateSuccess = false;
+            try {
+                console.log("Attempting Firestore update...");
+                await db.collection('users').doc(user.uid).update(updatedProfileData);
+                console.log("Firestore profile update successful.");
+                profileUpdateSuccess = true;
+                const userNameElement = document.getElementById('instructor-user-name');
+                if (userNameElement) {
+                    userNameElement.textContent = updatedProfileData.firstName;
+                    console.log("Updated header display name.");
+                } else {
+                    console.warn("Could not find element to update header display name.");
+                }
+            } catch (error) {
+                console.error("Firestore update FAILED:", error);
+                alert("❌ Could not update your profile details. Please check the console (F12) for Firestore errors (permissions?).");
+                // return; // Keep this commented for now
+            }
 
-    /* --- START: TEMPORARILY COMMENT OUT PASSWORD CHANGE ---
-    // --- Part 2: Handle Password Change (Firebase Auth) ---
-    const newPassword = form.querySelector('#pd-new-password').value;
-    const confirmPassword = form.querySelector('#pd-confirm-password').value;
-    const currentPassword = form.querySelector('#pd-current-password').value;
-    // ... (rest of Part 2 code down to the next comment) ...
-    console.log("No new password entered, skipping password change.");
-    --- END: TEMPORARILY COMMENT OUT PASSWORD CHANGE --- */
+            /* --- START: TEMPORARILY COMMENT OUT PASSWORD CHANGE ---
+            // --- Part 2: Handle Password Change (Firebase Auth) ---
+            const newPassword = form.querySelector('#pd-new-password').value;
+            const confirmPassword = form.querySelector('#pd-confirm-password').value;
+            const currentPassword = form.querySelector('#pd-current-password').value;
+            // ... (rest of Part 2 code down to the next comment) ...
+            console.log("No new password entered, skipping password change.");
+            --- END: TEMPORARILY COMMENT OUT PASSWORD CHANGE --- */
 
-    const newPassword = ''; // Force password change to be skipped
+            const newPassword = ''; // Force password change to be skipped
 
-    // --- Part 3: Final Success Message ---
-    if (profileUpdateSuccess && !newPassword) { // This condition will now always be true if profile update succeeds
-        alert("✅ Profile details updated successfully!");
-    }
-    /* // This part is unreachable now
-    else if (profileUpdateSuccess && newPassword) {
-        console.log("Profile and password updated successfully.");
-    }
-    */
-    console.log("--- savePersonalDetails finished (Password Change Skipped) ---");
+            // --- Part 3: Final Success Message ---
+            if (profileUpdateSuccess && !newPassword) { // This condition will now always be true if profile update succeeds
+                alert("✅ Profile details updated successfully!");
+            }
+            /* // This part is unreachable now
+            else if (profileUpdateSuccess && newPassword) {
+                console.log("Profile and password updated successfully.");
+            }
+            */
+            console.log("--- savePersonalDetails finished (Password Change Skipped) ---");
 
-} // End of savePersonalDetails function
+        } // End of savePersonalDetails function
 
-// --- The listener attachment code remains the same ---
-let isPersonalDetailsListenerAttached = false;
-document.addEventListener('DOMContentLoaded', () => {
-    if (isPersonalDetailsListenerAttached) {
-        console.warn("Personal details listener already attached. Skipping.");
-        return;
-    }
-    const personalDetailsForm = document.getElementById('personal-details-form');
-    if (personalDetailsForm) {
-        console.log("Attaching submit listener to personal details form FOR THE FIRST TIME.");
-        personalDetailsForm.addEventListener('submit', savePersonalDetails);
-        isPersonalDetailsListenerAttached = true;
-    } else {
-        console.error("Could not find personal details form ON DOMContentLoaded.");
-    }
-}); // End of savePersonalDetails function
+        // --- The listener attachment code remains the same ---
+        let isPersonalDetailsListenerAttached = false;
+        document.addEventListener('DOMContentLoaded', () => {
+            if (isPersonalDetailsListenerAttached) {
+                console.warn("Personal details listener already attached. Skipping.");
+                return;
+            }
+            const personalDetailsForm = document.getElementById('personal-details-form');
+            if (personalDetailsForm) {
+                console.log("Attaching submit listener to personal details form FOR THE FIRST TIME.");
+                personalDetailsForm.addEventListener('submit', savePersonalDetails);
+                isPersonalDetailsListenerAttached = true;
+            } else {
+                console.error("Could not find personal details form ON DOMContentLoaded.");
+            }
+        }); // End of savePersonalDetails function
 
-// --- Attach the event listener ONCE ---
-document.addEventListener('DOMContentLoaded', () => {
-    // Check the flag BEFORE doing anything
-    if (isPersonalDetailsListenerAttached) {
-        console.warn("Personal details listener already attached. Skipping.");
-        return;
-    }
+        // --- Attach the event listener ONCE ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Check the flag BEFORE doing anything
+            if (isPersonalDetailsListenerAttached) {
+                console.warn("Personal details listener already attached. Skipping.");
+                return;
+            }
 
-    const personalDetailsForm = document.getElementById('personal-details-form');
-    if (personalDetailsForm) {
-        console.log("Attaching submit listener to personal details form FOR THE FIRST TIME.");
-        personalDetailsForm.addEventListener('submit', savePersonalDetails);
-        isPersonalDetailsListenerAttached = true; // Set the flag
-    } else {
-        console.error("Could not find personal details form ON DOMContentLoaded.");
-    }
-});
+            const personalDetailsForm = document.getElementById('personal-details-form');
+            if (personalDetailsForm) {
+                console.log("Attaching submit listener to personal details form FOR THE FIRST TIME.");
+                personalDetailsForm.addEventListener('submit', savePersonalDetails);
+                isPersonalDetailsListenerAttached = true; // Set the flag
+            } else {
+                console.error("Could not find personal details form ON DOMContentLoaded.");
+            }
+        });
 
-// --- END: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER (v2) ---
+        // --- END: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER (v2) ---
 
-// --- END: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER ---
+        // --- END: REPLACEMENT FOR savePersonalDetails FUNCTION and LISTENER ---
 
         // --- END: REPLACEMENT FUNCTION ---
 
@@ -12949,7 +13139,7 @@ document.addEventListener('DOMContentLoaded', () => {
          * Fetches data and dynamically renders the learner's main dashboard.
          * @param {string} uid - The UID of the logged-in learner.
          */
-       // --- START: REPLACE existing renderLearnerDashboard function ---
+        // --- START: REPLACE existing renderLearnerDashboard function ---
         /**
          * Fetches data and dynamically renders the learner's main dashboard,
          * including updating the review notification.
@@ -13007,10 +13197,10 @@ document.addEventListener('DOMContentLoaded', () => {
                         // --- End Notification Update Logic ---
 
                     } else {
-                         // Instructor ID exists but document not found (edge case)
-                         detailsContent.style.display = 'none';
-                         noInstructorContent.style.display = 'block';
-                         if (notificationPopup) notificationPopup.style.display = 'none'; // Hide notification
+                        // Instructor ID exists but document not found (edge case)
+                        detailsContent.style.display = 'none';
+                        noInstructorContent.style.display = 'block';
+                        if (notificationPopup) notificationPopup.style.display = 'none'; // Hide notification
                     }
                 } else {
                     dynamicBookingBtns.forEach(btn => {
@@ -13030,7 +13220,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             } catch (error) {
                 console.error("Error rendering learner dashboard:", error);
-                 if (notificationPopup) notificationPopup.style.display = 'none'; // Hide on error
+                if (notificationPopup) notificationPopup.style.display = 'none'; // Hide on error
             }
         }
         // --- END: REPLACEMENT for renderLearnerDashboard function ---
@@ -14311,6 +14501,265 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         /**
+ * Fetches and displays a list of instructors in the Admin Bookings view.
+ */
+        async function renderInstructorListForBookingView() {
+            const container = document.getElementById('instructor-bookings-list');
+            if (!container) return;
+
+            container.innerHTML = `<p style="padding: 20px;">Loading instructors...</p>`;
+
+            try {
+                const snapshot = await db.collection('users')
+                    .where('role', '==', 'instructor')
+                    .get();
+
+                if (snapshot.empty) {
+                    container.innerHTML = `<p style="padding: 20px;">No instructors found.</p>`;
+                    return;
+                }
+
+                // Using a similar structure to the controls list for consistency
+                let listHtml = `
+            <div class="user-control-header" style="grid-template-columns: 2fr 2fr 1fr;">
+                <div>Name</div>
+                <div>Email</div>
+                <div>Action</div>
+            </div>`;
+
+                snapshot.forEach(doc => {
+                    const instructor = doc.data();
+                    const uid = doc.id;
+                    listHtml += `
+                <div class="user-control-row" style="grid-template-columns: 2fr 2fr 1fr;">
+                    <div>${instructor.firstName || 'N/A'} ${instructor.surname || ''}</div>
+                    <div>${instructor.email}</div>
+                    <div>
+                        <button class="btn btn-secondary btn-small view-instructor-bookings-btn" data-instructor-id="${uid}">View Bookings</button>
+                    </div>
+                </div>`;
+                });
+                container.innerHTML = listHtml;
+
+            } catch (error) {
+                console.error("Error fetching instructors for booking view:", error);
+                container.innerHTML = `<p style="padding: 20px; color: red;">Could not load instructors.</p>`;
+            }
+        }
+
+        /**
+ * Fetches and displays bookings (upcoming, past) for a specific instructor in the Admin view.
+ * @param {string} instructorId - The UID of the instructor whose bookings to display.
+ */
+        async function renderAdminInstructorBookings(instructorId) {
+            const displayArea = document.getElementById('admin-booking-display-area');
+            if (!displayArea) return;
+
+            displayArea.innerHTML = `<p style="padding: 20px;">Loading bookings...</p>`;
+
+            try {
+                const bookingsSnapshot = await db.collection('bookings')
+                    .where('instructorId', '==', instructorId)
+                    // Fetch all statuses initially, sort by date
+                    .orderBy('createdAt', 'desc') // Or sort by the actual booking date field if you store it as a Timestamp
+                    .get();
+
+                if (bookingsSnapshot.empty) {
+                    displayArea.innerHTML = `<p style="padding: 20px;">No bookings found for this instructor.</p>`;
+                    return;
+                }
+
+                const today = moment().startOf('day');
+                let upcomingHtml = '';
+                let pastHtml = '';
+
+                bookingsSnapshot.forEach(doc => {
+                    const booking = doc.data();
+                    const bookingId = doc.id;
+                    let bookingDateMoment;
+
+                    // Handle both Timestamp and String date formats
+                    if (booking.date && typeof booking.date.toDate === 'function') { // Firestore Timestamp
+                        bookingDateMoment = moment(booking.date.toDate());
+                    } else if (typeof booking.date === 'string') { // String date 'ddd, D MMM YYYY'
+                        bookingDateMoment = moment(booking.date, 'ddd, D MMM YYYY');
+                    } else {
+                        // Skip if date format is unknown or missing
+                        console.warn(`Booking ${bookingId} skipped due to invalid date format.`);
+                        return;
+                    }
+
+                    const displayDate = bookingDateMoment.format('ddd, D MMM YYYY'); // Consistent format for display
+                    const statusClass = booking.status ? `status-${booking.status.toLowerCase()}` : 'status-pending';
+
+                    // Basic row structure (similar to history tables)
+                    const rowHtml = `
+                <div class="history-table-row" style="grid-template-columns: 1fr 1.5fr 1fr 1fr 1.5fr 1fr;">
+                    <div>#${bookingId.substring(0, 7)}</div>
+                    <div>${booking.learnerName || 'N/A'}</div>
+                    <div>${displayDate}</div>
+                    <div>${booking.startTime || 'N/A'}</div>
+                    <div>${booking.lessonType || 'Lesson'}</div>
+                    <div><span class="status-badge ${statusClass}">${booking.status || 'PENDING'}</span></div>
+                </div>`;
+
+                    // Categorize based on date
+                    if (bookingDateMoment.isSameOrAfter(today) && booking.status !== 'COMPLETED' && booking.status !== 'CANCELLED') {
+                        upcomingHtml += rowHtml;
+                    } else {
+                        pastHtml += rowHtml;
+                    }
+                });
+
+                // Construct final HTML with headers
+                displayArea.innerHTML = `
+            <div class="card" style="margin-bottom: 20px; padding: 0;">
+                <h4 style="padding: 15px 20px; border-bottom: 1px solid var(--border-color); margin:0;">Upcoming / Pending Bookings</h4>
+                <div class="history-table" style="font-size: 14px;">
+                    <div class="history-table-header" style="grid-template-columns: 1fr 1.5fr 1fr 1fr 1.5fr 1fr;">
+                        <div>ID</div>
+                        <div>Learner</div>
+                        <div>Date</div>
+                        <div>Time</div>
+                        <div>Type</div>
+                        <div>Status</div>
+                    </div>
+                    ${upcomingHtml || '<div style="padding: 20px; text-align: center;">No upcoming bookings.</div>'}
+                </div>
+            </div>
+
+            <div class="card" style="padding: 0;">
+                <h4 style="padding: 15px 20px; border-bottom: 1px solid var(--border-color); margin:0;">Past Bookings</h4>
+                <div class="history-table" style="font-size: 14px;">
+                    <div class="history-table-header" style="grid-template-columns: 1fr 1.5fr 1fr 1fr 1.5fr 1fr;">
+                        <div>ID</div>
+                        <div>Learner</div>
+                        <div>Date</div>
+                        <div>Time</div>
+                        <div>Type</div>
+                        <div>Status</div>
+                    </div>
+                    ${pastHtml || '<div style="padding: 20px; text-align: center;">No past bookings.</div>'}
+                </div>
+            </div>
+        `;
+
+            } catch (error) {
+                console.error("Error fetching instructor bookings for admin:", error);
+                displayArea.innerHTML = `<p style="padding: 20px; color: red;">Could not load bookings.</p>`;
+            }
+        }
+
+        /**
+ * Fetches and displays bookings (upcoming, past) for a specific learner in the Admin view.
+ * @param {string} learnerId - The UID of the learner whose bookings to display.
+ */
+async function renderAdminLearnerBookings(learnerId) {
+    // Target the specific display area within the learner details container
+    const displayArea = document.getElementById('admin-learner-booking-display-area');
+    if (!displayArea) {
+         console.error("Error: Container '#admin-learner-booking-display-area' not found."); // Add error log
+         return;
+    }
+
+    displayArea.innerHTML = `<p style="padding: 20px;">Loading bookings...</p>`;
+
+    try {
+        const bookingsSnapshot = await db.collection('bookings')
+            .where('learnerId', '==', learnerId) // Query by learnerId
+            .orderBy('createdAt', 'desc')
+            .get();
+
+        if (bookingsSnapshot.empty) {
+            displayArea.innerHTML = `<p style="padding: 20px;">No bookings found for this learner.</p>`;
+            return;
+        }
+
+        const today = moment().startOf('day');
+        let upcomingHtml = '';
+        let pastHtml = '';
+
+        // Loop and categorize (similar to instructor function)
+        bookingsSnapshot.forEach(doc => {
+            const booking = doc.data();
+            const bookingId = doc.id;
+            let bookingDateMoment;
+
+            // Handle date formats
+            if (booking.date && typeof booking.date.toDate === 'function') {
+                bookingDateMoment = moment(booking.date.toDate());
+            } else if (typeof booking.date === 'string') {
+                bookingDateMoment = moment(booking.date, 'ddd, D MMM YYYY');
+            } else {
+                 console.warn(`Booking ${bookingId} for learner ${learnerId} skipped due to invalid date format.`); // Add warning log
+                return; // Skip invalid date
+            }
+
+            const displayDate = bookingDateMoment.format('ddd, D MMM YYYY');
+            const statusClass = booking.status ? `status-${booking.status.toLowerCase()}` : 'status-pending';
+
+            // Include Instructor Name in the row
+            const rowHtml = `
+               <div class="history-table-row" style="grid-template-columns: 1fr 1.5fr 1.5fr 1fr 1fr 1fr;">
+                   <div>#${bookingId.substring(0, 7)}</div>
+                   <div>${booking.instructorName || 'N/A'}</div>
+                   <div>${displayDate}</div>
+                   <div>${booking.startTime || 'N/A'}</div>
+                   <div>${booking.lessonType || 'Lesson'}</div>
+                   <div><span class="status-badge ${statusClass}">${booking.status || 'PENDING'}</span></div>
+               </div>`;
+
+            if (bookingDateMoment.isSameOrAfter(today) && booking.status !== 'COMPLETED' && booking.status !== 'CANCELLED') {
+                upcomingHtml += rowHtml;
+            } else {
+                pastHtml += rowHtml;
+            }
+        });
+
+        // Render the categorized lists
+        displayArea.innerHTML = `
+           <div class="card" style="margin-bottom: 20px; padding: 0;">
+               <h4 style="padding: 15px 20px; border-bottom: 1px solid var(--border-color); margin:0;">Upcoming / Pending Bookings</h4>
+               <div class="history-table" style="font-size: 14px;">
+                   <div class="history-table-header" style="grid-template-columns: 1fr 1.5fr 1.5fr 1fr 1fr 1fr;">
+                       <div>ID</div>
+                       <div>Instructor</div>
+                       <div>Date</div>
+                       <div>Time</div>
+                       <div>Type</div>
+                       <div>Status</div>
+                   </div>
+                   ${upcomingHtml || '<div style="padding: 20px; text-align: center;">No upcoming bookings.</div>'}
+               </div>
+           </div>
+
+           <div class="card" style="padding: 0;">
+               <h4 style="padding: 15px 20px; border-bottom: 1px solid var(--border-color); margin:0;">Past Bookings</h4>
+               <div class="history-table" style="font-size: 14px;">
+                   <div class="history-table-header" style="grid-template-columns: 1fr 1.5fr 1.5fr 1fr 1fr 1fr;">
+                       <div>ID</div>
+                       <div>Instructor</div>
+                       <div>Date</div>
+                       <div>Time</div>
+                       <div>Type</div>
+                       <div>Status</div>
+                   </div>
+                   ${pastHtml || '<div style="padding: 20px; text-align: center;">No past bookings.</div>'}
+               </div>
+           </div>
+       `;
+
+    } catch (error) {
+        console.error("Error fetching learner bookings for admin:", error);
+        displayArea.innerHTML = `<p style="padding: 20px; color: red;">Could not load bookings.</p>`;
+    }
+}
+
+        // --- START: ADD FOR VIEWING INSTRUCTOR BOOKINGS (Admin) ---
+        
+        // --- END: ADD FOR VIEWING INSTRUCTOR BOOKINGS (Admin) ---
+
+        /**
          * Fetches a single instructor's details and shows them in the verification modal.
          * @param {string} instructorId The UID of the instructor to view.
          */
@@ -14390,65 +14839,27 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-       // --- START: Combined Super Admin Page Click Listener ---
-document.getElementById('super-admin-page')?.addEventListener('click', (e) => {
+        // Event listener for the admin dashboard (delegated)
+        document.getElementById('super-admin-page')?.addEventListener('click', (e) => {
+            // Handle clicking the "View Details" button for an instructor
+            if (e.target.classList.contains('view-verification-details')) {
+                const instructorId = e.target.dataset.id;
+                showVerificationDetailsModal(instructorId);
+            }
+        });
 
-    // 1. Handle clicking "View Details" in the VERIFICATION list
-    if (e.target.classList.contains('view-verification-details')) {
-        const instructorId = e.target.dataset.id;
-        showVerificationDetailsModal(instructorId); // Show verification modal
-        return; // Stop processing this click event
-    }
-
-    // 2. Handle clicking a user name link in the CONTROLS list
-    if (e.target.classList.contains('user-name-link')) {
-         e.preventDefault(); // Prevent link navigation
-         const uid = e.target.dataset.uid;
-         if (uid) {
-             showUserDetailsModal(uid); // Show general user details modal
-         }
-         return; // Stop processing this click event
-    }
-
-    // 3. Handle clicking a user name link OR "View Bookings" button in the BOOKINGS list
-    const userBookingTarget = e.target.closest('.user-booking-link, .view-user-bookings');
-    if (userBookingTarget) {
-         e.preventDefault(); // Prevent link navigation if it's the link
-         const uid = userBookingTarget.dataset.uid;
-         // Get name - Use data-name from button first, fallback to link text
-         const name = userBookingTarget.dataset.name || userBookingTarget.textContent.trim();
-         if (uid) {
-             renderUserBookings(uid, name); // Show the specific user's bookings view
-         }
-         return; // Stop processing this click event
-    }
-
-    // 4. Handle clicking the "Back to Lists" button (when viewing specific user bookings)
-    if (e.target.closest('#back-to-bookings-list')) {
-        e.preventDefault(); // Prevent link navigation
-        // Hide the specific user's bookings display
-        document.getElementById('super-admin-user-bookings-display').style.display = 'none';
-        // Show the main bookings list view again
-        document.getElementById('super-admin-bookings-view').style.display = 'block';
-        // You could optionally re-render the list here if needed
-        // if (currentBookingListUserRole === 'instructor') renderInstructorsBookingList(); else renderLearnersBookingList();
-        return; // Stop processing this click event (though likely not strictly needed here)
-    }
-
-    // 5. Handle closing modals (Optional - better handled by modal listeners)
-    // This part might be redundant if modals already have close logic, but included as you had it:
-    if (e.target.classList.contains('modal-close-btn') || e.target.classList.contains('modal-overlay')) {
-        // Find the closest parent modal overlay and remove the 'active' class
-        const modal = e.target.closest('.modal-overlay');
-        if (modal) {
-            modal.classList.remove('active');
-        }
-        // No return needed here, as clicking overlay/close shouldn't trigger other actions anyway
-    }
-
-    // Add any other specific click handling for the super-admin-page *inside this listener* if needed in the future.
-
-}); // --- END: Combined Super Admin Page Click Listener ---
+        // Event listener for the verification modal
+        document.getElementById('verification-details-modal')?.addEventListener('click', (e) => {
+            // Handle clicking the "Mark as Verified" button
+            if (e.target.id === 'mark-verified-btn') {
+                const instructorId = e.target.dataset.id;
+                verifyInstructor(instructorId);
+            }
+            // Handle closing the modal
+            if (e.target.classList.contains('modal-close-btn') || e.target.classList.contains('modal-overlay')) {
+                e.currentTarget.classList.remove('active');
+            }
+        });
         // --- END: ADD FOR SUPER ADMIN FUNCTIONALITY ---
 
         // --- START: ADD FOR SUPER ADMIN CONTROLS ---
@@ -14583,14 +14994,14 @@ document.getElementById('super-admin-page')?.addEventListener('click', (e) => {
             }
         });
 
-// --- END: ADD FOR SUPER ADMIN CONTROLS ---
-// --- START: ADD FOR USER DETAILS MODAL ---
+        // --- END: ADD FOR SUPER ADMIN CONTROLS ---
+        // --- START: ADD FOR USER DETAILS MODAL ---
 
-/**
- * Fetches user data from Firestore and displays it in the details modal.
- * @param {string} uid - The User ID of the user to display.
- */
- // --- START: REPLACE existing showUserDetailsModal function ---
+        /**
+         * Fetches user data from Firestore and displays it in the details modal.
+         * @param {string} uid - The User ID of the user to display.
+         */
+        // --- START: REPLACE existing showUserDetailsModal function ---
         /**
          * Fetches user data from Firestore and displays it in the details modal, including reviews.
          * @param {string} uid - The User ID of the user to display.
@@ -14658,7 +15069,7 @@ document.getElementById('super-admin-page')?.addEventListener('click', (e) => {
                             const review = doc.data();
                             const reviewDate = review.createdAt ? moment(review.createdAt.toDate()).format('D MMM YYYY') : '';
                             let starsHtml = '';
-                            for(let i = 1; i <= 5; i++) { starsHtml += i <= review.rating ? '★' : '☆'; }
+                            for (let i = 1; i <= 5; i++) { starsHtml += i <= review.rating ? '★' : '☆'; }
 
                             reviewsHtml += `
                                 <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
@@ -14684,209 +15095,209 @@ document.getElementById('super-admin-page')?.addEventListener('click', (e) => {
             }
         }
         // --- END: REPLACEMENT for showUserDetailsModal function ---
-// Event listener for closing the user details modal
-document.getElementById('user-details-modal')?.addEventListener('click', (e) => {
-    if (e.target.classList.contains('modal-close-btn') || e.target.classList.contains('modal-overlay')) {
-        e.currentTarget.classList.remove('active');
-    }
-});
+        // Event listener for closing the user details modal
+        document.getElementById('user-details-modal')?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-close-btn') || e.target.classList.contains('modal-overlay')) {
+                e.currentTarget.classList.remove('active');
+            }
+        });
 
-// Delegated event listener for clicking user names in the controls view
-document.getElementById('super-admin-controls-view')?.addEventListener('click', (e) => {
-    if (e.target.classList.contains('user-name-link')) {
-        e.preventDefault();
-        const uid = e.target.dataset.uid;
-        if (uid) {
-            showUserDetailsModal(uid);
-        }
-    }
-});
+        // Delegated event listener for clicking user names in the controls view
+        document.getElementById('super-admin-controls-view')?.addEventListener('click', (e) => {
+            if (e.target.classList.contains('user-name-link')) {
+                e.preventDefault();
+                const uid = e.target.dataset.uid;
+                if (uid) {
+                    showUserDetailsModal(uid);
+                }
+            }
+        });
 
-// --- START: ADD THIS NEW ACCOUNT SETTINGS SCRIPT ---
+        // --- START: ADD THIS NEW ACCOUNT SETTINGS SCRIPT ---
 
-/**
- * Loads current instructor account settings into the new form.
- */
-async function loadAccountSettings() {
-    console.log("loadAccountSettings called");
-    if (!auth.currentUser) return;
-    const uid = auth.currentUser.uid;
-    const form = document.getElementById('account-settings-form');
-    if (!form) {
-        console.error("Account settings form not found!");
-        return;
-    }
+        /**
+         * Loads current instructor account settings into the new form.
+         */
+        async function loadAccountSettings() {
+            console.log("loadAccountSettings called");
+            if (!auth.currentUser) return;
+            const uid = auth.currentUser.uid;
+            const form = document.getElementById('account-settings-form');
+            if (!form) {
+                console.error("Account settings form not found!");
+                return;
+            }
 
-    try {
-        const doc = await db.collection('users').doc(uid).get();
-        if (doc.exists) {
-            const data = doc.data();
-            console.log("Loading data:", data);
-            form.querySelector('#as-first-name').value = data.firstName || '';
-            form.querySelector('#as-surname').value = data.surname || '';
-            form.querySelector('#as-email').value = data.email || ''; // Should already be there
-            form.querySelector('#as-mobile').value = data.mobile || '';
-            form.querySelector('#as-dob').value = data.dob || ''; // Assumes YYYY-MM-DD
-            form.querySelector('#as-gender').value = data.gender || '';
-            form.querySelector('#as-pincode').value = data.pincode || ''; // Add pincode if you use it
+            try {
+                const doc = await db.collection('users').doc(uid).get();
+                if (doc.exists) {
+                    const data = doc.data();
+                    console.log("Loading data:", data);
+                    form.querySelector('#as-first-name').value = data.firstName || '';
+                    form.querySelector('#as-surname').value = data.surname || '';
+                    form.querySelector('#as-email').value = data.email || ''; // Should already be there
+                    form.querySelector('#as-mobile').value = data.mobile || '';
+                    form.querySelector('#as-dob').value = data.dob || ''; // Assumes YYYY-MM-DD
+                    form.querySelector('#as-gender').value = data.gender || '';
+                    form.querySelector('#as-pincode').value = data.pincode || ''; // Add pincode if you use it
 
-            // Clear password fields when loading
-            form.querySelector('#as-new-password').value = '';
-            form.querySelector('#as-confirm-password').value = '';
-            form.querySelector('#as-current-password').value = '';
-        }
-    } catch (error) {
-        console.error("Error loading account settings: ", error);
-        alert("Could not load your account settings.");
-    }
-}
-
-/**
- * Handles saving updated profile details and optional password change from the new form.
- * @param {Event} e - The form submission event.
- */
-async function updateAccountSettings(e) {
-    e.preventDefault(); // Prevent default form submission
-    console.log("--- updateAccountSettings started ---");
-
-    const user = auth.currentUser;
-    if (!user) {
-        alert("Authentication error. Please log in again.");
-        return;
-    }
-    console.log("Authenticated user:", user.uid);
-
-    const form = document.getElementById('account-settings-form');
-    if (!form) {
-        console.error("Account settings form not found!");
-        return;
-    }
-
-    // --- Part 1: Update Profile Details (Firestore) ---
-    const updatedProfileData = {
-        firstName: form.querySelector('#as-first-name').value.trim(),
-        surname: form.querySelector('#as-surname').value.trim(),
-        mobile: form.querySelector('#as-mobile').value.trim(),
-        dob: form.querySelector('#as-dob').value.trim(), // Storing as YYYY-MM-DD
-        gender: form.querySelector('#as-gender').value,
-        pincode: form.querySelector('#as-pincode').value.trim() // Add pincode if needed
-    };
-    console.log("Profile data to save:", updatedProfileData);
-
-    let profileUpdateSuccess = false;
-    try {
-        console.log("Attempting Firestore update...");
-        await db.collection('users').doc(user.uid).update(updatedProfileData);
-        console.log("Firestore profile update successful.");
-        profileUpdateSuccess = true;
-        // Update display name in header immediately
-        const userNameElement = document.getElementById('instructor-user-name');
-        if (userNameElement) userNameElement.textContent = updatedProfileData.firstName;
-
-    } catch (error) {
-        console.error("Firestore update FAILED:", error);
-        alert("❌ Could not update your profile details. Check console.");
-        // Optional: return;
-    }
-
-    // --- Part 2: Handle Password Change (Firebase Auth) ---
-    const newPassword = form.querySelector('#as-new-password').value;
-    const confirmPassword = form.querySelector('#as-confirm-password').value;
-    const currentPassword = form.querySelector('#as-current-password').value;
-    console.log(`Password fields - New: ${newPassword ? 'Filled' : 'Empty'}, Confirm: ${confirmPassword ? 'Filled' : 'Empty'}, Current: ${currentPassword ? 'Filled' : 'Empty'}`);
-
-    if (newPassword) {
-        console.log("Attempting password change...");
-        if (newPassword !== confirmPassword) {
-            alert("❌ New passwords do not match."); return;
-        }
-        if (newPassword.length < 6) {
-             alert("❌ New password must be at least 6 characters."); return;
-        }
-        if (!currentPassword) {
-            alert("❌ Please enter your current password to change it."); return;
+                    // Clear password fields when loading
+                    form.querySelector('#as-new-password').value = '';
+                    form.querySelector('#as-confirm-password').value = '';
+                    form.querySelector('#as-current-password').value = '';
+                }
+            } catch (error) {
+                console.error("Error loading account settings: ", error);
+                alert("Could not load your account settings.");
+            }
         }
 
-        try {
-            const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
-            console.log("Attempting re-authentication...");
-            await user.reauthenticateWithCredential(credential);
-            console.log("Re-authentication successful.");
+        /**
+         * Handles saving updated profile details and optional password change from the new form.
+         * @param {Event} e - The form submission event.
+         */
+        async function updateAccountSettings(e) {
+            e.preventDefault(); // Prevent default form submission
+            console.log("--- updateAccountSettings started ---");
 
-            console.log("Attempting password update...");
-            await user.updatePassword(newPassword);
-            console.log("Firebase Auth password update successful.");
-            alert("✅ Password updated successfully!");
+            const user = auth.currentUser;
+            if (!user) {
+                alert("Authentication error. Please log in again.");
+                return;
+            }
+            console.log("Authenticated user:", user.uid);
 
-            form.querySelector('#as-new-password').value = '';
-            form.querySelector('#as-confirm-password').value = '';
-            form.querySelector('#as-current-password').value = '';
+            const form = document.getElementById('account-settings-form');
+            if (!form) {
+                console.error("Account settings form not found!");
+                return;
+            }
 
-        } catch (error) {
-            console.error("Password change FAILED:", error);
-            let errorMsg = "❌ Could not change password. ";
-            if (error.code === 'auth/wrong-password') errorMsg += "Incorrect current password.";
-            else if (error.code === 'auth/weak-password') errorMsg += "New password is too weak.";
-            else if (error.code === 'auth/requires-recent-login') errorMsg += "Security check failed. Please log out and log back in.";
-            else errorMsg += "Check console.";
-            alert(errorMsg);
-            return;
+            // --- Part 1: Update Profile Details (Firestore) ---
+            const updatedProfileData = {
+                firstName: form.querySelector('#as-first-name').value.trim(),
+                surname: form.querySelector('#as-surname').value.trim(),
+                mobile: form.querySelector('#as-mobile').value.trim(),
+                dob: form.querySelector('#as-dob').value.trim(), // Storing as YYYY-MM-DD
+                gender: form.querySelector('#as-gender').value,
+                pincode: form.querySelector('#as-pincode').value.trim() // Add pincode if needed
+            };
+            console.log("Profile data to save:", updatedProfileData);
+
+            let profileUpdateSuccess = false;
+            try {
+                console.log("Attempting Firestore update...");
+                await db.collection('users').doc(user.uid).update(updatedProfileData);
+                console.log("Firestore profile update successful.");
+                profileUpdateSuccess = true;
+                // Update display name in header immediately
+                const userNameElement = document.getElementById('instructor-user-name');
+                if (userNameElement) userNameElement.textContent = updatedProfileData.firstName;
+
+            } catch (error) {
+                console.error("Firestore update FAILED:", error);
+                alert("❌ Could not update your profile details. Check console.");
+                // Optional: return;
+            }
+
+            // --- Part 2: Handle Password Change (Firebase Auth) ---
+            const newPassword = form.querySelector('#as-new-password').value;
+            const confirmPassword = form.querySelector('#as-confirm-password').value;
+            const currentPassword = form.querySelector('#as-current-password').value;
+            console.log(`Password fields - New: ${newPassword ? 'Filled' : 'Empty'}, Confirm: ${confirmPassword ? 'Filled' : 'Empty'}, Current: ${currentPassword ? 'Filled' : 'Empty'}`);
+
+            if (newPassword) {
+                console.log("Attempting password change...");
+                if (newPassword !== confirmPassword) {
+                    alert("❌ New passwords do not match."); return;
+                }
+                if (newPassword.length < 6) {
+                    alert("❌ New password must be at least 6 characters."); return;
+                }
+                if (!currentPassword) {
+                    alert("❌ Please enter your current password to change it."); return;
+                }
+
+                try {
+                    const credential = firebase.auth.EmailAuthProvider.credential(user.email, currentPassword);
+                    console.log("Attempting re-authentication...");
+                    await user.reauthenticateWithCredential(credential);
+                    console.log("Re-authentication successful.");
+
+                    console.log("Attempting password update...");
+                    await user.updatePassword(newPassword);
+                    console.log("Firebase Auth password update successful.");
+                    alert("✅ Password updated successfully!");
+
+                    form.querySelector('#as-new-password').value = '';
+                    form.querySelector('#as-confirm-password').value = '';
+                    form.querySelector('#as-current-password').value = '';
+
+                } catch (error) {
+                    console.error("Password change FAILED:", error);
+                    let errorMsg = "❌ Could not change password. ";
+                    if (error.code === 'auth/wrong-password') errorMsg += "Incorrect current password.";
+                    else if (error.code === 'auth/weak-password') errorMsg += "New password is too weak.";
+                    else if (error.code === 'auth/requires-recent-login') errorMsg += "Security check failed. Please log out and log back in.";
+                    else errorMsg += "Check console.";
+                    alert(errorMsg);
+                    return;
+                }
+            } else {
+                console.log("No new password entered, skipping password change.");
+            }
+
+            // --- Part 3: Final Success Message ---
+            if (profileUpdateSuccess && !newPassword) {
+                alert("✅ Account settings updated successfully!");
+            } else if (profileUpdateSuccess && newPassword) {
+                // Password success alert was already shown
+                console.log("Profile and password updated successfully.");
+            }
+            console.log("--- updateAccountSettings finished ---");
         }
-    } else {
-        console.log("No new password entered, skipping password change.");
-    }
 
-    // --- Part 3: Final Success Message ---
-    if (profileUpdateSuccess && !newPassword) {
-        alert("✅ Account settings updated successfully!");
-    } else if (profileUpdateSuccess && newPassword) {
-        // Password success alert was already shown
-        console.log("Profile and password updated successfully.");
-    }
-    console.log("--- updateAccountSettings finished ---");
-}
+        // --- Direct Listener Attachment for the NEW form ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const accountSettingsForm = document.getElementById('account-settings-form');
+            if (accountSettingsForm) {
+                console.log("Attaching listener to NEW account settings form.");
+                accountSettingsForm.addEventListener('submit', updateAccountSettings);
+            } else {
+                // This might appear initially if the dashboard isn't the first page shown
+                console.log("New account settings form not found yet (might be on inactive page).");
+            }
 
-// --- Direct Listener Attachment for the NEW form ---
-document.addEventListener('DOMContentLoaded', () => {
-    const accountSettingsForm = document.getElementById('account-settings-form');
-    if (accountSettingsForm) {
-        console.log("Attaching listener to NEW account settings form.");
-        accountSettingsForm.addEventListener('submit', updateAccountSettings);
-    } else {
-        // This might appear initially if the dashboard isn't the first page shown
-        console.log("New account settings form not found yet (might be on inactive page).");
-    }
-
-    // Also, ensure data is loaded when the NEW view becomes active
-    // We need to slightly modify the main click listener for the instructor dashboard
-    // Find the existing listener for `#instructor-dashboard-page a[data-view]`
-    // Add this line inside it:
-    // if (targetViewId === 'instructor-account-settings-view') {
-    //     loadAccountSettings();
-    // }
-});
+            // Also, ensure data is loaded when the NEW view becomes active
+            // We need to slightly modify the main click listener for the instructor dashboard
+            // Find the existing listener for `#instructor-dashboard-page a[data-view]`
+            // Add this line inside it:
+            // if (targetViewId === 'instructor-account-settings-view') {
+            //     loadAccountSettings();
+            // }
+        });
 
 
-// --- IMPORTANT: Modify the Instructor Dashboard Click Listener ---
-// Find this block in your existing code:
-/*
-const instructorNavLink = e.target.closest('#instructor-dashboard-page a[data-view]');
-if (instructorNavLink) {
-    // ... (existing code for sidebar active state and showing view) ...
+        // --- IMPORTANT: Modify the Instructor Dashboard Click Listener ---
+        // Find this block in your existing code:
+        /*
+        const instructorNavLink = e.target.closest('#instructor-dashboard-page a[data-view]');
+        if (instructorNavLink) {
+            // ... (existing code for sidebar active state and showing view) ...
+        
+            // --- ADD THIS 'if' BLOCK ---
+            if (targetViewId === 'instructor-account-settings-view') {
+                loadAccountSettings(); // Load data when this specific view is shown
+            }
+            // --- END ADD ---
+        
+            // ... (rest of the existing code for calendar, learners, etc.) ...
+        }
+        */
+        // Make sure to add the check for 'instructor-account-settings-view' as shown above.
 
-    // --- ADD THIS 'if' BLOCK ---
-    if (targetViewId === 'instructor-account-settings-view') {
-        loadAccountSettings(); // Load data when this specific view is shown
-    }
-    // --- END ADD ---
-
-    // ... (rest of the existing code for calendar, learners, etc.) ...
-}
-*/
-// Make sure to add the check for 'instructor-account-settings-view' as shown above.
-
-// --- END: ADD THIS NEW ACCOUNT SETTINGS SCRIPT ---
-async function renderInstructorReviews(instructorId) {
+        // --- END: ADD THIS NEW ACCOUNT SETTINGS SCRIPT ---
+        async function renderInstructorReviews(instructorId) {
             const reviewsListContainer = document.getElementById('instructor-reviews-list');
             if (!reviewsListContainer) return;
 
@@ -14910,7 +15321,7 @@ async function renderInstructorReviews(instructorId) {
 
                     // Simple star rating display
                     let starsHtml = '';
-                    for(let i = 1; i <= 5; i++) {
+                    for (let i = 1; i <= 5; i++) {
                         starsHtml += i <= review.rating ? '★' : '☆';
                     }
 
@@ -14936,200 +15347,56 @@ async function renderInstructorReviews(instructorId) {
             }
         }
 
-        // --- START: NEW SUPER ADMIN BOOKINGS FUNCTIONS ---
-
-/**
- * Initializes the main Bookings view (tabs and initial list).
+        /**
+ * Fetches and displays a list of learners in the Admin Controls -> Learners tab.
  */
-/**
- * Initializes the main Bookings view (tabs and initial list).
- */
- function initializeBookingsView() {
-    // --- This line loads the initial instructor list ---
-    renderInstructorsBookingList();
-    currentBookingListUserRole = 'instructor'; // Set default role tracking
-
-    const bookingsView = document.getElementById('super-admin-bookings-view');
-    const tabs = bookingsView.querySelector('.tabs');
-
-    // Attach tab listener only once using a data attribute flag
-    if (!tabs.dataset.bookingsListenerAttached) {
-        tabs.addEventListener('click', (e) => {
-            const clickedTab = e.target.closest('.tab-link');
-            if (!clickedTab) return;
-
-            // Tab switching styling
-            tabs.querySelectorAll('.tab-link').forEach(t => t.classList.remove('active'));
-            clickedTab.classList.add('active');
-
-            // Pane switching display
-            bookingsView.querySelectorAll('.tab-pane').forEach(p => {
-                p.style.display = 'none';
-                p.classList.remove('active');
-            });
-            const targetPane = document.getElementById(clickedTab.dataset.target);
-            targetPane.style.display = 'block';
-            targetPane.classList.add('active');
-
-            // Load the correct list and update role tracking
-            if (clickedTab.dataset.target === 'instructor-bookings-list-content') {
-                renderInstructorsBookingList(); // Load instructors when tab clicked
-                currentBookingListUserRole = 'instructor';
-            } else {
-                renderLearnersBookingList(); // Load learners when tab clicked
-                currentBookingListUserRole = 'learner';
-            }
-        });
-        tabs.dataset.bookingsListenerAttached = 'true'; // Mark listener as attached
-    }
-}
-
-/**
- * Generic function to render a user list within the Bookings view.
- * Fetches users (instructors or learners) and displays them.
- * @param {string} role - 'instructor' or 'learner'.
- * @param {string} containerSelector - CSS selector for the container div where the list should be rendered.
- */
- async function renderUserBookingList(role, containerSelector) {
-    const container = document.querySelector(containerSelector);
-    // --- Check if container exists ---
+async function renderLearnerListForBookingView() {
+    // Target the specific container inside the learner tab pane
+    const container = document.getElementById('learner-bookings-list');
     if (!container) {
-        console.error("Container not found for selector:", containerSelector);
-        // Display error in a visible place if console not open
-        const bookingsView = document.getElementById('super-admin-bookings-view');
-        if (bookingsView) bookingsView.innerHTML = `<p style='color:red;'>Error: UI container missing (${containerSelector})</p>`;
-        return;
-    }
-    // --- End check ---
-    container.innerHTML = `<p style="padding: 20px;">Loading ${role}s...</p>`; // Loading state
-
-    try {
-        // --- Firestore Query ---
-        const snapshot = await db.collection('users').where('role', '==', role).get();
-        // --- End Query ---
-
-        if (snapshot.empty) {
-            container.innerHTML = `<p style="padding: 20px;">No ${role}s found.</p>`;
-            return;
-        }
-
-        // --- HTML Generation ---
-        let listHtml = `
-        <div class="user-control-header" style="grid-template-columns: 2fr 2fr 1fr;">
-            <div>Name</div>
-            <div>Email</div>
-            <div>Action</div>
-        </div>`;
-
-        snapshot.forEach(doc => {
-            const user = doc.data();
-            const uid = doc.id;
-            const userName = `${user.firstName || 'User'} ${user.surname || ''}`.trim();
-            listHtml += `
-        <div class="user-control-row" style="grid-template-columns: 2fr 2fr 1fr;">
-            <div><a href="#" class="user-booking-link" data-uid="${uid}">${userName || 'N/A'}</a></div>
-            <div>${user.email}</div>
-            <div>
-                <button class="btn btn-secondary btn-small view-user-bookings" data-uid="${uid}" data-name="${userName || 'User'}">View Bookings</button>
-            </div>
-        </div>`;
-        });
-        container.innerHTML = listHtml;
-        // --- End HTML Generation ---
-
-    } catch (error) {
-        console.error(`Error fetching ${role}s for booking list:`, error);
-        container.innerHTML = `<p style="padding: 20px; color: red;">Could not load ${role}s. Firestore error: ${error.message}</p>`; // Show Firestore error
-    }
-}
-
-// --- Make sure these wrappers exist too ---
-function renderInstructorsBookingList() {
-    renderUserBookingList('instructor', '#instructor-bookings-list-content .card');
-}
-function renderLearnersBookingList() {
-    renderUserBookingList('learner', '#learner-bookings-list-content .card');
-}
-
-/**
- * Fetches and displays all bookings (past and present) associated with a specific user (instructor or learner).
- * @param {string} uid - The User ID of the instructor or learner.
- * @param {string} userName - The user's name to display in the title.
- */
-async function renderUserBookings(uid, userName) {
-    const bookingsListContainer = document.getElementById('user-bookings-list-container');
-    const titleElement = document.getElementById('user-bookings-display-title');
-    const mainBookingsView = document.getElementById('super-admin-bookings-view');
-    const userBookingsDisplay = document.getElementById('super-admin-user-bookings-display');
-
-    if (!bookingsListContainer || !titleElement || !mainBookingsView || !userBookingsDisplay) {
-        console.error("One or more elements required for renderUserBookings not found!");
+        console.error("Error: Container '#learner-bookings-list' not found."); // Add error log
         return;
     }
 
-    // Show loading state and switch views
-    bookingsListContainer.innerHTML = '<p style="padding: 20px;">Loading bookings...</p>';
-    titleElement.textContent = `Bookings for ${userName}`;
-    mainBookingsView.style.display = 'none'; // Hide the list view
-    userBookingsDisplay.style.display = 'block'; // Show the detail view
+    container.innerHTML = `<p style="padding: 20px;">Loading learners...</p>`;
 
     try {
-        // Determine query field based on which tab was active in the list view (using the global variable)
-        const queryField = currentBookingListUserRole === 'instructor' ? 'instructorId' : 'learnerId';
-        console.log(`Querying bookings where ${queryField} == ${uid}`); // Debugging log
-
-        const bookingsSnapshot = await db.collection('bookings')
-            .where(queryField, '==', uid)
-            .orderBy('createdAt', 'desc') // Show most recent first
+        const snapshot = await db.collection('users')
+            .where('role', '==', 'learner')
             .get();
 
-        // Reuse history table styles for the header
-        bookingsListContainer.innerHTML = `
-        <div class="history-table-header" style="grid-template-columns: 1fr 1.5fr 1.5fr 1fr 2fr 1fr;">
-            <div>Booking ID</div>
-            {/* Show the 'other' participant in the booking */}
-            <div>${currentBookingListUserRole === 'instructor' ? 'Learner' : 'Instructor'}</div>
-            <div>Date</div>
-            <div>Time</div>
-            <div>Location</div>
-            <div>Status</div>
-        </div>`;
-
-        if (bookingsSnapshot.empty) {
-            bookingsListContainer.innerHTML += '<div class="history-table-row" style="text-align: center; grid-column: 1 / -1; padding: 20px;">No bookings found for this user.</div>';
+        if (snapshot.empty) {
+            container.innerHTML = `<p style="padding: 20px;">No learners found.</p>`;
             return;
         }
 
-        bookingsSnapshot.forEach(doc => {
-            const booking = doc.data();
-            // Determine the name of the *other* person involved in the booking
-            const otherUserName = currentBookingListUserRole === 'instructor' ? booking.learnerName : booking.instructorName;
-            // Generate a CSS class based on the booking status (e.g., status-completed, status-cancelled)
-            const statusClass = `status-${(booking.status || 'unknown').toLowerCase().replace(/\s+/g, '-')}`;
-            const bookingDateDisplay = booking.date ? (typeof booking.date.toDate === 'function' ? moment(booking.date.toDate()).format('ddd, D MMM YYYY') : booking.date) : 'N/A';
+        // Header for the list
+        let listHtml = `
+               <div class="user-control-header" style="grid-template-columns: 2fr 2fr 1fr;">
+                   <div>Name</div>
+                   <div>Email</div>
+                   <div>Action</div>
+               </div>`;
 
-
-            // Reuse history table row styles
-            const bookingRowHtml = `
-        <div class="history-table-row" style="grid-template-columns: 1fr 1.5fr 1.5fr 1fr 2fr 1fr;">
-            <div>#${doc.id.substring(0, 7)}</div> {/* Shortened Booking ID */}
-            <div>${otherUserName || 'N/A'}</div>
-            <div>${bookingDateDisplay}</div> {/* Formatted Date */}
-            <div>${booking.startTime || 'N/A'}</div>
-            <div>${booking.pickupLocation || 'N/A'}</div>
-            {/* Display status using the generated class */}
-            <div><span class="status-badge ${statusClass}">${booking.status || 'UNKNOWN'}</span></div>
-        </div>`;
-            bookingsListContainer.insertAdjacentHTML('beforeend', bookingRowHtml);
+        snapshot.forEach(doc => {
+            const learner = doc.data();
+            const uid = doc.id;
+            listHtml += `
+                   <div class="user-control-row" style="grid-template-columns: 2fr 2fr 1fr;">
+                       <div>${learner.firstName || 'N/A'} ${learner.surname || ''}</div>
+                       <div>${learner.email}</div>
+                       <div>
+                           <button class="btn btn-secondary btn-small view-learner-bookings-btn" data-learner-id="${uid}">View Bookings</button>
+                       </div>
+                   </div>`;
         });
+        container.innerHTML = listHtml;
 
     } catch (error) {
-        console.error(`Error fetching bookings for user ${uid}:`, error);
-        bookingsListContainer.innerHTML = '<p style="padding: 20px; color: red;">Could not load bookings.</p>';
+        console.error("Error fetching learners for booking view:", error);
+        container.innerHTML = `<p style="padding: 20px; color: red;">Could not load learners.</p>`;
     }
 }
-
-// --- END: NEW SUPER ADMIN BOOKINGS FUNCTIONS ---
     </script>
 </body>
 
