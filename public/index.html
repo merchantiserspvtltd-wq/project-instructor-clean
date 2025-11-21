@@ -17,6 +17,13 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+<script type="text/javascript">
+   (function(){
+      // ⚠️ PASTE YOUR PUBLIC KEY HERE (e.g., "user_XyZ123...")
+      emailjs.init("bvBVOihI5gVv7jdVi"); 
+   })();
+</script>
     <style>
         /* --- WALLET PAGE STYLES --- */
         .breadcrumbs {
@@ -5517,6 +5524,22 @@
 
 
         /* --- END: ADD FOR USER DETAILS MODAL --- */
+
+/* --- PENDING APPROVAL BANNER --- */
+.pending-approval-banner {
+    background-color: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.pending-approval-banner i {
+    font-size: 20px;
+}
     </style>
 </head>
 
@@ -5689,6 +5712,7 @@
                         <li><a href="#" data-view="super-admin-controls">Controls</a></li>
                         <li><a href="#" data-view="super-admin-bookings">Bookings</a></li>
                         <li><a href="#" data-view="super-admin-notifications">Notifications</a></li>
+                        <li><a href="#" data-view="super-admin-price-approvals">Price Approvals</a></li>
                     </ul>
                 </nav>
                 <div class="sidebar-footer">
@@ -5789,7 +5813,15 @@
                     <p style="padding: 20px; text-align: center;">Loading notifications...</p>
                 </div>
             </main>
-
+<main id="super-admin-price-approvals-view" class="main-content" style="display: none;">
+    <header class="dashboard-header">
+        <h3>Price Change Requests</h3>
+    </header>
+    
+    <div id="admin-price-requests-list" class="card" style="padding: 0;">
+        <p style="padding: 20px; text-align: center;">Loading requests...</p>
+    </div>
+</main>
 
             <div id="user-details-modal" class="modal-overlay">
                 <div class="modal-content" style="max-width: 600px;">
@@ -6731,6 +6763,16 @@
                         <a href="#" class="back-link" data-view="instructor-pricing-view"><i
                                 class="fas fa-chevron-left"></i> Pricing</a>
                         <h2>Lesson Pricing (Auto)</h2>
+                    </div>
+                    <div id="price-pending-banner" class="pending-approval-banner" style="display: none;">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <strong>Price Change Pending Approval</strong>
+                            <p style="margin: 0; font-size: 13px;">
+                                You requested a change to <strong>$<span id="pending-price-display">0.00</span></strong>. 
+                                This is awaiting admin approval.
+                            </p>
+                        </div>
                     </div>
                     <div class="edit-price-container">
                         <div class="edit-price-main">
@@ -10059,21 +10101,27 @@
         // --- AUTHENTICATION & ROLE-BASED ROUTING ---
         // --- Replacement for the auth.onAuthStateChanged function ---
         // --- REPLACE your existing auth.onAuthStateChanged function with this ---
+        // --- AUTHENTICATION & ROLE-BASED ROUTING ---
         auth.onAuthStateChanged(user => {
             if (user) {
                 // *** CHECK IF SUPER ADMIN ***
                 if (user.email === 'aditya@gmail.com') {
                     // --- Super Admin Logic ---
-                    console.log("Super Admin detected. Showing admin page."); // Log for debugging
+                    console.log("Super Admin detected. Showing admin page.");
                     showPage('super-admin-page');
                     renderSuperAdminDashboard(); // Render initial view (pending verifications)
 
                     // Setup Admin Sidebar Navigation
                     const adminSidebar = document.querySelector('#super-admin-page .sidebar-nav');
+                    
+                    // Get all admin views
                     const verificationView = document.getElementById('pending-instructors-list')?.closest('.main-content');
                     const controlsView = document.getElementById('super-admin-controls-view');
                     const bookingsView = document.getElementById('super-admin-bookings-view');
                     const notificationsView = document.getElementById('super-admin-notifications-view');
+                    // [NEW] Price Approvals View
+                    const priceApprovalsView = document.getElementById('super-admin-price-approvals-view');
+
                     if (adminSidebar && verificationView && controlsView && bookingsView) {
                         // Add listener only once using a data attribute flag
                         if (!adminSidebar.dataset.listenerAttached) {
@@ -10088,46 +10136,60 @@
 
                                 const targetView = link.dataset.view;
 
-                                // Hide all admin content views first
-                                verificationView.style.display = 'none';
-                                controlsView.style.display = 'none';
-                                bookingsView.style.display = 'none';
-                                notificationsView.style.display = 'none'; // <-- New Line Added
-                                // Show the correct view and call its render function
+                                // --- HIDE ALL ADMIN VIEWS FIRST ---
+                                if (verificationView) verificationView.style.display = 'none';
+                                if (controlsView) controlsView.style.display = 'none';
+                                if (bookingsView) bookingsView.style.display = 'none';
+                                if (notificationsView) notificationsView.style.display = 'none';
+                                if (priceApprovalsView) priceApprovalsView.style.display = 'none';
+
+                                // --- SHOW THE TARGET VIEW ---
+                                
+                                // 1. Controls Tab
                                 if (targetView === 'super-admin-controls') {
                                     controlsView.style.display = 'block';
                                     renderControlsView();
-                                } else if (targetView === 'super-admin-bookings') {
+                                } 
+                                // 2. Bookings Tab
+                                else if (targetView === 'super-admin-bookings') {
                                     bookingsView.style.display = 'block';
-                                    // Default to showing instructor list when clicking bookings nav
+                                    // Default booking view setup (reset tabs to Instructor)
                                     const instructorList = document.getElementById('admin-instructor-list-container');
                                     const instructorDetails = document.getElementById('admin-instructor-booking-details-container');
                                     const learnerList = document.getElementById('admin-learner-list-container');
                                     const learnerDetails = document.getElementById('admin-learner-booking-details-container');
+                                    
                                     if (instructorList) instructorList.style.display = 'block';
                                     if (instructorDetails) instructorDetails.style.display = 'none';
-                                    if (learnerList) learnerList.style.display = 'block'; // Make sure learner list is visible initially in its tab
+                                    if (learnerList) learnerList.style.display = 'block';
                                     if (learnerDetails) learnerDetails.style.display = 'none';
-                                    // Activate instructor tab by default
+                                    
                                     const instructorTab = bookingsView.querySelector('.tabs .tab-link[data-target="admin-instructor-tab-content"]');
                                     const learnerTab = bookingsView.querySelector('.tabs .tab-link[data-target="admin-learner-tab-content"]');
                                     const instructorPane = document.getElementById('admin-instructor-tab-content');
                                     const learnerPane = document.getElementById('admin-learner-tab-content');
+                                    
                                     if (instructorTab) instructorTab.classList.add('active');
                                     if (learnerTab) learnerTab.classList.remove('active');
                                     if (instructorPane) { instructorPane.style.display = 'block'; instructorPane.classList.add('active'); }
                                     if (learnerPane) { learnerPane.style.display = 'none'; learnerPane.classList.remove('active'); }
 
-                                    renderInstructorListForBookingView(); // Load initial list
+                                    renderInstructorListForBookingView(); 
                                 }
-
+                                // 3. Notifications Tab
                                 else if (targetView === 'super-admin-notifications') {
                                     notificationsView.style.display = 'block';
-                                    // 💡 MAKE SURE THIS LINE IS PRESENT:
                                     renderAdminNotifications();
                                 }
-
-                                else { // Default to verifications view
+                                // 4. [NEW] Price Approvals Tab
+                                else if (targetView === 'super-admin-price-approvals') {
+                                    if (priceApprovalsView) {
+                                        priceApprovalsView.style.display = 'block';
+                                        renderPriceChangeRequests(); // Load the data
+                                    }
+                                }
+                                // 5. Default: Pending Verifications
+                                else { 
                                     verificationView.style.display = 'block';
                                     renderSuperAdminDashboard();
                                 }
@@ -10135,13 +10197,13 @@
                             adminSidebar.dataset.listenerAttached = 'true'; // Mark listener as attached
                         }
                     } else {
-                        console.error("Super Admin Navigation Error: Could not find one or more required elements (sidebar nav, verification view, controls view, or bookings view).");
+                        console.error("Super Admin Navigation Error: Could not find one or more required elements.");
                     }
                     // --- End Super Admin Logic ---
 
                 } else {
                     // --- Instructor/Learner Logic (ONLY RUNS IF NOT ADMIN) ---
-                    console.log("Regular user detected. Fetching user data..."); // Log for debugging
+                    console.log("Regular user detected. Fetching user data..."); 
                     db.collection('users').doc(user.uid).get().then(doc => {
                         if (doc.exists) {
                             const userData = doc.data();
@@ -10157,32 +10219,27 @@
 
                             // Route based on role
                             if (userData.role === 'instructor') {
-                                console.log("User is an instructor."); // Log
+                                console.log("User is an instructor.");
                                 document.getElementById('instructor-user-name').textContent = displayName;
                                 showPage('instructor-dashboard-page');
-                                renderInstructorDashboardView(user.uid); // Render instructor specific dashboard content
+                                renderInstructorDashboardView(user.uid); 
                             } else { // Assumes Learner if not instructor
-                                console.log("User is a learner."); // Log
-                                // Update UI elements with learner's name
+                                console.log("User is a learner."); 
                                 document.querySelectorAll('[id^="user-name"]').forEach(el => el.textContent = displayName);
                                 const welcomeMsg = document.getElementById('welcome-message');
                                 if (welcomeMsg) welcomeMsg.textContent = `Welcome back, ${displayName}!`;
 
-                                // Render learner specific dashboard content and bookings
                                 renderLearnerDashboard(user.uid);
-                                renderLearnerUpcomingBookings(user.uid); // Render upcoming bookings on login
+                                renderLearnerUpcomingBookings(user.uid); 
 
-                                // Show the correct page and view
                                 showPage('dashboard-page');
-                                showView('dashboard-main-content'); // Ensure the main dashboard view is active
+                                showView('dashboard-main-content'); 
                             }
                         } else {
-                            // User exists in Firebase Auth but not in Firestore 'users' collection
-                            console.log("User document does not exist in Firestore. Redirecting to login."); // Log
+                            console.log("User document does not exist in Firestore. Redirecting to login.");
                             showPage('login-page');
                         }
                     }).catch(error => {
-                        // Handle errors fetching Firestore data
                         console.error("Error fetching user data:", error);
                         showPage('login-page');
                     });
@@ -10191,7 +10248,7 @@
 
             } else {
                 // --- No User Logged In ---
-                console.log("No user logged in. Showing landing page."); // Log
+                console.log("No user logged in. Showing landing page.");
                 showPage('landing-page');
                 // --- End No User ---
             }
@@ -10941,53 +10998,7 @@
             });
         }
 
-        // --- START: REPLACEMENT FOR PRICING SAVE LOGIC ---
-        const savePriceBtn = document.getElementById('save-price-changes-btn');
-        if (savePriceBtn) {
-            savePriceBtn.addEventListener('click', async (e) => {
-                e.preventDefault();
 
-                if (!auth.currentUser) {
-                    alert("Authentication error. Please log in again.");
-                    return;
-                }
-
-                const uid = auth.currentUser.uid;
-                const newPrice = parseFloat(document.getElementById('hourly-lesson-price').value);
-
-                if (isNaN(newPrice) || newPrice <= 0) {
-                    alert("Please enter a valid price.");
-                    return;
-                }
-
-                try {
-                    // Update the pricing object in the instructor's user document
-                    await db.collection('users').doc(uid).set({
-                        pricing: {
-                            lesson: newPrice,
-                            // Assuming a test package is 3x the hourly rate for this example
-                            testPackage: newPrice * 3
-                        }
-                    }, { merge: true }); // Use merge: true to avoid overwriting other user data
-
-                    // --- The rest of this is the same as before ---
-                    if (priceElementToUpdate) {
-                        priceElementToUpdate.textContent = `$${newPrice.toFixed(2)}`;
-                    }
-                    showView('instructor-pricing-view');
-                    const successMsg = document.getElementById('price-update-success-msg');
-                    if (successMsg) {
-                        successMsg.style.display = 'flex';
-                        setTimeout(() => { successMsg.style.display = 'none'; }, 5000);
-                        successMsg.querySelector('.close-btn').onclick = () => { successMsg.style.display = 'none'; };
-                    }
-
-                } catch (error) {
-                    console.error("Error saving price: ", error);
-                    alert("Could not save the new price. Please try again.");
-                }
-            });
-        }
         // --- END: REPLACEMENT FOR PRICING SAVE LOGIC ---
         // --- END: EDIT PRICING LOGIC ---
         // --- START: CREATE EVENT DROPDOWN LOGIC ---
@@ -15489,9 +15500,318 @@ async function updateAccountSettings(e) {
 }
 
 
+// ============================================================
+// START: NEW PRICING APPROVAL SYSTEM (Copy and Paste this)
+// ============================================================
 
+/**
+ * FUNCTION 1: Check for Pending Requests
+ * This runs when you open the "Edit Price" page.
+ * If a request is found, it locks the form and shows the yellow banner.
+ */
+ /**
+ * FUNCTION 1: Check for Pending Requests & Load Current Price
+ */
+async function checkPendingPriceRequests() {
+    const user = auth.currentUser;
+    if (!user) return;
 
+    const banner = document.getElementById('price-pending-banner');
+    const priceInput = document.getElementById('hourly-lesson-price');
+    const saveBtn = document.getElementById('save-price-changes-btn');
+    const pendingDisplay = document.getElementById('pending-price-display');
+
+    if (!banner || !priceInput || !saveBtn) return;
+
+    try {
+        // 1. Check if there is a pending request
+        const snapshot = await db.collection('priceChangeRequests')
+            .where('instructorId', '==', user.uid)
+            .where('status', '==', 'pending')
+            .limit(1)
+            .get();
+
+        if (!snapshot.empty) {
+            // --- SCENARIO A: PENDING REQUEST EXISTS ---
+            const requestData = snapshot.docs[0].data();
+            banner.style.display = 'flex';
+            if (pendingDisplay) pendingDisplay.textContent = requestData.newPrice.toFixed(2);
+            
+            priceInput.value = requestData.newPrice; 
+            priceInput.disabled = true;
+            priceInput.style.backgroundColor = "#f0f0f0";
+            
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Request Pending Approval";
+            saveBtn.classList.add('btn-disabled');
+        } else {
+            // --- SCENARIO B: NO REQUEST PENDING (Load Live Price) ---
+            
+            // [NEW CODE] Fetch the actual current price from the User Profile
+            const userDoc = await db.collection('users').doc(user.uid).get();
+            const userData = userDoc.data();
+            // Use the price from DB, or 75 if missing
+            const currentPrice = (userData.pricing && userData.pricing.lesson) ? userData.pricing.lesson : 75; 
+
+            // Set the input value to the REAL price
+            priceInput.value = currentPrice;
+
+            // Reset UI
+            banner.style.display = 'none';
+            priceInput.disabled = false;
+            priceInput.style.backgroundColor = "#fff";
+            
+            saveBtn.disabled = false;
+            saveBtn.textContent = "Save Changes";
+            saveBtn.classList.remove('btn-disabled');
+        }
+    } catch (error) {
+        console.error("Error checking pending requests:", error);
+    }
+}
+
+/**
+ * FUNCTION 2: Watch for Navigation
+ * This detects when you click "Edit" on the main pricing card
+ * and triggers the check function above.
+ */
+document.addEventListener('click', (e) => {
+    // If the user clicks the "Edit" button (pencil icon)
+    if (e.target.closest('.pricing-value .btn')) {
+        // Wait a split second for the view to switch, then check DB
+        setTimeout(checkPendingPriceRequests, 100);
+    }
+});
+
+/**
+ * FUNCTION 3: Handle the "Save Changes" Click
+ * This sends the request and the email.
+ */
+/**
+ * FUNCTION 3: Handle Save Click & Send Email (REAL VERSION)
+ */
+ document.addEventListener('DOMContentLoaded', () => {
+    const savePriceBtn = document.getElementById('save-price-changes-btn');
+
+    if (savePriceBtn) {
+        // 1. Clone button to wipe out any old event listeners
+        const newSaveBtn = savePriceBtn.cloneNode(true);
+        savePriceBtn.parentNode.replaceChild(newSaveBtn, savePriceBtn);
+
+        // 2. Add the NEW listener
+        newSaveBtn.addEventListener('click', async (e) => {
+            e.preventDefault();
+
+            const user = auth.currentUser;
+            if (!user) return alert("Please log in again.");
+
+            const priceInput = document.getElementById('hourly-lesson-price');
+            const newPrice = parseFloat(priceInput.value);
+            const nameElement = document.getElementById('instructor-user-name');
+            const instructorName = nameElement ? nameElement.textContent : 'Instructor';
+
+            if (isNaN(newPrice) || newPrice <= 0) return alert("Please enter a valid price.");
+
+            // Lock Button immediately
+            newSaveBtn.textContent = "Sending Request...";
+            newSaveBtn.disabled = true;
+
+            // 3. Data object for Firestore
+            const requestData = {
+                instructorId: user.uid,
+                instructorName: instructorName,
+                instructorEmail: user.email,
+                newPrice: newPrice,
+                status: 'pending',
+                requestedAt: firebase.firestore.FieldValue.serverTimestamp()
+            };
+
+            // 4. Data object for EmailJS
+            const emailParams = {
+                to_email: 'eesiitbhu5@gmail.com', // <--- YOUR SPECIFIC EMAIL
+                subject: `Price Change Request: ${instructorName}`,
+                message: `Instructor ${instructorName} (ID: ${user.uid}) has requested a price change to $${newPrice}. Please approve in the dashboard.`
+            };
+
+            try {
+                // A. Save to Firestore
+                await db.collection('priceChangeRequests').add(requestData);
+
+                // B. Send Email via EmailJS
+                // ⚠️ REPLACE WITH YOUR ACTUAL IDs ⚠️
+                await emailjs.send('service_az09qfd', 'template_n0fguu8', emailParams);
+                
+                console.log("Email sent successfully to eesiitbhu5@gmail.com");
+
+                // C. Success UI
+                alert(`✅ Request Sent! \n\nYour price change to $${newPrice} is now pending. \nThe admin has been notified via email.`);
+                
+                // Lock the UI
+                checkPendingPriceRequests();
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Request submitted to database, but there might have been an issue sending the email.");
+                // Even if email fails, we check DB to lock the UI if the write succeeded
+                checkPendingPriceRequests(); 
+            }
+        });
+    }
+});
+// ============================================================
+// END: NEW PRICING APPROVAL SYSTEM
+// ============================================================
+// ============================================================
+// START: SUPER ADMIN PRICE APPROVAL LOGIC
+// ============================================================
+
+/**
+ * 1. Render the list of Pending Price Requests
+ */
+async function renderPriceChangeRequests() {
+    const container = document.getElementById('admin-price-requests-list');
+    if (!container) return;
+
+    container.innerHTML = '<p style="padding: 20px;">Loading requests...</p>';
+
+    try {
+        // Fetch only 'pending' requests
+        const snapshot = await db.collection('priceChangeRequests')
+            .where('status', '==', 'pending')
+            .orderBy('requestedAt', 'desc')
+            .get();
+
+        if (snapshot.empty) {
+            container.innerHTML = '<div style="padding: 40px; text-align: center; color: gray;"><h4>No pending requests</h4><p>All price changes have been reviewed.</p></div>';
+            return;
+        }
+
+        // Build the Table Header
+        let html = `
+            <div class="history-table-header" style="display: grid; grid-template-columns: 1.5fr 1.5fr 1fr 1fr 1.5fr; padding: 15px 20px; background-color: #f9fafb; font-weight: 600; color: #757575; border-bottom: 1px solid #eee;">
+                <div>Instructor</div>
+                <div>Email</div>
+                <div>New Price</div>
+                <div>Requested</div>
+                <div style="text-align: right;">Actions</div>
+            </div>`;
+
+        // Build the Rows
+        snapshot.forEach(doc => {
+            const req = doc.data();
+            const reqId = doc.id;
+            const dateStr = req.requestedAt ? moment(req.requestedAt.toDate()).fromNow() : 'Recently';
+
+            html += `
+            <div class="history-table-row" style="display: grid; grid-template-columns: 1.5fr 1.5fr 1fr 1fr 1.5fr; padding: 20px; align-items: center; border-bottom: 1px solid #eee;">
+                <div style="font-weight: 600;">${req.instructorName || 'Unknown'}</div>
+                <div style="font-size: 13px; color: gray;">${req.instructorEmail}</div>
+                <div style="font-weight: 700; color: #1A1A1A; font-size: 16px;">$${req.newPrice} / hr</div>
+                <div style="font-size: 13px;">${dateStr}</div>
+                <div style="text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+                    <button class="btn btn-small" 
+                        style="background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; padding: 6px 12px; cursor: pointer;"
+                        onclick="handlePriceRequestAction('${reqId}', 'rejected', null, null)">
+                        Reject
+                    </button>
+                    <button class="btn btn-small" 
+                        style="background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; padding: 6px 12px; cursor: pointer;"
+                        onclick="handlePriceRequestAction('${reqId}', 'approved', '${req.instructorId}', ${req.newPrice})">
+                        Approve
+                    </button>
+                </div>
+            </div>`;
+        });
+
+        container.innerHTML = html;
+
+    } catch (error) {
+        console.error("Error loading price requests:", error);
+        container.innerHTML = '<p style="color: red; padding: 20px;">Error loading data. Check console permissions.</p>';
+    }
+}
+
+/**
+ * 2. Handle Approve or Reject Click
+ * @param {string} requestId - Document ID of the request
+ * @param {string} action - 'approved' or 'rejected'
+ * @param {string} instructorId - (Only for approval) UID of instructor
+ * @param {number} newPrice - (Only for approval) The new price to set
+ */
+async function handlePriceRequestAction(requestId, action, instructorId, newPrice) {
+    const confirmMsg = action === 'approved' 
+        ? "Are you sure? This will update the instructor's live pricing." 
+        : "Are you sure you want to reject this request?";
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+        const batch = db.batch();
+        const requestRef = db.collection('priceChangeRequests').doc(requestId);
+
+        // 1. Update the Request Status (so it disappears from the pending list)
+        batch.update(requestRef, {
+            status: action,
+            reviewedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        // 2. IF APPROVED: Update the actual Instructor User Profile
+        if (action === 'approved' && instructorId && newPrice) {
+            const userRef = db.collection('users').doc(instructorId);
+            
+            // We use set with merge:true to update the nested pricing object safely
+            // This ensures we don't delete 'testPackage' price if we are just updating 'lesson' price
+            batch.set(userRef, {
+                pricing: {
+                    lesson: newPrice
+                }
+            }, { merge: true });
+        }
+
+        await batch.commit();
+
+        alert(`Request ${action} successfully!`);
+        
+        // Refresh the list to remove the item we just handled
+        renderPriceChangeRequests(); 
+
+    } catch (error) {
+        console.error("Error processing request:", error);
+        alert("Error processing request. Check console.");
+    }
+}
+// ============================================================
+// END: SUPER ADMIN PRICE APPROVAL LOGIC
+// ============================================================
+// --- NEW: Auto-Update Pricing View when clicked ---
+document.addEventListener('click', async (e) => {
+    // Check if the user clicked the "Set Pricing" or "Pricing" link
+    if (e.target.closest('a[data-view="instructor-pricing-view"]')) {
+        const user = auth.currentUser;
+        if (user) {
+            try {
+                // Fetch latest data
+                const doc = await db.collection('users').doc(user.uid).get();
+                const data = doc.data();
+                
+                // Get the price (default to 75 if not set)
+                const lessonPrice = (data.pricing && data.pricing.lesson) ? data.pricing.lesson : 75;
+
+                // Find the specific span that holds the lesson price and update it
+                // Note: We target the first '.pricing-value span' because that is the "Safe Learners" price in your HTML
+                const priceSpan = document.querySelector('#instructor-pricing-view .pricing-value span');
+                if (priceSpan) {
+                    priceSpan.textContent = `$${lessonPrice.toFixed(2)}`;
+                }
+            } catch (err) {
+                console.error("Could not refresh pricing:", err);
+            }
+        }
+    }
+});
     </script>
+
+
 </body>
 
 </html>
