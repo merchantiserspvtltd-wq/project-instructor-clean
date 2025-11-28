@@ -5712,7 +5712,6 @@
                         <li><a href="#" data-view="super-admin-controls">Controls</a></li>
                         <li><a href="#" data-view="super-admin-bookings">Bookings</a></li>
                         <li><a href="#" data-view="super-admin-notifications">Notifications</a></li>
-                        <li><a href="#" data-view="super-admin-price-approvals">Price Approvals</a></li>
                     </ul>
                 </nav>
                 <div class="sidebar-footer">
@@ -6767,10 +6766,10 @@
                     <div id="price-pending-banner" class="pending-approval-banner" style="display: none;">
                         <i class="fas fa-clock"></i>
                         <div>
-                            <strong>Price Change Pending Approval</strong>
+                            <strong>Price Change Scheduled</strong>
                             <p style="margin: 0; font-size: 13px;">
                                 You requested a change to <strong>$<span id="pending-price-display">0.00</span></strong>. 
-                                This is awaiting admin approval.
+                                This will automatically apply in <span id="time-remaining-display">24 hours</span>.
                             </p>
                         </div>
                     </div>
@@ -15610,9 +15609,15 @@ async function updateAccountSettings(e) {
  * If a request is found, it locks the form and shows the yellow banner.
  */
  /**
- * FUNCTION 1: Check for Pending Requests & Load Current Price
+// ============================================================
+// START: 24-HOUR DELAYED PRICING SYSTEM
+// ============================================================
+
+/**
+ * FUNCTION 1: Check Status & Auto-Apply if 24h passed
+ * This runs every time the pricing page is opened.
  */
-async function checkPendingPriceRequests() {
+ async function managePriceState() {
     const user = auth.currentUser;
     if (!user) return;
 
@@ -15620,88 +15625,99 @@ async function checkPendingPriceRequests() {
     const priceInput = document.getElementById('hourly-lesson-price');
     const saveBtn = document.getElementById('save-price-changes-btn');
     const pendingDisplay = document.getElementById('pending-price-display');
+    const timeDisplay = document.getElementById('time-remaining-display');
 
     if (!banner || !priceInput || !saveBtn) return;
 
     try {
-        // 1. Check if there is a pending request
-        const snapshot = await db.collection('priceChangeRequests')
-            .where('instructorId', '==', user.uid)
-            .where('status', '==', 'pending')
-            .limit(1)
-            .get();
+        // Fetch the User Document
+        const userDoc = await db.collection('users').doc(user.uid).get();
+        const userData = userDoc.data();
+        const currentPrice = (userData.pricing && userData.pricing.lesson) ? userData.pricing.lesson : 75;
+        
+        // 1. Set the input to the CURRENT Live Price
+        priceInput.value = currentPrice;
 
-        if (!snapshot.empty) {
-            // --- SCENARIO A: PENDING REQUEST EXISTS ---
-            const requestData = snapshot.docs[0].data();
-            banner.style.display = 'flex';
-            if (pendingDisplay) pendingDisplay.textContent = requestData.newPrice.toFixed(2);
-            
-            priceInput.value = requestData.newPrice; 
-            priceInput.disabled = true;
-            priceInput.style.backgroundColor = "#f0f0f0";
-            
-            saveBtn.disabled = true;
-            saveBtn.textContent = "Request Pending Approval";
-            saveBtn.classList.add('btn-disabled');
-        } else {
-            // --- SCENARIO B: NO REQUEST PENDING (Load Live Price) ---
-            
-            // [NEW CODE] Fetch the actual current price from the User Profile
-            const userDoc = await db.collection('users').doc(user.uid).get();
-            const userData = userDoc.data();
-            // Use the price from DB, or 75 if missing
-            const currentPrice = (userData.pricing && userData.pricing.lesson) ? userData.pricing.lesson : 75; 
+        // 2. Check if there is a Pending Change stored
+        if (userData.pendingPriceChange) {
+            const pending = userData.pendingPriceChange;
+            const validFrom = pending.effectiveAt.toDate(); // Convert Firestore timestamp to JS Date
+            const now = new Date();
 
-            // Set the input value to the REAL price
-            priceInput.value = currentPrice;
+            // --- SCENARIO A: 24 HOURS HAVE PASSED (APPLY IT!) ---
+            if (now >= validFrom) {
+                console.log("24 hours passed. Applying new price...");
+                
+                // Apply the change to the real pricing field and remove the pending field
+                await db.collection('users').doc(user.uid).update({
+                    'pricing.lesson': pending.newPrice,
+                    'pendingPriceChange': firebase.firestore.FieldValue.delete()
+                });
 
-            // Reset UI
+                alert(`✅ Your 24-hour waiting period is over.\nYour new price of $${pending.newPrice} is now live!`);
+                
+                // Refresh UI
+                banner.style.display = 'none';
+                priceInput.value = pending.newPrice;
+                priceInput.disabled = false;
+                priceInput.style.backgroundColor = "#fff";
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save Changes";
+            } 
+            // --- SCENARIO B: STILL WAITING (< 24 HOURS) ---
+            else {
+                banner.style.display = 'flex';
+                if (pendingDisplay) pendingDisplay.textContent = pending.newPrice.toFixed(2);
+                
+                // Calculate remaining hours for display
+                const diffMs = validFrom - now;
+                const diffHrs = Math.ceil(diffMs / (1000 * 60 * 60));
+                if (timeDisplay) timeDisplay.textContent = `approx. ${diffHrs} hours`;
+
+                // Lock UI
+                priceInput.disabled = true;
+                priceInput.style.backgroundColor = "#f0f0f0";
+                saveBtn.disabled = true;
+                saveBtn.textContent = `Update Scheduled (${diffHrs}h left)`;
+                saveBtn.classList.add('btn-disabled');
+            }
+        } 
+        // --- SCENARIO C: NO PENDING CHANGE ---
+        else {
             banner.style.display = 'none';
             priceInput.disabled = false;
             priceInput.style.backgroundColor = "#fff";
-            
             saveBtn.disabled = false;
             saveBtn.textContent = "Save Changes";
             saveBtn.classList.remove('btn-disabled');
         }
+
     } catch (error) {
-        console.error("Error checking pending requests:", error);
+        console.error("Error managing price state:", error);
     }
 }
 
 /**
  * FUNCTION 2: Watch for Navigation
- * This detects when you click "Edit" on the main pricing card
- * and triggers the check function above.
  */
 document.addEventListener('click', (e) => {
-    // If the user clicks the "Edit" button (pencil icon)
     if (e.target.closest('.pricing-value .btn')) {
-        // Wait a split second for the view to switch, then check DB
-        setTimeout(checkPendingPriceRequests, 100);
+        setTimeout(managePriceState, 100);
     }
 });
 
 /**
- * FUNCTION 3: Handle the "Save Changes" Click
- * This sends the request and the email.
+ * FUNCTION 3: Handle Save Click (Start the 24h Timer)
  */
-/**
- * FUNCTION 3: Handle Save Click & Send Email (REAL VERSION)
- */
- document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const savePriceBtn = document.getElementById('save-price-changes-btn');
 
     if (savePriceBtn) {
-        // 1. Clone button to wipe out any old event listeners
         const newSaveBtn = savePriceBtn.cloneNode(true);
         savePriceBtn.parentNode.replaceChild(newSaveBtn, savePriceBtn);
 
-        // 2. Add the NEW listener
         newSaveBtn.addEventListener('click', async (e) => {
             e.preventDefault();
-
             const user = auth.currentUser;
             if (!user) return alert("Please log in again.");
 
@@ -15712,54 +15728,61 @@ document.addEventListener('click', (e) => {
 
             if (isNaN(newPrice) || newPrice <= 0) return alert("Please enter a valid price.");
 
-            // Lock Button immediately
-            newSaveBtn.textContent = "Sending Request...";
+            // Lock Button
+            newSaveBtn.textContent = "Scheduling...";
             newSaveBtn.disabled = true;
 
-            // 3. Data object for Firestore
-            const requestData = {
-                instructorId: user.uid,
-                instructorName: instructorName,
-                instructorEmail: user.email,
-                newPrice: newPrice,
-                status: 'pending',
-                requestedAt: firebase.firestore.FieldValue.serverTimestamp()
-            };
-
-            // 4. Data object for EmailJS
-            const emailParams = {
-                to_email: 'eesiitbhu5@gmail.com', // <--- YOUR SPECIFIC EMAIL
-                subject: `Price Change Request: ${instructorName}`,
-                message: `Instructor ${instructorName} (ID: ${user.uid}) has requested a price change to $${newPrice}. Please approve in the dashboard.`
-            };
-
             try {
-                // A. Save to Firestore
-                await db.collection('priceChangeRequests').add(requestData);
+                // 1. Calculate Time (Now + 24 Hours)
+                const effectiveDate = moment().add(24, 'hours').toDate();
+                const formattedDate = moment(effectiveDate).format('D MMM YYYY, h:mm A');
 
-                // B. Send Email via EmailJS
+                // 2. Save to Firestore 'pendingPriceChange' field inside the User document
+                await db.collection('users').doc(user.uid).update({
+                    pendingPriceChange: {
+                        newPrice: newPrice,
+                        requestedAt: firebase.firestore.FieldValue.serverTimestamp(),
+                        effectiveAt: effectiveDate // This is the key
+                    }
+                });
+
+                // 3. Send Email to Super Admin
+                const emailParams = {
+                    to_email: 'eesiitbhu5@gmail.com', 
+                    subject: `Price Change Scheduled: ${instructorName}`,
+                    message: `Instructor ${instructorName} has scheduled a price change to $${newPrice}. \n\nThis change will automatically go live in 24 hours (at ${formattedDate}).`
+                };
+
                 // ⚠️ REPLACE WITH YOUR ACTUAL IDs ⚠️
                 await emailjs.send('service_az09qfd', 'template_n0fguu8', emailParams);
                 
-                console.log("Email sent successfully to eesiitbhu5@gmail.com");
+                // 4. Notify Admin Dashboard
+                 await db.collection('adminNotifications').add({
+                    title: 'Price Change Scheduled',
+                    body: `${instructorName} scheduled a price change to $${newPrice} (Effective in 24h).`,
+                    type: 'price_change',
+                    instructorId: user.uid,
+                    read: false,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
 
-                // C. Success UI
-                alert(`✅ Request Sent! \n\nYour price change to $${newPrice} is now pending. \nThe admin has been notified via email.`);
+                // 5. Success UI
+                alert(`✅ Update Scheduled! \n\nYour price change to $${newPrice} has been scheduled.\nIt will reflect publicly in 24 hours.`);
                 
-                // Lock the UI
-                checkPendingPriceRequests();
+                // Lock the UI immediately
+                managePriceState();
 
             } catch (error) {
                 console.error("Error:", error);
-                alert("Request submitted to database, but there might have been an issue sending the email.");
-                // Even if email fails, we check DB to lock the UI if the write succeeded
-                checkPendingPriceRequests(); 
+                alert("Error scheduling update. Please try again.");
+                newSaveBtn.disabled = false;
+                newSaveBtn.textContent = "Save Changes";
             }
         });
     }
 });
 // ============================================================
-// END: NEW PRICING APPROVAL SYSTEM
+// END: 24-HOUR DELAYED PRICING SYSTEM
 // ============================================================
 // ============================================================
 // START: SUPER ADMIN PRICE APPROVAL LOGIC
