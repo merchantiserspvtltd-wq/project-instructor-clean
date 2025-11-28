@@ -11547,40 +11547,79 @@
         }
 
         // --- FETCH AND RENDER UPCOMING BOOKINGS FOR INSTRUCTOR DASHBOARD ---
-        function renderUpcomingBookings(uid) {
-            const container = document.getElementById('upcoming-booking-content');
-            if (!container) return;
-            container.innerHTML = '<p>Loading upcoming bookings...</p>';
+// --- FETCH AND RENDER UPCOMING BOOKINGS (Updated for Late Cancels) ---
+function renderUpcomingBookings(uid) {
+    const container = document.getElementById('upcoming-booking-content');
+    if (!container) return;
+    container.innerHTML = '<p>Loading upcoming bookings...</p>';
 
-            db.collection('bookings').where('instructorId', '==', uid).where('status', '==', 'CONFIRMED')
-                .onSnapshot(querySnapshot => {
-                    const today = moment().startOf('day'); // Get the start of today's date
+    // We now fetch CONFIRMED (normal) AND LATE_CANCEL_PENDING (needs action)
+    db.collection('bookings')
+        .where('instructorId', '==', uid)
+        .where('status', 'in', ['CONFIRMED', 'LATE_CANCEL_PENDING']) 
+        .onSnapshot(querySnapshot => {
+            const today = moment().startOf('day');
+            
+            const upcomingDocs = querySnapshot.docs.filter(doc => {
+                const booking = doc.data();
+                if (!booking.date) return false;
+                const bookingDate = moment(booking.date, 'ddd, D MMM YYYY');
+                return bookingDate.isSameOrAfter(today);
+            });
 
-                    // ✅ **THE FIX IS HERE:** Filter the documents before displaying them
-                    const upcomingDocs = querySnapshot.docs.filter(doc => {
-                        const booking = doc.data();
-                        if (!booking.date) return false; // Skip bookings with no date
-                        const bookingDate = moment(booking.date, 'ddd, D MMM YYYY');
-                        // Keep the booking only if its date is on or after today
-                        return bookingDate.isSameOrAfter(today);
-                    });
+            if (upcomingDocs.length === 0) {
+                container.innerHTML = '<p>You have no upcoming bookings.</p>';
+                return;
+            }
 
-                    if (upcomingDocs.length === 0) {
-                        container.innerHTML = '<p>You have no upcoming bookings.</p>';
-                        return;
-                    }
+            // Sort: Put 'Action Required' requests at the top
+            upcomingDocs.sort((a, b) => {
+                const aStatus = a.data().status;
+                const bStatus = b.data().status;
+                if (aStatus === 'LATE_CANCEL_PENDING' && bStatus !== 'LATE_CANCEL_PENDING') return -1;
+                if (bStatus === 'LATE_CANCEL_PENDING' && aStatus !== 'LATE_CANCEL_PENDING') return 1;
+                return 0;
+            });
 
-                    // Now, map only the filtered (upcoming) documents to HTML
-                    container.innerHTML = upcomingDocs.map(doc => {
-                        const booking = doc.data();
-                        const bookingId = doc.id;
-                        return `
-                <div class="card">
+            container.innerHTML = upcomingDocs.map(doc => {
+                const booking = doc.data();
+                const bookingId = doc.id;
+                
+                // --- LOGIC FOR DISPLAYING BUTTONS ---
+                let actionButtonsHtml = '';
+                let statusBadge = '';
+                let cardStyle = '';
+
+                if (booking.status === 'LATE_CANCEL_PENDING') {
+                    // Special Red/Orange Card for Instructor Action
+                    cardStyle = 'border: 2px solid #e53935; background-color: #fffafa;';
+                    statusBadge = '<span class="status-badge" style="background-color: #e53935; color: white; margin-left:10px;">ACTION REQUIRED</span>';
+                    
+                    actionButtonsHtml = `
+                        <div style="display: flex; flex-direction: column; gap: 5px; text-align: right;">
+                            <small style="color: #c62828; font-weight:600;">Late Cancel Requested</small>
+                            <button class="btn btn-small" style="background-color: #4CAF50; color: white;" 
+                                onclick="processCancellationDecision('${bookingId}', 'refund')">
+                                Allow Refund / Reschedule
+                            </button>
+                            <button class="btn btn-small" style="background-color: #333; color: white;" 
+                                onclick="processCancellationDecision('${bookingId}', 'charge')">
+                                Charge Fee (No Refund)
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Standard "Manage" button for normal bookings
+                    actionButtonsHtml = `<a href="#" class="btn btn-secondary btn-small" data-booking-id="${bookingId}">See more / Manage</a>`;
+                }
+
+                return `
+                <div class="card" style="${cardStyle}">
                     <div class="booking-item">
                         <div class="booking-item-main">
                             <div class="booking-item-section">
-                                <p>Booking Details</p>
-                                <span><i class="fas fa-calendar-alt"></i> ${moment(booking.date, 'ddd, D MMM YYYY').format('ddd, D MMM YYYY')}</span><br>
+                                <p>Booking Details ${statusBadge}</p>
+                                <span><i class="fas fa-calendar-alt"></i> ${booking.date}</span><br>
                                 <span><i class="fas fa-clock"></i> ${booking.startTime} - ${booking.endTime}</span>
                             </div>
                             <div class="booking-item-section">
@@ -11592,20 +11631,20 @@
                             </div>
                         </div>
                         <div class="booking-item-actions">
-                            <a href="#" class="btn btn-secondary btn-small" data-booking-id="${bookingId}">See more / Manage</a>
+                            ${actionButtonsHtml}
                         </div>
                     </div>
                     <div class="booking-item-location">
                         <span><i class="fas fa-map-marker-alt"></i> ${booking.pickupLocation}</span>
                     </div>
                 </div>`;
-                    }).join('');
+            }).join('');
 
-                }, error => {
-                    console.error("Error fetching upcoming bookings:", error);
-                    container.innerHTML = '<p style="color:red;">Could not load bookings.</p>';
-                });
-        }
+        }, error => {
+            console.error("Error fetching bookings:", error);
+            container.innerHTML = '<p style="color:red;">Could not load bookings.</p>';
+        });
+}
 
         // --- BOOKING PAGE LOGIC ---
         const bookingPage = document.getElementById('booking-page');
@@ -13828,66 +13867,110 @@
          * Correctly fetches and renders ONLY the logged-in learner's upcoming bookings.
          * @param {string} uid - The UID of the logged-in learner.
          */
-        async function renderLearnerUpcomingBookings(uid) {
-            const upcomingContent = document.getElementById('upcoming-content');
-            if (!upcomingContent) return;
+ /**
+ * Fetches and renders the current learner's upcoming bookings.
+ * UPDATED: Adds a specific "Cancel Booking" button.
+ */
+/**
+ * Fetches and renders the current learner's upcoming bookings.
+ * UPDATED: Replaces "Manage" link with a "Cancel Booking" button.
+ */
+ async function renderLearnerUpcomingBookings(uid) {
+    const upcomingContent = document.getElementById('upcoming-content');
+    if (!upcomingContent) return;
 
-            upcomingContent.innerHTML = '<p>Loading your bookings...</p>';
+    upcomingContent.innerHTML = '<p>Loading your bookings...</p>';
 
-            try {
-                const today = moment().startOf('day');
-                // This query correctly filters for the specific learner's confirmed bookings.
-                const bookingsSnapshot = await db.collection('bookings')
-                    .where('learnerId', '==', uid)
-                    .where('status', '==', 'CONFIRMED')
-                    .get();
+    try {
+        const today = moment().startOf('day');
+        
+        // Query for Confirmed bookings OR Pending Late Cancel requests
+        const bookingsSnapshot = await db.collection('bookings')
+            .where('learnerId', '==', uid)
+            .where('status', 'in', ['CONFIRMED', 'LATE_CANCEL_PENDING'])
+            .get();
 
-                let upcomingBookingsHTML = '';
-                let hasUpcomingBookings = false;
+        let upcomingBookingsHTML = '';
+        let hasUpcomingBookings = false;
 
-                for (const doc of bookingsSnapshot.docs) {
-                    const booking = doc.data();
-                    const bookingDate = moment(booking.date, 'ddd, D MMM YYYY');
+        for (const doc of bookingsSnapshot.docs) {
+            const booking = doc.data();
+            
+            // Handle different date formats (String vs Timestamp)
+            let bookingDate;
+            if (booking.date && typeof booking.date.toDate === 'function') {
+                 bookingDate = moment(booking.date.toDate());
+            } else {
+                 bookingDate = moment(booking.date, 'ddd, D MMM YYYY');
+            }
 
-                    if (bookingDate.isSameOrAfter(today)) {
-                        hasUpcomingBookings = true;
-                        const instructorDoc = await db.collection('users').doc(booking.instructorId).get();
-                        const instructorPhoto = instructorDoc.exists ? instructorDoc.data().instructorPhotoUrl : 'https://placehold.co/100x100?text=I';
-
-                        upcomingBookingsHTML += `
-                    <div class="card" style="margin-bottom: 15px; text-align: left;">
-                        <div class="booking-item">
-                            <div class="booking-item-main">
-                                <div class="booking-item-section">
-                                    <p>Instructor</p>
-                                    <div class="instructor-cell">
-                                        <img src="${instructorPhoto}" alt="Instructor">
-                                        <span>${booking.instructorName || 'Instructor'}</span>
-                                    </div>
-                                </div>
-                                <div class="booking-item-section">
-                                    <p>Date & Time</p>
-                                    <span>${booking.date}</span><br>
-                                    <span style="font-weight: 400;">${booking.startTime}</span>
-                                </div>
-                                <div class="booking-item-section">
-                                    <p>Lesson</p>
-                                    <span>${booking.lessonType || 'Driving Lesson'}</span>
-                                </div>
-                            </div>
-                            <div class="booking-item-actions">
-                                <a href="#" class="btn btn-secondary btn-small" data-booking-id="${doc.id}">Manage</a>
-                            </div>
-                        </div>
-                    </div>`;
+            if (bookingDate.isSameOrAfter(today)) {
+                hasUpcomingBookings = true;
+                
+                // Get Instructor Photo
+                let instructorPhoto = 'https://placehold.co/100x100?text=I';
+                try {
+                    const instructorDoc = await db.collection('users').doc(booking.instructorId).get();
+                    if (instructorDoc.exists && instructorDoc.data().instructorPhotoUrl) {
+                        instructorPhoto = instructorDoc.data().instructorPhotoUrl;
                     }
+                } catch (err) { console.log("Error fetching instructor photo", err); }
+
+                // --- LOGIC FOR BUTTONS ---
+                let actionArea = '';
+                
+                if (booking.status === 'LATE_CANCEL_PENDING') {
+                    // If already requested, show a yellow badge instead of the button
+                    actionArea = `<span class="status-badge" style="background-color: #FFF3CD; color: #856404; padding: 8px; border: 1px solid #ffeeba; border-radius: 4px; font-size: 12px;">Pending Review</span>`;
+                } else {
+                    // Show the CANCEL BUTTON (This replaces the old "Manage" link)
+                    actionArea = `
+                        <button class="btn btn-secondary btn-small cancel-learner-booking-btn" 
+                                data-booking-id="${doc.id}"
+                                style="background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; cursor: pointer;">
+                            Cancel Booking
+                        </button>`;
                 }
-                upcomingContent.innerHTML = hasUpcomingBookings ? upcomingBookingsHTML : '<p>You have no upcoming bookings to view at this time.</p>';
-            } catch (error) {
-                console.error("Error fetching learner bookings:", error);
-                upcomingContent.innerHTML = '<p style="color:red;">Could not load your bookings.</p>';
+
+                // Use the original date string for display if available, else format the moment object
+                const displayDate = typeof booking.date === 'string' ? booking.date : bookingDate.format('ddd, D MMM YYYY');
+
+                // Build the HTML card
+                upcomingBookingsHTML += `
+            <div class="card" style="margin-bottom: 15px; text-align: left; padding: 0; overflow: hidden;">
+                <div class="booking-item" style="padding: 20px; display: flex; align-items: center; justify-content: space-between;">
+                    <div class="booking-item-main" style="display: flex; align-items: center; gap: 20px; flex: 1;">
+                        
+                        <div class="booking-item-section instructor-cell" style="display: flex; align-items: center; gap: 10px; flex: 1;">
+                            <img src="${instructorPhoto}" alt="Instructor" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;">
+                            <span style="font-weight: 500;">${booking.instructorName || 'Instructor'}</span>
+                        </div>
+                        
+                        <div class="booking-item-section" style="flex: 1.5;">
+                            <span style="font-weight: 500;">${displayDate}</span><br>
+                            <span style="color: var(--gray-color);">${booking.startTime}</span>
+                        </div>
+                        
+                        <div class="booking-item-section" style="flex: 1;">
+                            <span>${booking.lessonType || 'Driving Lesson'}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="booking-item-actions">
+                        ${actionArea}
+                    </div>
+                </div>
+            </div>`;
             }
         }
+        
+        upcomingContent.innerHTML = hasUpcomingBookings ? upcomingBookingsHTML : '<p style="padding: 20px; text-align: center;">You have no upcoming bookings.</p>';
+        
+    } catch (error) {
+        console.error("Error fetching learner bookings:", error);
+        upcomingContent.innerHTML = '<p style="color:red; padding: 20px;">Could not load your bookings.</p>';
+    }
+}
 
         // This is the corrected controller for the learner dashboard tabs.
         document.addEventListener('DOMContentLoaded', () => {
@@ -13930,6 +14013,8 @@
 
             // This is the ONE AND ONLY correct function to get your bookings.
             // By defining it here, we make sure no other broken version is ever called.
+            // This is the ONE AND ONLY correct function to get your bookings.
+            // By defining it here, we make sure no other broken version is ever called.
             const getCorrectUpcomingBookings = async function (uid) {
 
                 const upcomingContent = document.getElementById('upcoming-content');
@@ -13951,10 +14036,10 @@
                     // This is the Firestore query
                     const snapshot = await firebase.firestore().collection('bookings')
                         .where('learnerId', '==', uid)
-                        .where('status', '==', 'CONFIRMED')
+                        .where('status', 'in', ['CONFIRMED', 'LATE_CANCEL_PENDING']) // Include pending cancels
                         .get();
 
-                    console.log(`Step 3: Firestore query completed. Found ${snapshot.size} confirmed booking(s) for this learner (before date filtering).`);
+                    console.log(`Step 3: Firestore query completed. Found ${snapshot.size} booking(s).`);
 
                     if (snapshot.empty) {
                         upcomingContent.innerHTML = '<p>You have no upcoming bookings to view at this time.</p>';
@@ -13993,6 +14078,19 @@
                             // Uses the original date string/object for display to preserve formatting
                             const displayDate = booking.date.toDate ? moment(booking.date.toDate()).format('ddd, D MMM YYYY') : booking.date;
 
+                            // --- NEW BUTTON LOGIC HERE ---
+                            let actionArea = '';
+                            if (booking.status === 'LATE_CANCEL_PENDING') {
+                                actionArea = `<span class="status-badge" style="background-color: #FFF3CD; color: #856404; padding: 8px; border: 1px solid #ffeeba; border-radius: 4px;">Pending Review</span>`;
+                            } else {
+                                actionArea = `
+                                    <button class="btn btn-secondary btn-small cancel-learner-booking-btn" 
+                                            data-booking-id="${doc.id}"
+                                            style="background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; cursor: pointer;">
+                                        Cancel Booking
+                                    </button>`;
+                            }
+
                             return `
                     <div class="card" style="margin-bottom: 15px; padding: 0;">
                         <div class="booking-item">
@@ -14001,7 +14099,9 @@
                                 <div class="booking-item-section" style="flex: 1.5;"><span>${displayDate}<br>${booking.startTime}</span></div>
                                 <div class="booking-item-section" style="flex: 1;"><span>${booking.lessonType || 'Driving Lesson'}</span></div>
                             </div>
-                            <div class="booking-item-actions"><a href="#" class="btn btn-secondary btn-small">Manage</a></div>
+                            <div class="booking-item-actions">
+                                ${actionArea}
+                            </div>
                         </div>
                     </div>`;
                         }
@@ -15809,6 +15909,118 @@ document.addEventListener('click', async (e) => {
         }
     }
 });
+
+// ============================================================
+// START: CANCELLATION & REFUND POLICY LOGIC
+// ============================================================
+
+/**
+ * Learner: Cancels booking with 24-hour notice check.
+ */
+ async function cancelLearnerBooking(bookingId) {
+    // 1. Fetch the booking to check the time
+    const bookingRef = db.collection('bookings').doc(bookingId);
+    const doc = await bookingRef.get();
+
+    if (!doc.exists) {
+        alert("Booking not found.");
+        return;
+    }
+
+    const booking = doc.data();
+    
+    // 2. Calculate Time Difference using Moment.js
+    const bookingDateTime = moment(`${booking.date} ${booking.startTime}`, 'ddd, D MMM YYYY h:mm a');
+    const now = moment();
+    const hoursDifference = bookingDateTime.diff(now, 'hours');
+
+    console.log(`Hours until booking: ${hoursDifference}`);
+
+    // 3. Logic Branch based on time
+    if (hoursDifference < 24) {
+        // --- CASE A: LATE CANCELLATION (< 24 HOURS) ---
+        const confirmLate = confirm(
+            "⚠️ LATE CANCELLATION NOTICE\n\n" +
+            "This booking is less than 24 hours away.\n" +
+            "If you cancel now, your request will be sent to the Instructor for approval.\n\n" +
+            "The Instructor may decide to Allow Reschedule OR Charge a fee.\n\n" +
+            "Do you want to proceed?"
+        );
+
+        if (confirmLate) {
+            await bookingRef.update({
+                status: 'LATE_CANCEL_PENDING',
+                cancellationRequestedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Request sent to Instructor for review.");
+            renderLearnerUpcomingBookings(auth.currentUser.uid); // Refresh UI
+        }
+
+    } else {
+        // --- CASE B: STANDARD CANCELLATION (> 24 HOURS) ---
+        const confirmNormal = confirm("Are you sure you want to cancel this booking? The credit will be returned to your wallet.");
+
+        if (confirmNormal) {
+            await bookingRef.update({
+                status: 'CANCELLED',
+                cancelledBy: 'learner',
+                cancelledAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Booking cancelled successfully. Credit returned.");
+            renderLearnerUpcomingBookings(auth.currentUser.uid); // Refresh UI
+        }
+    }
+}
+
+/**
+ * Instructor: Process the decision on a late cancellation.
+ */
+async function processCancellationDecision(bookingId, decision) {
+    if (!confirm("Are you sure you want to proceed with this decision?")) return;
+
+    try {
+        const bookingRef = db.collection('bookings').doc(bookingId);
+        
+        if (decision === 'refund') {
+            // OPTION A: Allow Reschedule/Refund
+            await bookingRef.update({
+                status: 'CANCELLED',
+                cancellationResolution: 'refunded_by_instructor',
+                resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Booking cancelled. Learner has been refunded/allowed to reschedule.");
+
+        } else if (decision === 'charge') {
+            // OPTION B: Charge the fee
+            await bookingRef.update({
+                status: 'CANCELLED_CHARGED', // This status means cancelled but MONEY KEPT
+                cancellationResolution: 'charged_by_instructor',
+                resolvedAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Booking cancelled. Cancellation fee enforced (No refund).");
+        }
+        // Note: Instructor UI updates automatically via onSnapshot listener
+
+    } catch (error) {
+        console.error("Error processing decision:", error);
+        alert("Error processing request. Check console.");
+    }
+}
+
+// Event Listener for Learner Cancel Button
+// Event Listener for Learner Cancel Button
+document.addEventListener('click', (e) => {
+    if (e.target.matches('.cancel-learner-booking-btn')) {
+        e.preventDefault();
+        const bookingId = e.target.dataset.bookingId;
+        if (bookingId) {
+            cancelLearnerBooking(bookingId);
+        }
+    }
+});
+// ============================================================
+// END: CANCELLATION & REFUND POLICY LOGIC
+// ============================================================
     </script>
 
 
