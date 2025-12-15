@@ -5587,6 +5587,56 @@
                 <img src="291429995_48aa561c-0fb7-4de1-8956-55dac2201764 1.png" alt="Yellow Sports Car"
                     class="car-graphic">
             </div>
+            <footer style="background-color: #222; color: #fff; padding: 50px 20px; font-size: 13px; text-align: left; border-top: 5px solid #FFC700;">
+                <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 40px;">
+                    
+                    <div>
+                        <h4 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Safe Learners Australia</h4>
+                        <p style="margin-bottom: 8px;"><strong>ABN:</strong> 43 612 095 968</p> 
+                        <p style="margin-bottom: 8px;"><strong>Address:</strong> C/- WOTSO ADELAIDE 217-219 Flinders Street, Adelaide SA 5000</p>
+                        <p>Email: info@safelearners.com.au</p>
+                    </div>
+
+                    <div>
+                        <h4 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Service Info</h4>
+                        <p style="margin-bottom: 8px;">Driving lessons are provided in-person at the scheduled time and location.</p>
+                        <p>All prices are displayed in AUD.</p>
+                    </div>
+
+                    <div style="display: flex; flex-direction: column; gap: 12px;">
+                        <h4 style="color: #fff; margin-bottom: 5px; font-size: 16px;">Legal Policies</h4>
+                        
+                        <button onclick="document.getElementById('modal-refund-policy').classList.add('active')" style="background: none; border: none; color: #ccc; text-align: left; cursor: pointer; padding: 0; text-decoration: underline; font-size: 13px;">
+                            1. Refund & Cancellation Policy
+                        </button>
+
+                        <button onclick="document.getElementById('modal-privacy-policy').classList.add('active')" style="background: none; border: none; color: #ccc; text-align: left; cursor: pointer; padding: 0; text-decoration: underline; font-size: 13px;">
+                            2. Privacy Policy
+                        </button>
+
+                        <button onclick="document.getElementById('modal-lesson-policy').classList.add('active')" style="background: none; border: none; color: #ccc; text-align: left; cursor: pointer; padding: 0; text-decoration: underline; font-size: 13px;">
+                            3. Driving Lesson Policies
+                        </button>
+
+                        <button onclick="document.getElementById('modal-payment-policy').classList.add('active')" style="background: none; border: none; color: #ccc; text-align: left; cursor: pointer; padding: 0; text-decoration: underline; font-size: 13px;">
+                            4. Payment Policy
+                        </button>
+
+                        <button onclick="document.getElementById('modal-contractor-agreement').classList.add('active')" style="background: none; border: none; color: #ccc; text-align: left; cursor: pointer; padding: 0; text-decoration: underline; font-size: 13px;">
+                            5. Independent Contractor Agreement
+                        </button>
+                    </div>
+
+                    <div>
+                        <h4 style="color: #fff; margin-bottom: 15px; font-size: 16px;">Security</h4>
+                        <p style="margin-bottom: 10px;">We take data security seriously.</p>
+                        <p>Payments are processed securely via Stripe. We do not store your credit card details.</p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: 40px; padding-top: 20px; border-top: 1px solid #444;">
+                    &copy; 2025 Safe Learners. All rights reserved.
+                </div>
+            </footer>
         </div>
     </div>
 
@@ -9808,6 +9858,212 @@
                         <button type="submit" class="btn btn-primary">Continue</button>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div id="modal-refund-policy" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="modal-content" style="max-width: 800px; text-align: left; max-height: 85vh; overflow-y: auto;">
+            <div class="reviews-header" style="justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 10;">
+                <h3>Refund & Cancellation Policy</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('modal-refund-policy').classList.remove('active')">&times;</button>
+            </div>
+            <div class="legal-text-content" style="padding: 25px; line-height: 1.6; color: #333; font-size: 14px;">
+                <p>Safe Learners™ is the trademark of AM & BN Group Pty Ltd trading as Safe Learners Driver Education.</p>
+                <p>We aim for all bookings made through the Safe Learners platform to proceed smoothly, but we understand that unexpected issues may arise.</p>
+                <p>If a booking does not meet your expectations and you wish to request a refund, please contact our Support Team.</p>
+                <p>We strive to offer fair refunds for learners. To check if you're eligible, see the guidelines below.</p>
+                <p>Any decision to grant a refund is at Safe Learners’ sole discretion, but a refund will generally be agreed if you meet the eligibility criteria below.</p>
+                <h4>When Can You Request a Refund?</h4>
+                <p>You may qualify for a refund in situations such as:</p>
+                <ul>
+                    <li>No driving instructors are available in your area.</li>
+                    <li>No instructors are available for bookings within the next 4 weeks.</li>
+                    <li>A duplicate payment has been made.</li>
+                    <li>You wish to exchange your booking credits, such as: Converting a test package credit into lesson hours, or swapping driving lesson credits for a driving test package.</li>
+                    <li>You have completed over 10 hours of lessons and no longer need your remaining credits.</li>
+                    <li>Your instructor did not arrive for the scheduled lesson.</li>
+                    <li>Your instructor cancelled your booking.</li>
+                </ul>
+                <h4>When Are Refunds Not Available?</h4>
+                <p>You won’t be eligible for a refund in the following cases, among others:</p>
+                <ul>
+                    <li>Your credit balance is zero or the credits have expired.</li>
+                    <li>Change of mind, such as: Finding a cheaper service, completing your logbook hours and no longer needing lessons, deciding not to use the service anymore, or moving to a new location since the original purchase.</li>
+                    <li>Your preferred instructor is unavailable, but other instructors are.</li>
+                    <li>Dissatisfaction with the instructor’s quality (though you can rate them via your learner account or switch instructors online at any time).</li>
+                    <li>Errors made by you, including: Not having the correct license, booking the wrong service, providing incorrect pick-up address or contact details, not meeting licensing requirements for your driving test, failing to book your test with the test centre.</li>
+                    <li>External factors such as issues with the local licensing authority.</li>
+                    <li>You cancelled late and were charged by your instructor.</li>
+                    <li>You have an ongoing payment dispute.</li>
+                </ul>
+                <h4>How to Address Your Request</h4>
+                <p>To request a refund or file a complaint, please contact Safe Learners™. Providing detailed information will assist us in handling your request more quickly. If your refund is approved, it will be returned to your original payment method within 5-10 business days, depending on your bank's processing time.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-privacy-policy" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="modal-content" style="max-width: 800px; text-align: left; max-height: 85vh; overflow-y: auto;">
+            <div class="reviews-header" style="justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 10;">
+                <h3>Privacy Policy</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('modal-privacy-policy').classList.remove('active')">&times;</button>
+            </div>
+            <div class="legal-text-content" style="padding: 25px; line-height: 1.6; color: #333; font-size: 14px;">
+                <p>Safe Learners™ is the trademark of AM & BN Group Pty Ltd trading as Safe Learners Driver Education.</p>
+                <p>Our Privacy Policy outlines how we handle collecting, using, and sharing personal information, including data we may gather occasionally. We are committed to safeguarding your information and ensuring its responsible storage, adhering to applicable privacy laws. The Privacy Act protects personal data, and we comply with the Australian Privacy Principles (APPs).</p>
+                <p>Safe Learners™ collects your personal information such as your name, contact information, phone numbers and payment information. Any credit card details are processed securely in a PCI-compliant payment gateway using a secure HTTPS internet connection. We do not directly collect or store payment information. Payment data is handled by a third-party service provider: Contact Stripe at info@stripe.com for further details.</p>
+                <p>We recommend familiarising yourself with third-party privacy policies before providing personal information.</p>
+                <p>Like most websites, Safe Learners™ uses cookies to save user’s website preferences. You have the option to set the settings in the browser to refuse cookies before using the Safe Learners™ website. By refusing cookies, certain features may not function properly.</p>
+                <h4>How it is Used:</h4>
+                <p>The personal information that is collected is for billing, identification, authentication, service improvement, research and website development. Personal data helps us deliver products, offer promotions, and improve our services.</p>
+                <p>Safe Learners™ will not share your personal information with anyone except to provide the requested services, develop our products, protect our rights, assist with a lawful investigation, comply with the law, or contact you. Some third-party service providers such as website hosts, payment service providers and backup service providers may have access to personal information held by us that (a) need to know that information to process it on behalf of Safe Learners™ or to provide services available at the Safe Learners™ website and (b) have agreed not to disclose it to others.</p>
+                <p>Aggregated non-personal data collected by Safe Learners™ may be shared with third parties to improve the Safe Learners™ website. Safe Learners™ may share information with third parties or contractors to provide services, including Customer support; Service enhancements; Processing and storage; and Lesson facilitation between Learner Drivers and Driving Instructors.</p>
+                <h4>Social Media:</h4>
+                <p>Safe Learners™ may use your Facebook profile photo or Instagram profile photo if you have a testimonial. Safe Learners™ may tag you in a photo on social media as well.</p>
+                <h4>Privacy Policy Changes:</h4>
+                <p>We reserve the right to change this Privacy Policy at any time. Changes take effect immediately once posted online. Your continued use of this site after any changes to the Privacy Policy will constitute your acceptance of such change. If our website is acquired or merged, your information may be transferred to the new owner.</p>
+                <h4>Third-Party Services</h4>
+                <p>Third-party providers collect, use, and disclose your information to the extent necessary for their services. Providers like Stripe may have their own privacy policies regarding payment processing. If you conduct a transaction with a third-party provider, your information may be governed by their laws, depending on their location. While we take all possible measures to protect your data, we cannot guarantee total security, and you provide your information at your own risk.</p>
+                <h4>Marketing Tools</h4>
+                <p>Safe Learners™ uses marketing tools like Google Ads and remarketing. You can opt out of Google display advertising or customise your ad settings through Google Ads.</p>
+                <h4>Questions, Complaints or Feedback:</h4>
+                <p>Your privacy is taken seriously. You can contact Safe Learners™ anytime at info@safelearners.com.au with any questions or complaints regarding how your personal information is handled.</p>
+                <p>If you have any questions or concerns about our privacy practices or the handling of your personal information, you may lodge a formal complaint with our Privacy Officer by email to info@safelearners.com.au. We will acknowledge receipt of your complaint within 7 days and endeavour to provide a substantive response within 30 days. We may need to contact you for further information. If you are not satisfied with our response, you may refer your complaint to a recognised external dispute resolution scheme or you can contact your local data protection authority for further information about their complaints process.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-lesson-policy" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="modal-content" style="max-width: 800px; text-align: left; max-height: 85vh; overflow-y: auto;">
+            <div class="reviews-header" style="justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 10;">
+                <h3>Driving Lesson Policies</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('modal-lesson-policy').classList.remove('active')">&times;</button>
+            </div>
+            <div class="legal-text-content" style="padding: 25px; line-height: 1.6; color: #333; font-size: 14px;">
+                <p>Safe Learners™ is the trademark of AM & BN Group Pty Ltd trading as Safe Learners Driver Education.</p>
+                
+                <h4>1. Instructor Engagement & Responsibilities</h4>
+                <p><strong>Independent Contractors:</strong> Safe Learners™ acts as a platform connecting learner drivers with qualified and licensed driving instructors. Instructors are independent contractors, not employees or sub-contractors of Safe Learners™.</p>
+                <p><strong>Learner Due Diligence:</strong> While Safe Learners™ verifies instructor qualifications and licenses, learners are responsible for selecting instructors based on their own research and due diligence.</p>
+                <p><strong>Driving Agreements:</strong> All driving instruction agreements are solely between the learner and the chosen instructor. Safe Learners is simply a platform to connect instructors and learners, and the learner agrees that Safe Learners is not responsible for any acts, omissions, breach of agreement or negligence of any instructor booked by the learner, and the learner agrees to waive any claims it may otherwise have against Safe Learners in relation to the acts, omissions, breach of agreement or negligence of any instructor booked by the learner.</p>
+
+                <h4>2. Learner Obligations</h4>
+                <p><strong>Valid License:</strong> Learners must possess and carry a valid Australian driver's license (Class C LRN or C) or an equivalent overseas license during all driving lessons.</p>
+                <p><strong>Lesson Preparation & Punctuality:</strong> Learners must be prepared for their lesson 10 minutes before the scheduled start time. A 15-minute grace period is allowed for late arrivals. Delays exceeding 15 minutes may result in lesson cancellation with the full lesson fee still applicable. Lessons may be terminated if the learner engages in reckless behaviour, fails to follow instructor instructions, or does not meet the specific conditions of their license (e.g., wearing required eyewear).</p>
+
+                <h4>3. Lesson Logistics</h4>
+                <p><strong>Lesson Duration & Location:</strong> Standard on-road lessons are one hour in duration, including briefing and debriefing. Learners are responsible for providing specific, accessible pick-up and drop-off locations with adequate parking and avoiding areas with inherent ambiguity (e.g., around train stations, and within complex shopping centres).</p>
+                <p><strong>Lesson Start Times:</strong> While Safe Learners™ strives for timely lesson starts with the designated instructor, unforeseen circumstances may cause delays or instructor changes. In such cases, Safe Learners™ will prioritise providing the full lesson duration or reschedule the lesson.</p>
+                <p><strong>Instructor Instructions:</strong> Learners must always adhere to all instructor instructions and directions.</p>
+
+                <h4>4. Vehicle Usage</h4>
+                <p><strong>Instructor-Supplied Vehicles:</strong> On-road lessons typically commence in instructor-supplied vehicles.</p>
+                <p><strong>Learner Vehicles:</strong> Driving lessons in the learner's vehicle may be permitted after a successful initial assessment by the instructor. Learners are solely responsible for ensuring their vehicle has both compulsory third-party and comprehensive insurance coverage. Safe Learners™ and its instructors assume no liability for any traffic violations or accidents occurring during lessons in the learner's vehicle.</p>
+
+                <h4>5. Booking Procedures</h4>
+                <p><strong>Online Booking System:</strong> All driving lessons must be booked through the official Safe Learners™ online booking system.</p>
+                <p><strong>Instructor Bookings:</strong> While learners may arrange bookings directly with their instructor during a lesson, the instructor is responsible for entering these bookings into the system.</p>
+                <p><strong>Booking Confirmation:</strong> Learners will receive a confirmation email upon successful booking entry. Bookings made outside the official system are not recognised. Learners are responsible for verifying booking confirmation and contacting Safe Learners™ immediately if confirmation is not received.</p>
+
+                <h4>6. Liability & Disclaimers</h4>
+                <p><strong>Property Liability:</strong> Safe Learners™ and their instructors are not responsible for any personal property left in instructor-supplied vehicles.</p>
+                <p><strong>Lesson Termination:</strong> In cases of reckless behaviour, non-compliance with instructions, or failure to meet license conditions, the lesson may be terminated, and the full lesson fee will remain payable.</p>
+
+                <h4>7. Communication & Support</h4>
+                <p><strong>System Issues:</strong> If a learner believes their instructor has not entered a booking into the system, they must promptly contact Safe Learners™ to confirm registration. Failure to do so may result in the lesson not being registered or scheduled.</p>
+
+                <h4>8. Approval to Post Pictures</h4>
+                <p>The learner hereby approves, unless they otherwise notify Safe Learners in writing, for Safe Learners to post photographs of the Learner reasonably relating to the driving lessons or the passing of any driving test, to Safe Learners’ website or social media.</p>
+
+                <h4>9. Terms of use about using the instructor’s vehicle for driving:</h4>
+                <p>Upon requesting the rental of an Instructor vehicle to participate in the driving test, the Learner takes full responsibility for: all damage to the vehicle if the Learner is "at fault" or cannot identify nor have details of the person "at fault"; damage that is caused by the vehicle that is within Learner’s control; theft or loss of the vehicle; all fines accumulated during the driving test, regardless of when they are issued by the relevant authority.</p>
+                <p>Additionally, the Learner states that in such an event, the Learner agrees to pay for the costs of repairs to the vehicle &/or property collided with, subject to the renter of two agreed quotes including actual cost of repairs, any towing fees, any excesses payable, any fines. In the case of a disastrous incident, where the cost to repair is greater than the excess fees, the Learner will pay within 14 days.</p>
+
+                <h4>10. Use of Safe Learners’ Website</h4>
+                <p>The Learner agrees that you will not, in connection with your use of the website, violate any applicable law or regulation. Without limiting the foregoing, you agree not to (i) make available through the website any material or information that infringes any copyright, trademark, patent, trade secret, or other right of any party; (ii) institute, assist, or become involved in any type of attack; (iii) attempt to gain unauthorized access to the website.</p>
+                <p>Furthermore, you may not use the website to develop, generate, transmit or store information that is defamatory, harmful, abusive, obscene or hateful. You agree that you will not obtain or attempt to obtain any information from the website including email information of other Account holders.</p>
+                <p>All comments, feedback, suggestions, ideas, and other submissions that you disclose, submit or offer to us in connection with your use of the website or services will become our exclusive property.</p>
+                <p>The personal information you provide to the website and your Account, and the contents of all of your Comments and other online communications may be accessed and monitored as necessary to provide the service and may be disclosed when we have a good faith belief that we are required to disclose the information in response to legal process or to satisfy any applicable laws.</p>
+                <p>The website and services are operated and provided in Australia. People accessing the website from locations outside of Australia are solely responsible for compliance with applicable local laws.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-payment-policy" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="modal-content" style="max-width: 800px; text-align: left; max-height: 85vh; overflow-y: auto;">
+            <div class="reviews-header" style="justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 10;">
+                <h3>Payment Policy</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('modal-payment-policy').classList.remove('active')">&times;</button>
+            </div>
+            <div class="legal-text-content" style="padding: 25px; line-height: 1.6; color: #333; font-size: 14px;">
+                <p>Safe Learners™ is the trademark of AM & BN Group Pty Ltd trading as Safe Learners Driver Education.</p>
+                <h4>Booking Prices</h4>
+                <p>The cost of a booking is determined by the Driving Instructor and may vary based on the chosen Driving Instructor. All prices and Discounts in this policy are based on hourly bookings. The Learner will be informed of the total price for each booking and must confirm the price before any payment is made to the Driving Instructor.</p>
+                
+                <h4>Discount:</h4>
+                <p>When a Learner pays for multiple booking hours in a single transaction, a discount may be applied as follows:</p>
+                <ul>
+                    <li>0 to 5 booking hours: 0% discount per hour. When you book individual hours or less than 5 hours.</li>
+                    <li>5 to 9 booking hours: 5% discount per hour. Book a minimum of 5 hours in a single transaction to receive a 5% discount per hour.</li>
+                    <li>10+ booking hours: 10% discount per hour. Book a minimum of 10 hours in a single transaction to receive a 10% discount per hour.</li>
+                </ul>
+                <p>Discounts apply to the price at the time of purchase and are not guaranteed for future bookings. All lesson package sales are non-refundable or exchangeable for any other service. All lessons bought have an expiry period of 12 months from the date of purchase due to pricing conditions that exist at the time of sale. Discount Bands apply regardless of changes in Driving Instructors.</p>
+
+                <h4>Payments:</h4>
+                <p>All lessons are to be paid in full in advance at the time of the booking. Lesson credits are lessons purchased by way of packaged lessons such as 5 hours or 10 hours. Once you have paid for a lesson package, you can book a lesson with any of our instructors. The payment will be deducted from your credit. We do not reserve lesson spaces without payment being made in full.</p>
+
+                <h4>Cancellations and Rescheduling</h4>
+                <p>Cancellations made by the Learner within 24 hours of the lesson are deemed late cancellations. In this case, the instructor may charge the Learner for the full booking amount or cancel the payment and allow the Learner to reschedule without a fee. For late cancellations, the Driving Instructor is entitled to a Late Cancellation Fee of 50% of the lesson fee.</p>
+                <p>All individual lessons are non-refundable. A minimum of 24 hours’ notice must be provided to cancel or reschedule a lesson. You must cancel or reschedule a lesson via your online account at www.safelearners.com.au. If a Learner fails to attend a lesson without prior notice, no refund will be provided and the full lesson fee will be charged.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-contractor-agreement" class="modal-overlay" onclick="if(event.target === this) this.classList.remove('active')">
+        <div class="modal-content" style="max-width: 800px; text-align: left; max-height: 85vh; overflow-y: auto;">
+            <div class="reviews-header" style="justify-content: space-between; align-items: center; position: sticky; top: 0; background: white; z-index: 10;">
+                <h3>Independent Contractor Agreement</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('modal-contractor-agreement').classList.remove('active')">&times;</button>
+            </div>
+            <div class="legal-text-content" style="padding: 25px; line-height: 1.6; color: #333; font-size: 14px;">
+                <p><strong>INDEPENDENT CONTRACTOR AGREEMENT</strong></p>
+                <p>THIS AGREEMENT (the Agreement) is executed between AM & BN Group Pty Ltd A.C.N. 679 772 840 trading as Safe Learners Driver Education (the Company) AND the Independent Contractor.</p>
+                
+                <h4>RECITALS</h4>
+                <p>The Company operates an online platform connecting learner drivers and driving instructors. The Independent Contractor is a licensed driving instructor. The Independent Contractor desires to utilise the Companys online platform to connect with and be engaged by learner drivers to provide driving instructor services. The Independent Contractor will perform as an independent contractor for the Company, on the terms and conditions set forth below.</p>
+
+                <h4>STATUS OF INDEPENDENT CONTRACTOR</h4>
+                <p>The parties acknowledge that in utilising the Companys online platform and performing driving instructor services to the learner drivers booking through the Companys online platform, the Independent Contractor acts as an independent contractor and not as an employee, partner or agent of the Company. The Independent Contractor has the right to control and direct the means and methods of performing the services; maintains a place of business at a place other than the premises of the Company; will provide and use its own vehicle in providing the services; is not entitled to payment of salary, holiday pay, sick pay, severance pay, long service leave or any other entitlement which an employee has in respect of his or her employer; is solely responsible for all wages and ordinary and necessary expenses of its employees and agents, including payments in relation to any taxes; is solely responsible for providing superannuation, sickness benefits and Workers Compensation in respect of its employees; is solely responsible for ensuring compliance with all relevant laws of Australia and New South Wales.</p>
+
+                <h4>SCOPE OF WORK, FEES AND PAYMENT</h4>
+                <p>The learner drivers that book the Independent Contractor for driving instructor services via the Companys online platform, will pay the fees for the booking to the Company via the online platform. The Independent Contractor will pay the Company a commission fee for any booking fees paid by a learner driver, which fee the Company will retain from the learner drivers payment, and will remit the balance to the Independent Contractor upon receipt of a valid tax invoice. Invoices will be issued via the Companys platform. The platform will show the instructor their past and future bookings and show the fees earned after commission. The Company will also provide the Contractor monthly or quarterly statements and also an annual statement.</p>
+
+                <h4>TERMINATION</h4>
+                <p>The Company may terminate this agreement, and refuse the Independent Contractor access to the online platform, at any time on 3 weeks notice, or with immediate effect by written notice, if the Independent Contractor: Is guilty of serious misconduct; is in breach of any provision set out in this agreement and fails to take reasonable steps to remedy the breach within a reasonable time as determined by the Company; is in breach of any applicable Company regulation or policy; or displays insufficient skill, professionalism and expertise to provide the services to the standard required by the Company.</p>
+
+                <h4>INDEPENDENT CONTRACTORS OBLIGATIONS</h4>
+                <p>The Independent Contractor agrees to: Before being permitted to utilise the Companys online platform, provide the Company with copies of its drivers licence, current address, phone number, email address, instructors licence, vehicle registration certificates and all insurances required. Provide the Company with any renewed drivers or instructors licence, or insurance policies and vehicle registrations, from time to time, within 24 hours of obtaining same. Notify the Company within 24 hours of its drivers licence, instructors licence, vehicle registration or required insurance policy expiring, being suspended, cancelled or revoked. Perform the services with all due care, skill, expertise and the level of professional knowledge that would reasonably be expected in the circumstances.</p>
+
+                <h4>TAXATION</h4>
+                <p>The Independent Contractor must provide the Company with: a valid Australian Business Number (ABN); or a completed Australian Tax Office (ATO) declaration form relating to reasons for not quoting an ABN. The Independent Contractor warrants that the information provided to the Company relating to taxation is correct.</p>
+
+                <h4>INSURANCE</h4>
+                <p>The Independent Contractor indemnifies the Company against all claims, demands, charges or expenses made against or incurred by the Company as a result of any breach by the Independent Contractor. The Independent Contractor agrees to take out and maintain Public Liability Insurance to the amount of $20,000,000.00 dollars, comprehensive insurance and CTP insurance on any vehicle it uses in providing the services, and must provide written proof of maintenance of such insurance to the Company on request. The Independent Contractor agrees to take out and maintain Workers Compensation Insurance in the amounts prescribed by statute.</p>
+
+                <h4>INDEMNIFICATION</h4>
+                <p>The Independent Contractor shall defend, indemnify, hold harmless and insure the Company from any and all damages expenses or liability, resulting from or arising out of any negligence or misconduct on the Independent Contractors part, or from any breach or default of this Agreement.</p>
+
+                <h4>CONFIDENTIALITY AND PRIVACY</h4>
+                <p>The Independent Contractor covenants to keep confidential and ensure its employees, agents and contractors keep confidential all confidential information expressed by the Company and all information provided by the Company to the Contractor for the purposes of this Agreement. The Independent Contractor agrees to comply with the Privacy Acts, any approved Privacy Codes and with the Companys Privacy Policy and Guidelines.</p>
+
+                <h4>NON-RECRUIT and NON-SOLICITATION</h4>
+                <p>The Independent Contractor shall not during this Agreement and for a period of one year immediately following termination of this Agreement, either directly or indirectly, recruit any of the Companys employees or other independent contractors, or approach or try to solicit any client of the Company, for the purpose of any outside business.</p>
+
+                <h4>GOVERNING LAW</h4>
+                <p>This agreement is governed in accordance with the laws of the New South Wales, Australia.</p>
             </div>
         </div>
     </div>
@@ -16050,3 +16306,4 @@ document.addEventListener('click', (e) => {
 </body>
 
 </html>
+
